@@ -1,0 +1,1218 @@
+{
+ "driver": "withdraw-acquisition-t3-r3",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:38183",
+ "started": "2026-09-27T12:29:22",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "an acquisition is queued while Summary refuses affordability",
+   "outcome": "pass",
+   "detail": "{\"acquisitions\": [{\"id\": 3, \"acquisition_target\": 2}], \"can_lock\": false, \"lock_blockers\": [\"承诺支出 $29,820,000.00 超过可用资金 $28,994,307.21——现金 $28,994,307.21 加上本回合已决定的融资 $0.00。需要削减 $825,692.79：目前可削减的最大承诺是战略预算，金额 $23,250,000.00。增加债务或股权融资也可达到同样效果。\"], \"budget_summary\": {\"rd_allocated\": 0, \"research_allocated\": 0, \"research_spent\": 0, \"rd_spent\": 0, \"marketing_allocated\": 300000, \"marketing_spent\": 300000, \"strategy_allocated\": 23250000, \"strategy_spent\": 23250000, \"talent_committed\": 4020000, \"plant_committed\": 0, \"total_available\": 28994307.21, \"cash_on_hand\": 28994307.21, \"financing_decided\": 0, \"total_allocated\": 23550000, \"platform_development_committed\": 0, \"compliance_committed\": 250000, \"committed_total\": 29820000, \"unallocated\": -825692.79}}"
+  },
+  {
+   "name": "M&A decisions are reachable from Corporate Strategy",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the queued acquisition offers a Withdraw action",
+   "outcome": "pass",
+   "detail": "count=1"
+  },
+  {
+   "name": "Withdraw removes the draft acquisition through the product",
+   "outcome": "pass",
+   "detail": "{\"acquisitions\": [], \"can_lock\": false, \"lock_blockers\": [\"承诺支出 $29,820,000.00 超过可用资金 $28,994,307.21——现金 $28,994,307.21 加上本回合已决定的融资 $0.00。需要削减 $825,692.79：目前可削减的最大承诺是战略预算，金额 $23,250,000.00。增加债务或股权融资也可达到同样效果。\"], \"budget_summary\": {\"rd_allocated\": 0, \"research_allocated\": 0, \"research_spent\": 0, \"rd_spent\": 0, \"marketing_allocated\": 300000, \"marketing_spent\": 300000, \"strategy_allocated\": 23250000, \"strategy_spent\": 5250000, \"talent_committed\": 4020000, \"plant_committed\": 0, \"total_available\": 28994307.21, \"cash_on_hand\": 28994307.21, \"financing_decided\": 0, \"total_allocated\": 23550000, \"platform_development_committed\": 0, \"compliance_committed\": 250000, \"committed_total\": 29820000, \"unallocated\": -825692.79}}"
+  },
+  {
+   "name": "lock is offered after the student withdraws the commitment",
+   "outcome": "fail",
+   "detail": "[\"承诺支出 $29,820,000.00 超过可用资金 $28,994,307.21——现金 $28,994,307.21 加上本回合已决定的融资 $0.00。需要削减 $825,692.79：目前可削减的最大承诺是战略预算，金额 $23,250,000.00。增加债务或股权融资也可达到同样效果。\"]"
+  },
+  {
+   "name": "round locks through the normal student confirmation",
+   "outcome": "fail",
+   "detail": "draft"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:34"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:34"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:46"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:29:46"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/rounds/3/reasoning/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/reasoning/history/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/2/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/2/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:29:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "12:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "12:29:41"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/acquisitions/",
+   "status": 200,
+   "at": "12:29:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:29:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "12:29:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "12:29:51"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "r3-t3-acquisition-before-withdraw",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/rounds/3/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r3-t3-acquisition-after-withdraw",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/acquisitions/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r3-t3-locked-after-withdraw",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "r3-t3-acquisition-before-withdraw",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r3-t3-acquisition-after-withdraw",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r3-t3-locked-after-withdraw",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "before": {
+   "acquisitions": [
+    {
+     "id": 3,
+     "acquisition_target": 2
+    }
+   ],
+   "can_lock": false,
+   "lock_blockers": [
+    "承诺支出 $29,820,000.00 超过可用资金 $28,994,307.21——现金 $28,994,307.21 加上本回合已决定的融资 $0.00。需要削减 $825,692.79：目前可削减的最大承诺是战略预算，金额 $23,250,000.00。增加债务或股权融资也可达到同样效果。"
+   ],
+   "budget_summary": {
+    "rd_allocated": 0,
+    "research_allocated": 0,
+    "research_spent": 0,
+    "rd_spent": 0,
+    "marketing_allocated": 300000,
+    "marketing_spent": 300000,
+    "strategy_allocated": 23250000,
+    "strategy_spent": 23250000,
+    "talent_committed": 4020000,
+    "plant_committed": 0,
+    "total_available": 28994307.21,
+    "cash_on_hand": 28994307.21,
+    "financing_decided": 0,
+    "total_allocated": 23550000,
+    "platform_development_committed": 0,
+    "compliance_committed": 250000,
+    "committed_total": 29820000,
+    "unallocated": -825692.79
+   }
+  },
+  "ma_draft": [
+   {
+    "id": 3,
+    "acquisition_target": 2
+   }
+  ],
+  "ma_context": {
+   "markets": [
+    {
+     "id": 1,
+     "code": "NA",
+     "name": "北美",
+     "is_home_market": false,
+     "entry_status": "active",
+     "entry_mode": "从母国市场出口",
+     "allows_manufacturing": true,
+     "contract_mfg_available": true,
+     "plant_build_cost": 20000000,
+     "plant_build_rounds": 2,
+     "plant_capacity_units": 50000
+    },
+    {
+     "id": 2,
+     "code": "APAC",
+     "name": "东亚",
+     "is_home_market": false,
+     "entry_status": "active",
+     "entry_mode": "从母国市场出口",
+     "allows_manufacturing": true,
+     "contract_mfg_available": true,
+     "plant_build_cost": 12000000,
+     "plant_build_rounds": 2,
+     "plant_capacity_units": 80000
+    },
+    {
+     "id": 3,
+     "code": "EU",
+     "name": "西欧",
+     "is_home_market": true,
+     "entry_status": "active",
+     "entry_mode": "从母国市场出口",
+     "allows_manufacturing": false,
+     "contract_mfg_available": false,
+     "plant_build_cost": null,
+     "plant_build_rounds": 0,
+     "plant_capacity_units": null
+    },
+    {
+     "id": 4,
+     "code": "AFR",
+     "name": "非洲",
+     "is_home_market": false,
+     "entry_status": "not_entered",
+     "entry_mode": null,
+     "allows_manufacturing": true,
+     "contract_mfg_available": true,
+     "plant_build_cost": 8000000,
+     "plant_build_rounds": 3,
+     "plant_capacity_units": 40000
+    },
+    {
+     "id": 5,
+     "code": "LATAM",
+     "name": "南美",
+     "is_home_market": false,
+     "entry_status": "not_entered",
+     "entry_mode": null,
+     "allows_manufacturing": true,
+     "contract_mfg_available": true,
+     "plant_build_cost": 14000000,
+     "plant_build_rounds": 2,
+     "plant_capacity_units": 55000
+    }
+   ],
+   "partnerships": [
+    {
+     "id": 3,
+     "market_id": 3,
+     "market_name": "西欧",
+     "strategy_option_name": "分销合作伙伴",
+     "annual_investment": 2000000,
+     "status": "active"
+    },
+    {
+     "id": 7,
+     "market_id": 3,
+     "market_name": "西欧",
+     "strategy_option_name": "分销合作伙伴",
+     "annual_investment": 2000000,
+     "status": "active"
+    }
+   ],
+   "plants": [],
+   "entry_modes": [
+    {
+     "id": 1,
+     "name": "从母国市场出口",
+     "code": "export",
+     "capital_requirement": 500000,
+     "setup_rounds": 0,
+     "control_level": 3,
+     "risk_level": 2
+    },
+    {
+     "id": 2,
+     "name": "技术许可协议",
+     "code": "licensing",
+     "capital_requirement": 1000000,
+     "setup_rounds": 1,
+     "control_level": 2,
+     "risk_level": 3
+    },
+    {
+     "id": 3,
+     "name": "与本地合作伙伴成立合资企业",
+     "code": "joint_venture",
+     "capital_requirement": 8000000,
+     "setup_rounds": 1,
+     "control_level": 5,
+     "risk_level": 5
+    },
+    {
+     "id": 4,
+     "name": "收购本地公司",
+     "code": "acquisition",
+     "capital_requirement": 20000000,
+     "setup_rounds": 0,
+     "control_level": 9,
+     "risk_level": 7
+    },
+    {
+     "id": 5,
+     "name": "建立全资子公司",
+     "code": "subsidiary",
+     "capital_requirement": 15000000,
+     "setup_rounds": 2,
+     "control_level": 10,
+     "risk_level": 6
+    }
+   ],
+   "strategy_options": [
+    {
+     "id": 1,
+     "name": "分销合作伙伴",
+     "category": "Partnerships",
+     "code": "distribution_partner",
+     "capital_cost_base": 2000000,
+     "is_reversible": true
+    },
+    {
+     "id": 2,
+     "name": "技术合作伙伴",
+     "category": "Partnerships",
+     "code": "technology_partner",
+     "capital_cost_base": 3000000,
+     "is_reversible": true
+    },
+    {
+     "id": 3,
+     "name": "政府与监管顾问",
+     "category": "Government Relations",
+     "code": "govt_advisor",
+     "capital_cost_base": 1000000,
+     "is_reversible": true
+    },
+    {
+     "id": 4,
+     "name": "本地品牌大使",
+     "category": "Brand",
+     "code": "brand_ambassador",
+     "capital_cost_base": 1500000,
+     "is_reversible": true
+    },
+    {
+     "id": 5,
+     "name": "顶点商业联盟",
+     "category": "Partnerships",
+     "code": "local_strategic_na",
+     "capital_cost_base": 3000000,
+     "is_reversible": true
+    },
+    {
+     "id": 6,
+     "name": "中关村创新集团",
+     "category": "Partnerships",
+     "code": "local_strategic_apac",
+     "capital_cost_base": 2500000,
+     "is_reversible": true
+    },
+    {
+     "id": 7,
+     "name": "欧洲商务伙伴",
+     "category": "Partnerships",
+     "code": "local_strategic_eu",
+     "capital_cost_base": 3500000,
+     "is_reversible": true
+    },
+    {
+     "id": 8,
+     "name": "阿尔沃拉达商业集团",
+     "category": "Partnerships",
+     "code": "local_strategic_latam",
+     "capital_cost_base": 2000000,
+     "is_reversible": true
+    },
+    {
+     "id": 9,
+     "name": "萨赫勒门户企业",
+     "category": "Partnerships",
+     "code": "local_strategic_afr",
+     "capital_cost_base": 1500000,
+     "is_reversible": true
+    }
+   ],
+   "financial": {
+    "cash_on_hand": 28994307.21,
+    "total_debt": 2000000,
+    "total_equity": 26994307.21,
+    "shares_outstanding": 1000000
+   },
+   "strategy_budget_remaining": 2000000,
+   "affordability": {
+    "cash_on_hand": 28994307.21,
+    "available_funds": 28994307.21,
+    "committed_total": 29820000,
+    "unallocated": -825692.79
+   },
+   "acquisition_targets": [
+    {
+     "id": 1,
+     "target_name": "先锋科技",
+     "description": "中型北美电子公司，拥有强大的零售分销和忠实的企业客户群。产品线老化但品牌声誉良好。",
+     "market_id": 1,
+     "market_name": "北美",
+     "base_acquisition_cost": 25000000,
+     "market_share_gained": 0.06,
+     "includes_plant": true,
+     "plant_capacity": 30000,
+     "includes_distribution": true,
+     "distribution_reach_bonus": 0.12,
+     "talent_bonus": {
+      "commercial": 0.5,
+      "operations": 0.3
+     },
+     "min_round_available": 3,
+     "requires_market_presence": true,
+     "integration_rounds": 2,
+     "integration_cost_per_round": 2000000,
+     "available": true,
+     "locked_reasons": [],
+     "acquired_by_team": null,
+     "acquired_by_self": false
+    },
+    {
+     "id": 2,
+     "target_name": "亚洲电子制造",
+     "description": "东亚区域制造商，拥有现代化生产设施和成熟的供应商关系。品牌弱但运营效率出色。",
+     "market_id": 2,
+     "market_name": "东亚",
+     "base_acquisition_cost": 18000000,
+     "market_share_gained": 0.05,
+     "includes_plant": true,
+     "plant_capacity": 50000,
+     "includes_distribution": false,
+     "distribution_reach_bonus": 0,
+     "talent_bonus": {
+      "operations": 1
+     },
+     "min_round_available": 2,
+     "requires_market_presence": true,
+     "integration_rounds": 2,
+     "integration_cost_per_round": 1500000,
+     "available": true,
+     "locked_reasons": [],
+     "acquired_by_team": null,
+     "acquired_by_self": false
+    },
+    {
+     "id": 3,
+     "target_name": "欧洲绿色设备",
+     "description": "小型欧洲可持续电子品牌。强大的ESG资质，高端定位，完善的合规基础设施。",
+     "market_id": 3,
+     "market_name": "西欧",
+     "base_acquisition_cost": 30000000,
+     "market_share_gained": 0.04,
+     "includes_plant": false,
+     "plant_capacity": 0,
+     "includes_distribution": true,
+     "distribution_reach_bonus": 0.08,
+     "talent_bonus": {
+      "commercial": 0.3
+     },
+     "min_round_available": 3,
+     "requires_market_presence": true,
+     "integration_rounds": 2,
+     "integration_cost_per_round": 2500000,
+     "available": true,
+     "locked_reasons": [],
+     "acquired_by_team": null,
+     "acquired_by_self": false
+    },
+    {
+     "id": 4,
+     "target_name": "非洲互联移动",
+     "description": "快速增长的非洲移动设备组装商，分销网络覆盖西非和东非。与电信运营商和移动支付平台关系密切。",
+     "market_id": 4,
+     "market_name": "非洲",
+     "base_acquisition_cost": 10000000,
+     "market_share_gained": 0.05,
+     "includes_plant": true,
+     "plant_capacity": 25000,
+     "includes_distribution": true,
+     "distribution_reach_bonus": 0.15,
+     "talent_bonus": {
+      "commercial": 0.4,
+      "operations": 0.5
+     },
+     "min_round_available": 2,
+     "requires_market_presence": true,
+     "integration_rounds": 3,
+     "integration_cost_per_round": 1000000,
+     "available": false,
+     "locked_reasons": [
+      "需要先进入非洲",
+      "已被Aurora Devices收购"
+     ],
+     "acquired_by_team": "Aurora Devices",
+     "acquired_by_self": false
+    },
+    {
+     "id": 5,
+     "target_name": "南方科技电子",
+     "description": "巴西电子制造商，在玛瑙斯自由贸易区运营。享有税收优惠，拥有成熟的零售合作和在巴西及阿根廷的强大品牌知名度。",
+     "market_id": 5,
+     "market_name": "南美",
+     "base_acquisition_cost": 20000000,
+     "market_share_gained": 0.055,
+     "includes_plant": true,
+     "plant_capacity": 35000,
+     "includes_distribution": true,
+     "distribution_reach_bonus": 0.1,
+     "talent_bonus": {
+      "commercial": 0.3,
+      "operations": 0.6
+     },
+     "min_round_available": 3,
+     "requires_market_presence": true,
+     "integration_rounds": 2,
+     "integration_cost_per_round": 1800000,
+     "available": false,
+     "locked_reasons": [
+      "需要先进入南美"
+     ],
+     "acquired_by_team": null,
+     "acquired_by_self": false
+    }
+   ],
+   "team_acquisitions": []
+  },
+  "ma_buttons": [
+   "",
+   "EN",
+   "",
+   "",
+   "收购 — $25.0M",
+   "撤 回",
+   "收购 — $30.0M"
+  ],
+  "ma_text": "GS\nGLOBALSTRAT\n消费电子模拟\nR3 / 10草稿开放\n预算 $23.6M/$5.0M 超出预算\n研发 $0/$0\n营销 $300K/$300K\n战略 $23.3M/$23.3M\nEN\nJB\nJonas Berg · Photon Labs\n实时\n🚫\n北美运营限制生效 — 销售受限\n│\n⚠️\n东亚政府警告 — 改善合规性否则面临限制\n│\n💱\nCNY 兑 EUR 贬值 2.0% — 东亚收入兑换减少\n│\n💱\nNGN 兑 EUR 贬值 3.0% — 非洲收入兑换减少\n│\n📉\n北美增长放缓 — 需求降温\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n西欧关税上调 — 进口成本上升\n│\n📉\n非洲增长放缓 — 需求降温\n│\n📉\n南美增长放缓 — 需求降温\n│\n📈\n南美关税上调 — 进口成本上升\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n⚠️\n东亚政府警告 — 改善合规性否则面临限制\n│\n💱\nCNY 兑 EUR 贬值 2.0% — 东亚收入兑换减少\n│\n💱\nNGN 兑 EUR 贬值 3.0% — 非洲收入兑换减少\n│\n📉\n北美增长放缓 — 需求降温\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n西欧关税上调 — 进口成本上升\n│\n📉\n非洲增长放缓 — 需求降温\n│\n📉\n南美增长放缓 — 需求降温\n│\n📈\n南美关税上调 — 进口成本上升\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\nPHOTON LABS\n西欧\n回合 3\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n研发、营销与战略支出合计 $23.6M，比经营预算 $5.0M 高出 $18.6M\n公司战略\n回合 3 · 人才、并购、ESG和组织\n进行中\n人才与团队\n并购\nESG\n组织架构\n并购\n可用收购目标\n先锋科技北美\n$25.0M\n中型北美电子公司，拥有强大的零售分销和忠实的企业客户群。产品线老化但品牌声誉良好。\n获得：\n6% 市场份额（整合后）\n工厂: 30,000 单位产能（立即生效）\n分销覆盖: +12%\nCommercial 人才: +0.5 等级\nOperations 人才: +0.3 等级\n整合：\n2 回合完成整合\n$2.0M/回合 整合成本\n总成本: $29.0M\n先收购的团队获得独家权限。需要 $25.0M；未分配资金 $-826K\n收购 — $25.0M\n亚洲电子制造东亚\n$18.0M\n东亚区域制造商，拥有现代化生产设施和成熟的供应商关系。品牌弱但运营效率出色。\n获得：\n5% 市场份额（整合后）\n工厂: 50,000 单位产能（立即生效）\nOperations 人才: +1 等级\n整合：\n2 回合完成整合\n$1.5M/回合 整合成本\n总成本: $21.0M\n已排队收购\n撤 回\n欧洲绿色设备西欧\n$30.0M\n小型欧洲可持续电子品牌。强大的ESG资质，高端定位，完善的合规基础设施。\n获得：\n4% 市场份额（整合后）\n分销覆盖: +8%\nCommercial 人才: +0.3 等级\n整合：\n2 回合完成整合\n$2.5M/回合 整合成本\n总成本: $35.0M\n先收购的团队获得独家权限。需要 $30.0M；未分配资金 $-826K\n收购 — $30.0M\n非洲互联移动非洲被Aurora Devices收购\n$10.0M\n快速增长的非洲移动设备组装商，分销网络覆盖西非和东非。与电信运营商和移动支付平台关系密切。\n获得：\n5% 市场份额（整合后）\n工厂: 25,000 单位产能（立即生效）\n分销覆盖: +15%\nCommercial 人才: +0.4 等级\nOperations 人才: +0.5 等级\n整合：\n3 回合完成整合\n$1.0M/回合 整合成本\n总成本: $13.0M\n要求：需要先进入非洲已被Aurora Devices收购\n南方科技电子南美\n$20.0M\n巴西电子制造商，在玛瑙斯自由贸易区运营。享有税收优惠，拥有成熟的零售合作和在巴西及阿根廷的强大品牌知名度。\n获得：\n6% 市场份额（整合后）\n工厂: 35,000 单位产能（立即生效）\n分销覆盖: +10%\nCommercial 人才: +0.3 等级\nOperations 人才: +0.6 等级\n整合：\n2 回合完成整合\n$1.8M/回合 整合成本\n总成本: $23.6M\n要求：需要先进入南美",
+  "after": {
+   "acquisitions": [],
+   "can_lock": false,
+   "lock_blockers": [
+    "承诺支出 $29,820,000.00 超过可用资金 $28,994,307.21——现金 $28,994,307.21 加上本回合已决定的融资 $0.00。需要削减 $825,692.79：目前可削减的最大承诺是战略预算，金额 $23,250,000.00。增加债务或股权融资也可达到同样效果。"
+   ],
+   "budget_summary": {
+    "rd_allocated": 0,
+    "research_allocated": 0,
+    "research_spent": 0,
+    "rd_spent": 0,
+    "marketing_allocated": 300000,
+    "marketing_spent": 300000,
+    "strategy_allocated": 23250000,
+    "strategy_spent": 5250000,
+    "talent_committed": 4020000,
+    "plant_committed": 0,
+    "total_available": 28994307.21,
+    "cash_on_hand": 28994307.21,
+    "financing_decided": 0,
+    "total_allocated": 23550000,
+    "platform_development_committed": 0,
+    "compliance_committed": 250000,
+    "committed_total": 29820000,
+    "unallocated": -825692.79
+   }
+  }
+ },
+ "summary": {
+  "passed": 6,
+  "failed": 2,
+  "observed": 0,
+  "screens": 3,
+  "screens_with_leaks": 3,
+  "console_errors": 8,
+  "api_calls": 53,
+  "api_refused": 0
+ }
+}

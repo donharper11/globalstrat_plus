@@ -1,0 +1,389 @@
+{
+ "round": 3,
+ "checks": [
+  {
+   "name": "exactly four teams are evaluated",
+   "outcome": "pass",
+   "detail": "4"
+  },
+  {
+   "name": "Aurora Devices student reasoning is available",
+   "outcome": "pass",
+   "detail": "{'status': 200, 'available': True}"
+  },
+  {
+   "name": "Aurora Devices student response contains qualitative dimensions",
+   "outcome": "pass",
+   "detail": "['trajectory', 'coherence_ext', 'responsiveness']"
+  },
+  {
+   "name": "Aurora Devices student response exposes no numeric score fields",
+   "outcome": "pass",
+   "detail": "[]"
+  },
+  {
+   "name": "Aurora Devices reasoning history carries every completed round",
+   "outcome": "pass",
+   "detail": "[1, 2, 3]"
+  },
+  {
+   "name": "Helix Digital student reasoning is available",
+   "outcome": "pass",
+   "detail": "{'status': 200, 'available': True}"
+  },
+  {
+   "name": "Helix Digital student response contains qualitative dimensions",
+   "outcome": "pass",
+   "detail": "['trajectory', 'coherence_ext', 'responsiveness']"
+  },
+  {
+   "name": "Helix Digital student response exposes no numeric score fields",
+   "outcome": "pass",
+   "detail": "[]"
+  },
+  {
+   "name": "Helix Digital reasoning history carries every completed round",
+   "outcome": "pass",
+   "detail": "[1, 2, 3]"
+  },
+  {
+   "name": "Photon Labs student reasoning is available",
+   "outcome": "pass",
+   "detail": "{'status': 200, 'available': True}"
+  },
+  {
+   "name": "Photon Labs student response contains qualitative dimensions",
+   "outcome": "pass",
+   "detail": "['trajectory', 'coherence_ext', 'responsiveness']"
+  },
+  {
+   "name": "Photon Labs student response exposes no numeric score fields",
+   "outcome": "pass",
+   "detail": "[]"
+  },
+  {
+   "name": "Photon Labs reasoning history carries every completed round",
+   "outcome": "pass",
+   "detail": "[1, 2, 3]"
+  },
+  {
+   "name": "Prism Tech student reasoning is available",
+   "outcome": "pass",
+   "detail": "{'status': 200, 'available': True}"
+  },
+  {
+   "name": "Prism Tech student response contains qualitative dimensions",
+   "outcome": "pass",
+   "detail": "['trajectory', 'coherence_ext', 'responsiveness']"
+  },
+  {
+   "name": "Prism Tech student response exposes no numeric score fields",
+   "outcome": "pass",
+   "detail": "[]"
+  },
+  {
+   "name": "Prism Tech reasoning history carries every completed round",
+   "outcome": "pass",
+   "detail": "[1, 2, 3]"
+  },
+  {
+   "name": "instructor reasoning lists all four teams",
+   "outcome": "pass",
+   "detail": "{'status': 200, 'teams': 4}"
+  },
+  {
+   "name": "instructor comparison lists all four teams",
+   "outcome": "pass",
+   "detail": "{'status': 200, 'teams': 4}"
+  }
+ ],
+ "students": {
+  "Aurora Devices": {
+   "language": "en",
+   "status": 200,
+   "body": {
+    "available": true,
+    "round_number": 3,
+    "overall_band": "developing",
+    "trajectory_pattern": "reactive",
+    "dimensions": {
+     "trajectory": {
+      "band": "needs_attention",
+      "feedback": "Your strategy appears inconsistent across rounds. Frequent reversals may confuse stakeholders.",
+      "pattern": "reactive"
+     },
+     "coherence_ext": {
+      "band": "developing",
+      "feedback": "Some of your decisions may not fully align with each other. Review how your R&D, market, and financial choices work together."
+     },
+     "responsiveness": {
+      "band": "needs_attention",
+      "feedback": "Important market events appear to have been overlooked. Review active events before making decisions."
+     }
+    }
+   },
+   "history": {
+    "history": [
+     {
+      "round_number": 1,
+      "overall_band": "developing",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 2,
+      "overall_band": "developing",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 3,
+      "overall_band": "developing",
+      "trajectory_pattern": "reactive"
+     }
+    ]
+   }
+  },
+  "Helix Digital": {
+   "language": "en",
+   "status": 200,
+   "body": {
+    "available": true,
+    "round_number": 3,
+    "overall_band": "needs_attention",
+    "trajectory_pattern": "reactive",
+    "dimensions": {
+     "trajectory": {
+      "band": "needs_attention",
+      "feedback": "Your strategy appears inconsistent across rounds. Frequent reversals may confuse stakeholders.",
+      "pattern": "reactive"
+     },
+     "coherence_ext": {
+      "band": "developing",
+      "feedback": "Some of your decisions may not fully align with each other. Review how your R&D, market, and financial choices work together."
+     },
+     "responsiveness": {
+      "band": "needs_attention",
+      "feedback": "Important market events appear to have been overlooked. Review active events before making decisions."
+     }
+    }
+   },
+   "history": {
+    "history": [
+     {
+      "round_number": 1,
+      "overall_band": "developing",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 2,
+      "overall_band": "developing",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 3,
+      "overall_band": "needs_attention",
+      "trajectory_pattern": "reactive"
+     }
+    ]
+   }
+  },
+  "Photon Labs": {
+   "language": "zh-CN",
+   "status": 200,
+   "body": {
+    "available": true,
+    "round_number": 3,
+    "overall_band": "developing",
+    "trajectory_pattern": "reactive",
+    "dimensions": {
+     "trajectory": {
+      "band": "developing",
+      "feedback": "Your strategic direction has shifted somewhat between rounds. Consider whether changes are deliberate.",
+      "pattern": "reactive"
+     },
+     "coherence_ext": {
+      "band": "developing",
+      "feedback": "Some of your decisions may not fully align with each other. Review how your R&D, market, and financial choices work together."
+     },
+     "responsiveness": {
+      "band": "needs_attention",
+      "feedback": "Important market events appear to have been overlooked. Review active events before making decisions."
+     }
+    }
+   },
+   "history": {
+    "history": [
+     {
+      "round_number": 1,
+      "overall_band": "needs_attention",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 2,
+      "overall_band": "developing",
+      "trajectory_pattern": "conservative"
+     },
+     {
+      "round_number": 3,
+      "overall_band": "developing",
+      "trajectory_pattern": "reactive"
+     }
+    ]
+   }
+  },
+  "Prism Tech": {
+   "language": "en",
+   "status": 200,
+   "body": {
+    "available": true,
+    "round_number": 3,
+    "overall_band": "developing",
+    "trajectory_pattern": "reactive",
+    "dimensions": {
+     "trajectory": {
+      "band": "developing",
+      "feedback": "Your strategic direction has shifted somewhat between rounds. Consider whether changes are deliberate.",
+      "pattern": "reactive"
+     },
+     "coherence_ext": {
+      "band": "developing",
+      "feedback": "Some of your decisions may not fully align with each other. Review how your R&D, market, and financial choices work together."
+     },
+     "responsiveness": {
+      "band": "needs_attention",
+      "feedback": "Important market events appear to have been overlooked. Review active events before making decisions."
+     }
+    }
+   },
+   "history": {
+    "history": [
+     {
+      "round_number": 1,
+      "overall_band": "developing",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 2,
+      "overall_band": "developing",
+      "trajectory_pattern": "consistent"
+     },
+     {
+      "round_number": 3,
+      "overall_band": "developing",
+      "trajectory_pattern": "reactive"
+     }
+    ]
+   }
+  }
+ },
+ "instructor_all_teams": {
+  "game_id": 1,
+  "round_number": 3,
+  "teams": [
+   {
+    "team_id": 1,
+    "team_name": "Aurora Devices",
+    "round_number": 3,
+    "reasoning_score_deterministic": 41.37,
+    "reasoning_score_full": null,
+    "coherence_ext_score": 58.0,
+    "responsiveness_score": 25.38,
+    "trajectory_score": 35.2,
+    "justification_score": null,
+    "trajectory_pattern": "reactive",
+    "overall_band": "developing",
+    "phase2_completed": false
+   },
+   {
+    "team_id": 2,
+    "team_name": "Helix Digital",
+    "round_number": 3,
+    "reasoning_score_deterministic": 38.75,
+    "reasoning_score_full": null,
+    "coherence_ext_score": 48.0,
+    "responsiveness_score": 28.36,
+    "trajectory_score": 36.82,
+    "justification_score": null,
+    "trajectory_pattern": "reactive",
+    "overall_band": "needs_attention",
+    "phase2_completed": false
+   },
+   {
+    "team_id": 3,
+    "team_name": "Photon Labs",
+    "round_number": 3,
+    "reasoning_score_deterministic": 43.11,
+    "reasoning_score_full": null,
+    "coherence_ext_score": 58.0,
+    "responsiveness_score": 17.62,
+    "trajectory_score": 48.74,
+    "justification_score": null,
+    "trajectory_pattern": "reactive",
+    "overall_band": "developing",
+    "phase2_completed": false
+   },
+   {
+    "team_id": 4,
+    "team_name": "Prism Tech",
+    "round_number": 3,
+    "reasoning_score_deterministic": 44.47,
+    "reasoning_score_full": null,
+    "coherence_ext_score": 58.0,
+    "responsiveness_score": 26.84,
+    "trajectory_score": 44.06,
+    "justification_score": null,
+    "trajectory_pattern": "reactive",
+    "overall_band": "developing",
+    "phase2_completed": false
+   }
+  ]
+ },
+ "instructor_comparison": {
+  "round_number": 3,
+  "comparison": [
+   {
+    "team_id": 1,
+    "team_name": "Aurora Devices",
+    "dimensions": {
+     "coherence_ext": 58.0,
+     "responsiveness": 25.38,
+     "trajectory": 35.2,
+     "justification": null
+    },
+    "overall": 41.37
+   },
+   {
+    "team_id": 2,
+    "team_name": "Helix Digital",
+    "dimensions": {
+     "coherence_ext": 48.0,
+     "responsiveness": 28.36,
+     "trajectory": 36.82,
+     "justification": null
+    },
+    "overall": 38.75
+   },
+   {
+    "team_id": 3,
+    "team_name": "Photon Labs",
+    "dimensions": {
+     "coherence_ext": 58.0,
+     "responsiveness": 17.62,
+     "trajectory": 48.74,
+     "justification": null
+    },
+    "overall": 43.11
+   },
+   {
+    "team_id": 4,
+    "team_name": "Prism Tech",
+    "dimensions": {
+     "coherence_ext": 58.0,
+     "responsiveness": 26.84,
+     "trajectory": 44.06,
+     "justification": null
+    },
+    "overall": 44.47
+   }
+  ]
+ }
+}

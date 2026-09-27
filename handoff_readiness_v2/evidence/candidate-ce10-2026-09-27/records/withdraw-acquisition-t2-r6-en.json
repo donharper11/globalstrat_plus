@@ -1,0 +1,206 @@
+{
+ "driver": "withdraw-acquisition-t2-r6",
+ "language": "en",
+ "base": "http://127.0.0.1:38183",
+ "started": "2026-09-27T13:13:30",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2607 = en"
+  },
+  {
+   "name": "s2607 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "an acquisition is queued while Summary refuses affordability",
+   "outcome": "observed",
+   "detail": "{\"acquisitions\": [], \"can_lock\": true, \"lock_blockers\": [], \"budget_summary\": {\"rd_allocated\": 0, \"research_allocated\": 0, \"research_spent\": 0, \"rd_spent\": 0, \"marketing_allocated\": 600000, \"marketing_spent\": 600000, \"strategy_allocated\": 6750000, \"strategy_spent\": 6750000, \"talent_committed\": 3530000, \"plant_committed\": 0, \"total_available\": 11130000, \"cash_on_hand\": -11761774.79, \"financing_decided\": 22891774.79, \"total_allocated\": 7350000, \"platform_development_committed\": 0, \"compliance_committed\": 250000, \"committed_total\": 11130000, \"unallocated\": 0}}"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:13:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:13:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:13:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:13:31"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "13:13:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/dashboard/scorecard/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/rounds/6/reasoning/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/reasoning/history/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/investor-relations/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/6/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/5/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/results/round/5/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/competitors/round/5/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/6/summary/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/6/summary/",
+   "status": 200,
+   "at": "13:13:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "13:13:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/6/",
+   "status": 200,
+   "at": "13:13:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/6/summary/",
+   "status": 200,
+   "at": "13:13:41"
+  }
+ ],
+ "refused": [],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "s2607",
+   "asked": "en",
+   "server": "en"
+  },
+  "before": {
+   "acquisitions": [],
+   "can_lock": true,
+   "lock_blockers": [],
+   "budget_summary": {
+    "rd_allocated": 0,
+    "research_allocated": 0,
+    "research_spent": 0,
+    "rd_spent": 0,
+    "marketing_allocated": 600000,
+    "marketing_spent": 600000,
+    "strategy_allocated": 6750000,
+    "strategy_spent": 6750000,
+    "talent_committed": 3530000,
+    "plant_committed": 0,
+    "total_available": 11130000,
+    "cash_on_hand": -11761774.79,
+    "financing_decided": 22891774.79,
+    "total_allocated": 7350000,
+    "platform_development_committed": 0,
+    "compliance_committed": 250000,
+    "committed_total": 11130000,
+    "unallocated": 0
+   }
+  }
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 0,
+  "observed": 1,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 19,
+  "api_refused": 0
+ }
+}

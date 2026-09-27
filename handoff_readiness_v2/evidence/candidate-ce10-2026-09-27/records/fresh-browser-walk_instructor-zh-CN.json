@@ -1,0 +1,346 @@
+{
+ "driver": "fresh-browser-walk_instructor",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:38183",
+ "started": "2026-09-27T14:38:44",
+ "steps": [
+  {
+   "name": "walk_instructor signs in on a clean browser",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the server still holds this person's language",
+   "outcome": "pass",
+   "detail": "server says 'zh-CN', expected 'zh-CN'"
+  },
+  {
+   "name": "the interface is in the language the server holds",
+   "outcome": "fail",
+   "detail": "2 Chinese characters on the screen; localStorage.gs_language is 'en', and nothing in the product ever sets it from the language the server holds"
+  },
+  {
+   "name": "the prose the server renders comes back in that language too",
+   "outcome": "fail",
+   "detail": "0 Chinese characters in the served payload"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:38:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:38:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:38:53"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:38:53"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "14:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "14:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "14:38:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "14:39:00"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-fresh-walk_instructor-01-login",
+   "url": "/instructor/login",
+   "screenshot": "v4-fresh-walk_instructor-01-login-zh-CN.jpg",
+   "note": "a browser that has never been used, nothing in localStorage",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nUsername\nPassword\nSign In\nStudents",
+     "n": 1
+    },
+    {
+     "english": "use the student login",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "v4-fresh-walk_instructor-03-interface",
+   "url": "/instructor",
+   "screenshot": "v4-fresh-walk_instructor-03-interface-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nWalkthrough Instructor",
+     "n": 1
+    },
+    {
+     "english": "Switch Game\nLog Out\nCourses",
+     "n": 1
+    },
+    {
+     "english": "Sections\nGame Control\nStudents",
+     "n": 1
+    },
+    {
+     "english": "Logins\nGrading",
+     "n": 1
+    },
+    {
+     "english": "Export\nTeam Overview\nOperator Log\nSupply Chain\nReasoning Analysis\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach",
+     "n": 1
+    },
+    {
+     "english": "Courses\nNew Course",
+     "n": 1
+    },
+    {
+     "english": "Competition Candidate Certification\nDelete",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v4-fresh-walk_instructor-01-login",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nUsername\nPassword\nSign In\nStudents",
+     "n": 1
+    },
+    {
+     "english": "use the student login",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-fresh-walk_instructor-03-interface",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nWalkthrough Instructor",
+     "n": 1
+    },
+    {
+     "english": "Switch Game\nLog Out\nCourses",
+     "n": 1
+    },
+    {
+     "english": "Sections\nGame Control\nStudents",
+     "n": 1
+    },
+    {
+     "english": "Logins\nGrading",
+     "n": 1
+    },
+    {
+     "english": "Export\nTeam Overview\nOperator Log\nSupply Chain\nReasoning Analysis\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach",
+     "n": 1
+    },
+    {
+     "english": "Courses\nNew Course",
+     "n": 1
+    },
+    {
+     "english": "Competition Candidate Certification\nDelete",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "gs_language_before_sign_in": null,
+  "server_language": "zh-CN",
+  "gs_language_after_sign_in": "en",
+  "interface_text": "GLOBALSTRAT — Instructor Portal\nWalkthrough Instructor\n中文\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nOperator Log\nSupply Chain\nReasoning Analysis\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n99+\nMy Courses\nNew Course:\nCreate\nCE10-CANDIDATE\nCompetition Candidate Certification\nDelete",
+  "served_prose_sample": "{\"alerts\": [{\"id\": 140, \"team_id\": 4, \"team_name\": \"Prism Tech\", \"round_number\": 10, \"alert_type\": \"strategic\", \"severity\": \"concern\", \"title\": \"Prism Tech has not invested in R&D for 11 consecutive rounds\", \"detail\": \"Their technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.\", \"teaching_note\": \"Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.\", \"acknowledged\": false, \"created_at\": \"2026-09-27T14:27:56.710093+00:00\"}, {\"id\": 139, \"team_id\": 4, \"team_name\": \"Prism Tech\", \"round_number\": 10, \"alert_type\": \"financial\", \"severity\": \"concern\", \"title\": \"Prism Tech has no positive equity\""
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 2,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 2,
+  "console_errors": 4,
+  "api_calls": 16,
+  "api_refused": 0
+ }
+}
