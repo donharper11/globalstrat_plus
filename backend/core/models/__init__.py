@@ -117,3 +117,4 @@ from .audit_integrity import (AuditChainEntry, AuthorizationRefusalEvent,
                               GameDeletionAuditEvent, SensitiveReadEvent)
 from .narrative_jobs import NarrativeJob
 from .preferences import UserLanguagePreference
+from .cc_reasoning import RoundResultReasoningAnalysis, CompetitionReasoningAggregate

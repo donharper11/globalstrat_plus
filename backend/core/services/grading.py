@@ -242,6 +242,48 @@ def _extract_communication_quality(team_id, instance_id):
     return min(Decimal(str(round(avg, 2))), HUNDRED)
 
 
+
+def _extract_reasoning_quality(team_id, instance_id):
+    """Strategic reasoning quality score.
+
+    Competition mode: returns reasoning_score_deterministic (R40-safe).
+    Classroom mode: returns reasoning_score_full if Phase 2 complete,
+    otherwise falls back to deterministic.
+    """
+    from core.models.cc_reasoning import RoundResultReasoningAnalysis
+
+    game_id = _resolve_game_id(instance_id)
+    if not game_id:
+        return ZERO
+
+    analyses = RoundResultReasoningAnalysis.objects.filter(
+        game_id=game_id, team_id=team_id,
+    )
+    if not analyses.exists():
+        return ZERO
+
+    # Check if game is in competition mode
+    from core.models.core import Game
+    game = Game.objects.filter(id=game_id).first()
+    competition_mode = (
+        game and hasattr(game, "competition_mode") and game.competition_mode
+    )
+
+    if competition_mode:
+        # R40-safe: use only deterministic score
+        agg = analyses.aggregate(avg=Avg("reasoning_score_deterministic"))
+    else:
+        # Classroom: prefer full score if available, else deterministic
+        full_analyses = analyses.filter(phase2_completed=True)
+        if full_analyses.exists():
+            agg = full_analyses.aggregate(avg=Avg("reasoning_score_full"))
+        else:
+            agg = analyses.aggregate(avg=Avg("reasoning_score_deterministic"))
+
+    if agg["avg"] is None:
+        return ZERO
+    return min(Decimal(str(round(float(agg["avg"]), 2))), HUNDRED)
+
 # Registry of component extractors
 COMPONENT_EXTRACTORS = {
     'performance_index': _extract_performance_index,
@@ -250,6 +292,7 @@ COMPONENT_EXTRACTORS = {
     'stakeholder_satisfaction': _extract_stakeholder_satisfaction,
     'financial_stewardship': _extract_financial_stewardship,
     'total_score': _extract_total_score,
+    'reasoning_quality': _extract_reasoning_quality,
     # Legacy extractors (return ZERO — kept for backward compat with old rubrics)
     'esg_environmental': _extract_esg_environmental,
     'esg_social': _extract_esg_social,
@@ -268,6 +311,7 @@ COMPONENT_LABELS = {
     'stakeholder_satisfaction': 'Segment Satisfaction',
     'financial_stewardship': 'Financial Stewardship',
     'total_score': 'Total Performance Score',
+    'reasoning_quality': 'Strategic Reasoning Quality',
     # Legacy labels
     'esg_environmental': 'ESG — Environmental',
     'esg_social': 'ESG — Social',

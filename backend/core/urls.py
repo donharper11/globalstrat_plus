@@ -50,6 +50,12 @@ from core.views.cc32c_views import TaxStructureContextView
 from core.views.cc32d_views import AllianceStateView
 from core.views.cc32f_views import GovernmentRelationsView
 from core.views.cc32h_views import RoundStatusView
+from core.views.reasoning_views import (
+    StudentReasoningView, StudentReasoningHistoryView,
+    InstructorReasoningAllTeamsView, InstructorReasoningTeamView,
+    InstructorReasoningComparisonView, InstructorReasoningAggregateView,
+    InstructorReasoningExportView,
+)
 from core.views.team_config import (
     InstructorTeamConfigView, InstructorRandomizeHomeMarketsView,
 )
@@ -426,6 +432,24 @@ urlpatterns = [
     # ---- CC-32H: Round Processing Status ----
     path('games/<int:game_id>/round-status/',
          RoundStatusView.as_view(), name='round-status'),
+
+    # ---- Strategic Reasoning Evaluator ----
+    # Student endpoints (bands only, no numeric scores)
+    path("games/<int:game_id>/teams/<int:team_id>/rounds/<int:round_number>/reasoning/",
+         StudentReasoningView.as_view(), name="student-reasoning"),
+    path("games/<int:game_id>/teams/<int:team_id>/reasoning/history/",
+         StudentReasoningHistoryView.as_view(), name="student-reasoning-history"),
+    # Instructor/Judge endpoints (full numeric view)
+    path("instructor/games/<int:game_id>/reasoning/",
+         InstructorReasoningAllTeamsView.as_view(), name="instructor-reasoning-all"),
+    path("instructor/games/<int:game_id>/teams/<int:team_id>/reasoning/",
+         InstructorReasoningTeamView.as_view(), name="instructor-reasoning-team"),
+    path("instructor/games/<int:game_id>/reasoning/comparison/",
+         InstructorReasoningComparisonView.as_view(), name="instructor-reasoning-comparison"),
+    path("instructor/games/<int:game_id>/reasoning/aggregate/",
+         InstructorReasoningAggregateView.as_view(), name="instructor-reasoning-aggregate"),
+    path("instructor/games/<int:game_id>/reasoning/export/",
+         InstructorReasoningExportView.as_view(), name="instructor-reasoning-export"),
 
     # ---- CC-33: Scenario Selection & Game Creation ----
     path('scenarios/', ScenarioListView.as_view(), name='scenario-list'),

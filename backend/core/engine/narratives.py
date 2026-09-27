@@ -44,6 +44,14 @@ COACHING_SYSTEM_PROMPT = (
     "from their round results. Be constructive and specific. 3-5 sentences."
 )
 
+
+REASONING_FEEDBACK_SYSTEM_PROMPT = (
+    "You are a strategy tutor writing developmental feedback for a student team "
+    "in a global business simulation. Based on their reasoning analysis scores "
+    "and decision patterns, write 2-3 short paragraphs of scaffolding feedback. "
+    "Focus on specific, actionable improvements. Use encouraging but honest tone. "
+    "Do NOT include numeric scores — use qualitative language only."
+)
 OUTLOOK_SYSTEM_PROMPT = (
     "You are a market analyst enhancing a market outlook brief with "
     "insights from strategic research. Add 2-3 sentences of strategic "
@@ -294,6 +302,9 @@ def generate_round_narratives(game, round_obj):
     calls.extend(_build_sc_event_calls(game, round_obj))
     calls.extend(_build_compliance_calls(game, round_obj))
 
+    # 6. Reasoning justification analysis + student feedback
+    calls.extend(_build_reasoning_calls(game, round_number, teams))
+
     if not calls:
         logger.info("Phase 2: no LLM calls needed")
         return
@@ -308,6 +319,7 @@ def generate_round_narratives(game, round_obj):
     _store_outlook_results(game, round_number, results, outlook_calls)
     _store_sc_event_narratives(game, round_obj, results)      # CC-17
     _store_compliance_narratives(game, round_obj, results)    # CC-17
+    _store_reasoning_results(game, round_number, teams, results)
 
     successful = sum(1 for r in results.values() if r.get('success'))
     logger.info(f"Phase 2: {successful}/{len(calls)} LLM calls succeeded")
@@ -1024,3 +1036,158 @@ def _generate_all_fallbacks(game, round_obj):
     # CC-17: SC + compliance narratives fall back to factual templates (no LLM).
     _store_sc_event_narratives(game, round_obj, {})
     _store_compliance_narratives(game, round_obj, {})
+
+    # Reasoning: apply template fallbacks when LLM unavailable
+    _store_reasoning_results(game, round_obj.round_number, teams, {})
+
+
+# ---------------------------------------------------------------------------
+# Reasoning: justification + student feedback (Phase 2)
+# ---------------------------------------------------------------------------
+
+def _build_reasoning_calls(game, round_number, teams):
+    """Build LLM calls for reasoning justification analysis + student feedback."""
+    from core.models.decisions import DecisionSubmission
+    from core.models.cc32_models import TeamCommunication
+    from core.models.cc_reasoning import RoundResultReasoningAnalysis
+    from core.engine.reasoning_justification import (
+        JustificationInput, build_justification_prompt,
+    )
+
+    calls = []
+    for team in teams:
+        # Justification analysis
+        sub = DecisionSubmission.objects.filter(
+            team=team, round__round_number=round_number, round__game=game,
+        ).first()
+
+        team_notes = sub.team_notes or "" if sub else ""
+        communications = list(
+            TeamCommunication.objects.filter(
+                game=game, team=team, round__round_number=round_number,
+                is_draft=False,
+            ).values_list("content", flat=True)
+        )
+
+        if team_notes or communications:
+            language = get_team_language(team)
+            jinp = JustificationInput(
+                team_notes=team_notes,
+                communications=list(communications),
+                language=language,
+            )
+            prompt_data = build_justification_prompt(jinp)
+            calls.append({
+                "id": f"reasoning_justification_{team.id}",
+                "prompt": prompt_data["prompt"],
+                "system_prompt": prompt_data["system_prompt"],
+                "max_tokens": 800,
+            })
+
+        # Student feedback narrative
+        analysis = RoundResultReasoningAnalysis.objects.filter(
+            game=game, team=team, round_number=round_number,
+        ).first()
+        if analysis:
+            language = get_team_language(team)
+            feedback_prompt = _build_reasoning_feedback_prompt(analysis, language)
+            calls.append({
+                "id": f"reasoning_feedback_{team.id}",
+                "prompt": feedback_prompt,
+                "system_prompt": REASONING_FEEDBACK_SYSTEM_PROMPT,
+                "max_tokens": 500,
+            })
+
+    return calls
+
+
+def _build_reasoning_feedback_prompt(analysis, language):
+    """Build student feedback prompt from reasoning analysis."""
+    parts = [
+        f"Team strategic reasoning analysis for Round {analysis.round_number}:",
+        f"- Strategic Coherence: {analysis.overall_band} band",
+        f"- Trajectory Pattern: {analysis.trajectory_pattern}",
+    ]
+    breakdown = analysis.coherence_ext_breakdown or {}
+    if "signals" in breakdown:
+        for s in breakdown["signals"][:3]:
+            parts.append(f"  Signal: {s}")
+    parts.append(
+        "\nWrite 2-3 paragraphs of developmental feedback. "
+        "Focus on what they can improve next round. "
+        "Do not include any numeric scores."
+    )
+    if language == "zh-CN":
+        parts.append("\n请完全使用简体中文回复。使用专业的商业术语。")
+    return "\n".join(parts)
+
+
+def _store_reasoning_results(game, round_number, teams, results):
+    """Store reasoning justification scores and student feedback narratives."""
+    from core.models.cc_reasoning import RoundResultReasoningAnalysis
+    from core.engine.reasoning_justification import (
+        parse_justification_response, template_fallback_score,
+    )
+    from core.engine.reasoning_aggregator import FULL_WEIGHTS
+
+    for team in teams:
+        analysis = RoundResultReasoningAnalysis.objects.filter(
+            game=game, team=team, round_number=round_number,
+        ).first()
+        if not analysis:
+            continue
+
+        updated_fields = []
+
+        # Justification score
+        just_result = results.get(f"reasoning_justification_{team.id}", {})
+        if just_result.get("success") and just_result.get("content"):
+            parsed = parse_justification_response(just_result["content"])
+        else:
+            # Template fallback
+            sub = None
+            try:
+                from core.models.decisions import DecisionSubmission
+                sub = DecisionSubmission.objects.filter(
+                    team=team, round__round_number=round_number, round__game=game,
+                ).first()
+            except Exception:
+                pass
+            notes = sub.team_notes or "" if sub else ""
+            parsed = template_fallback_score(notes)
+
+        analysis.justification_score = Decimal(str(round(parsed.score, 2)))
+        analysis.justification_breakdown = {
+            "depth": parsed.depth_label,
+            "evidence": parsed.evidence,
+            "feedback": parsed.feedback,
+        }
+        updated_fields.extend(["justification_score", "justification_breakdown"])
+
+        # Compute full score
+        full = (
+            float(analysis.coherence_ext_score) * FULL_WEIGHTS["coherence_ext"]
+            + float(analysis.responsiveness_score) * FULL_WEIGHTS["responsiveness"]
+            + float(analysis.trajectory_score) * FULL_WEIGHTS["trajectory"]
+            + parsed.score * FULL_WEIGHTS["justification"]
+        )
+        analysis.reasoning_score_full = Decimal(str(round(full, 2)))
+        updated_fields.append("reasoning_score_full")
+
+        # Student feedback narrative
+        fb_result = results.get(f"reasoning_feedback_{team.id}", {})
+        if fb_result.get("success") and fb_result.get("content"):
+            student_fb = analysis.feedback_student or {}
+            student_fb["narrative"] = fb_result["content"]
+            analysis.feedback_student = student_fb
+            updated_fields.append("feedback_student")
+
+        analysis.phase2_completed = True
+        updated_fields.append("phase2_completed")
+
+        try:
+            analysis.save(update_fields=updated_fields)
+        except Exception as e:
+            logger.error(
+                f"Failed to store reasoning Phase 2 for {team.name}: {e}"
+            )

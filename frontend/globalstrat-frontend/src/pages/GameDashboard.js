@@ -26,6 +26,10 @@ import InvestorProfilePopover, { InvestorNameLink, InvestorSummaryCard } from '.
 import OnboardingModal from '../components/OnboardingModal';
 import { getInvestorRelations } from '../api/results';
 import SupplyChainPanel from '../components/sc/SupplyChainPanel';
+import ReasoningOverviewCard from '../components/reasoning/ReasoningOverviewCard';
+import ReasoningDimensionFeedback from '../components/reasoning/ReasoningDimensionFeedback';
+import ReasoningTrendChart from '../components/reasoning/ReasoningTrendChart';
+import { getStudentReasoning, getStudentReasoningHistory } from '../api/reasoning';
 
 const { Title, Text } = Typography;
 
@@ -140,6 +144,8 @@ const GameDashboard = () => {
   const [investorData, setInvestorData] = useState(null);
   const [activeFund, setActiveFund] = useState(null);
   const [showInvestorSummary, setShowInvestorSummary] = useState(false);
+  const [reasoningData, setReasoningData] = useState(null);
+  const [reasoningHistory, setReasoningHistory] = useState([]);
 
   const base = gameId && teamId ? `/games/${gameId}/teams/${teamId}` : '';
   const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
@@ -188,6 +194,12 @@ const GameDashboard = () => {
       .catch(() => {});
     getInvestorRelations(gameId, teamId, {})
       .then(res => setInvestorData(res.data))
+      .catch(() => {});
+    getStudentReasoning(gameId, teamId, currentRound)
+      .then(res => setReasoningData(res.data))
+      .catch(() => {});
+    getStudentReasoningHistory(gameId, teamId)
+      .then(res => setReasoningHistory(res.data?.history || []))
       .catch(() => {});
   }, [gameId, teamId, currentRound]);
 
@@ -1068,12 +1080,46 @@ const GameDashboard = () => {
     );
   };
 
+
+  // --- Tab: Strategic Reasoning ---
+  const ReasoningTab = () => {
+    const { t } = useTranslation();
+    const lang = user?.language || 'en';
+    if (!reasoningData || !reasoningData.available) {
+      return <Empty description={t('dashboard.no_reasoning_data', 'Strategic reasoning analysis will be available after round processing.')} />;
+    }
+    return (
+      <div>
+        <Row gutter={16}>
+          <Col xs={24} md={8}>
+            <ReasoningOverviewCard data={reasoningData} language={lang} />
+          </Col>
+          <Col xs={24} md={16}>
+            <Card size="small" title={t('dashboard.reasoning_trend', 'Reasoning Trend')}>
+              <ReasoningTrendChart history={reasoningHistory} height={80} />
+            </Card>
+          </Col>
+        </Row>
+        <div style={{ marginTop: 16 }}>
+          <Card size="small" title={t('dashboard.reasoning_feedback', 'Dimension Feedback')}>
+            <ReasoningDimensionFeedback
+              dimensions={reasoningData.dimensions}
+              narrative={reasoningData.narrative}
+              language={lang}
+            />
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
   const tabItems = [
     { key: 'scorecard', label: t('dashboard.balanced_scorecard'), children: <ScorecardOverview /> },
     { key: 'performance', label: t('dashboard.performance'), children: <PerformanceTab /> },
     { key: 'markets', label: t('dashboard.market_results'), children: <MarketTab /> },
     { key: 'events', label: t('dashboard.events_intelligence'), children: <EventsTab /> },
     { key: 'strategic', label: t('dashboard.strategic_scorecard'), children: <StrategicScorecardTab /> },
+    { key: 'reasoning', label: t('dashboard.strategic_reasoning', 'Strategic Reasoning'), children: <ReasoningTab /> },
     { key: 'supply_chain', label: t('dashboard.supply_chain_tab'), children: <SupplyChainPanel /> },
     ...(briefing ? [{ key: 'briefing', label: t('dashboard.strategic_briefing_tab', { round: briefing.round_number }), children: <StrategicBriefingTab /> }] : []),
   ];

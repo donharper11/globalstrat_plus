@@ -931,6 +931,16 @@ def _run_phase_1(game_id):
     from core.engine.rd_processing import apply_end_of_round_retirements
     apply_end_of_round_retirements(context)
 
+    # Step 18: Strategic Reasoning Analysis (deterministic dims 1-3)
+    try:
+        from core.engine.reasoning_pipeline import run_reasoning_analysis
+        reasoning_count = run_reasoning_analysis(game, current_round, teams, context)
+        context.log.append(f"Reasoning analysis: {reasoning_count} teams evaluated")
+    except Exception as e:
+        # Reasoning analysis is non-critical — log and continue
+        logger.warning("Reasoning analysis failed (non-critical): %s", e, exc_info=True)
+        context.log.append(f"Reasoning analysis skipped: {e}")
+
     # Step 17: Mark the round processed. Opening the next round is a separate,
     # instructor-triggered step — see advance_to_next_round().
     current_round_obj.status = 'processed'

@@ -47,6 +47,7 @@ import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
 import InstructorSCPanel from '../components/instructor/InstructorSCPanel';
+import ReasoningAnalysisTab from '../components/instructor/ReasoningAnalysisTab';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -2219,6 +2220,7 @@ const InstructorDashboard = () => {
       { key: 'teams', label: t('instructor.team_overview'), children: teamOverviewTab },
       { key: 'operator_log', label: t('instructor.operator_log'), children: <OperatorEventsPanel gameId={gameId} /> },
       { key: 'supply_chain', label: t('instructor.supply_chain'), children: <InstructorSCPanel gameId={gameId} /> },
+      { key: 'reasoning', label: t('instructor.reasoning_analysis', 'Reasoning Analysis'), children: <ReasoningAnalysisTab gameId={gameId} /> },
       { key: 'events', label: t('instructor.event_manager'), children: eventManagerTab },
       { key: 'briefings', label: t('instructor.briefings'), children: briefingsTab },
       { key: 'research', label: t('instructor.research_monitor'), children: researchMonitorTab },
