@@ -61,7 +61,8 @@ def _sha256(path):
 
 
 def _run_replay(output, *, teams, rounds, policy='baseline', name_seed=None,
-                home_markets='NA', scenario='consumer_electronics_2026'):
+                home_markets='NA', scenario='consumer_electronics_2026',
+                subject_team_index=None):
     command = [
         sys.executable, str(RUNTIME_REPLAY), '--output', str(output),
         '--teams', str(teams), '--rounds', str(rounds),
@@ -69,6 +70,8 @@ def _run_replay(output, *, teams, rounds, policy='baseline', name_seed=None,
         '--home-markets', home_markets,
         '--adaptive-production', '--policy', policy,
     ]
+    if subject_team_index is not None:
+        command += ['--subject-team-index', str(subject_team_index)]
     if name_seed is not None:
         command += ['--name-seed', str(name_seed)]
     result = subprocess.run(command, cwd=REPO, text=True, capture_output=True,
@@ -201,6 +204,9 @@ def main():
     parser.add_argument('--baseline-only', action='store_true',
                         help='run only the field-size baselines, no policy '
                              'variations (used for the R28 per-profile table)')
+    parser.add_argument('--subject-team-index', type=int, default=0,
+                        help='zero-based team whose decisions policy probes '
+                             'vary (default: 0)')
     parser.add_argument('--home-markets', default=None,
                         help='comma-separated home-market assignment for the '
                              'teams, in order (default: the selected scenario\'s '
@@ -231,6 +237,9 @@ def main():
     else:
         policies = POLICIES
     baseline_size = 8 if 8 in field_sizes else field_sizes[0]
+    if not 0 <= options.subject_team_index < baseline_size:
+        raise SystemExit('--subject-team-index must identify a team in the '
+                         f'{baseline_size}-team sensitivity field')
     commands = []
     field_runs = {}
     sensitivity_runs = {}
@@ -249,11 +258,12 @@ def main():
 
         baseline = field_runs[baseline_size]
         subject = {
-            'team_index': 0,
-            'baseline_name': baseline['teams'][0]['name'],
-            'starter_profile': baseline['teams'][0]['starter_profile'],
+            'team_index': options.subject_team_index,
+            'baseline_name': baseline['teams'][options.subject_team_index]['name'],
+            'starter_profile': baseline['teams'][options.subject_team_index]['starter_profile'],
         }
-        baseline_subject = _team_final(baseline, 0, options.rounds)
+        baseline_subject = _team_final(
+            baseline, options.subject_team_index, options.rounds)
         for policy in policies:
             print(f'running {baseline_size}-team {policy} ({options.rounds} rounds)',
                   flush=True)
@@ -261,12 +271,14 @@ def main():
                                            rounds=options.rounds, policy=policy,
                                            name_seed=options.name_seed,
                                            home_markets=home_markets,
-                                           scenario=options.scenario)
+                                           scenario=options.scenario,
+                                           subject_team_index=options.subject_team_index)
             _assert_integrity(payload, teams=baseline_size, rounds=options.rounds)
-            observed = _team_final(payload, 0, options.rounds)
+            observed = _team_final(
+                payload, options.subject_team_index, options.rounds)
             sensitivity_runs[policy] = {
                 'subject_team': subject,
-                'variation_name': payload['teams'][0]['name'],
+                'variation_name': payload['teams'][options.subject_team_index]['name'],
                 'final_subject_result': observed,
                 'delta_from_baseline': _delta(observed, baseline_subject),
                 'rounds': _by_round(payload, options.rounds),
@@ -290,7 +302,9 @@ def main():
             'baseline_policy': 'documented competent baseline with 10% adaptive production',
             'ai_diffusion_rule': 'Fix A only: AI take is recorded but is excluded from Bass N',
             'measurement_rule': 'No scenario, profile, market, AI, price, production, or scoring dial is retuned.',
-            'sensitivity_rule': 'One decision field changes for team 0; every other team retains baseline policy.',
+            'sensitivity_rule': (
+                'One decision field changes for the declared subject team; '
+                'every other team retains baseline policy.'),
             'name_seed': options.name_seed,
             'per_profile_rule': 'Every team plays the identical competent baseline policy, so a difference in outcome is attributable to the authored starting position and to nothing else.',
         },
