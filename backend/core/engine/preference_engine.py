@@ -38,12 +38,12 @@ DISTRIBUTION_BASE_REACH = {
 def distribution_reach(scenario, strategy, sales_team_count):
     """Return 0..1 distribution reach from channel choice and sales staff.
 
-    ``distribution_investment_cap`` is authored as the maximum *effective*
-    investment.  At $100k per representative and the shipped $5m cap, the
-    staffing curve must therefore remain live through 50 representatives (or
-    until the selected channel reaches full coverage).  The old ``0.1`` cap
-    stopped the curve at $0.5m / five representatives while costs continued
-    linearly, making every larger team strictly dominated.
+    Channel base reach is the theoretical reach shown in the participant
+    research report. ``distribution_investment_cap`` is authored as the
+    maximum *effective* investment needed to realise that potential. At
+    $100k per representative and the shipped $5m cap, reach therefore scales
+    through 50 representatives and then saturates. A selected channel with no
+    representatives has no realised distribution reach.
 
     This helper is shared by resolution and the participant research preview
     so the displayed reach is the reach the engine scores.
@@ -54,8 +54,8 @@ def distribution_reach(scenario, strategy, sales_team_count):
     rep_cost = float(get_config(
         scenario, 'sales_rep_cost_per_round', default=100000.0))
     effective_investment = max(float(sales_team_count or 0), 0.0) * rep_cost
-    investment_bonus = min(effective_investment / investment_cap, 1.0)
-    return clamp(base_reach + investment_bonus, 0.0, 1.0)
+    investment_utilization = min(effective_investment / investment_cap, 1.0)
+    return clamp(base_reach * investment_utilization, 0.0, 1.0)
 
 
 def calculate_fit_scores(context):
