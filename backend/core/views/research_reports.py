@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.services import research_catalogue
+from core.engine.preference_engine import distribution_reach
 from core.utils.participant_messages import (
     field_label, participant_message, participant_refusal,
     platform_display_name)
@@ -23,7 +24,7 @@ from core.views.decisions import CompetitionDecisionWriteMixin, IsTeamMember
 from core.models.core import Game, Team
 from core.models.scenario import (
     MarketDefinition, SegmentDefinition, SegmentPreference,
-    MarketConditionByRound, ScenarioConfig,
+    MarketConditionByRound,
 )
 from core.models.results import RoundResultAdoption
 from core.models.results_financials import (
@@ -601,23 +602,9 @@ class ResearchReportsView(APIView):
                 your_strategy = md.distribution_strategy
                 your_reps = md.sales_team_count
 
-                # Estimate reach
-                base_reach = BASE_REACH.get(your_strategy, 0.5)
-                try:
-                    rep_cost = float(ScenarioConfig.objects.get(
-                        scenario=scenario, config_key='sales_rep_cost_per_round',
-                    ).config_value)
-                except ScenarioConfig.DoesNotExist:
-                    rep_cost = 100000
-                effective_invest = your_reps * rep_cost
-                try:
-                    dist_cap = float(ScenarioConfig.objects.get(
-                        scenario=scenario, config_key='distribution_investment_cap',
-                    ).config_value)
-                except ScenarioConfig.DoesNotExist:
-                    dist_cap = 5000000
-                bonus = min(effective_invest / max(dist_cap, 1), 0.1)
-                your_reach = round(base_reach + bonus, 2)
+                your_reach = round(distribution_reach(
+                    scenario, your_strategy, your_reps,
+                ), 2)
 
         # Channel comparison: show theoretical reach if present, 0 if not in market
         reach_multiplier = 1.0 if is_present else 0.0
