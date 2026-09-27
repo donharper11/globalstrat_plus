@@ -9,8 +9,8 @@ HERE = pathlib.Path(__file__).resolve().parent
 
 
 class CorrectionOrderTests(unittest.TestCase):
-    def test_marketing_precedes_summary_affordability_and_lock(self):
-        script = (HERE / 'run_round.sh').read_text()
+    def assert_correction_order(self, script_name):
+        script = (HERE / script_name).read_text()
         prepare = script.index('lock_round.py "$1" "$2" "$ROUND" prepare')
         affordability = script.index('follow_the_blocker.py "$1" "$2" "$ROUND"')
         withdrawal = script.index('withdraw_acquisition.py "$1" "$2" "$ROUND"')
@@ -18,6 +18,26 @@ class CorrectionOrderTests(unittest.TestCase):
             'follow_the_blocker.py "$1" "$2" "$ROUND"', affordability + 1)
         final_lock = script.index(
             'lock_round.py "$1" "$2" "$ROUND" \\\n', refreshed_affordability)
+        self.assertLess(prepare, affordability)
+        self.assertLess(affordability, withdrawal)
+        self.assertLess(withdrawal, refreshed_affordability)
+        self.assertLess(refreshed_affordability, final_lock)
+
+    def test_marketing_precedes_summary_affordability_and_lock(self):
+        self.assert_correction_order('run_round.sh')
+
+    def test_final_round_uses_the_same_correction_order(self):
+        script = (HERE / 'run_last.sh').read_text().replace(' 10', ' "$ROUND"')
+        self.assert_correction_order_text(script)
+
+    def assert_correction_order_text(self, script):
+        prepare = script.index('lock_round.py "$1" "$2" "$ROUND" prepare')
+        affordability = script.index('follow_the_blocker.py "$1" "$2" "$ROUND"')
+        withdrawal = script.index('withdraw_acquisition.py "$1" "$2" "$ROUND"')
+        refreshed_affordability = script.index(
+            'follow_the_blocker.py "$1" "$2" "$ROUND"', affordability + 1)
+        final_lock = script.index(
+            'lock_round.py "$1" "$2" "$ROUND" >', refreshed_affordability)
         self.assertLess(prepare, affordability)
         self.assertLess(affordability, withdrawal)
         self.assertLess(withdrawal, refreshed_affordability)

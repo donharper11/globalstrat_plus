@@ -13,6 +13,9 @@ done
 for pid in "${pids[@]}"; do wait "$pid"; done
 for spec in "en 1" "en 2" "zh-CN 3" "en 4"; do
   set -- $spec
+  timeout 900 python3 lock_round.py "$1" "$2" 10 prepare > "runtime/prepare-t$2-r10.log" 2>&1
+  timeout 1200 python3 follow_the_blocker.py "$1" "$2" 10 > "runtime/blocker-before-withdraw-t$2-r10.log" 2>&1
+  timeout 900 python3 withdraw_acquisition.py "$1" "$2" 10 > "runtime/withdraw-t$2-r10.log" 2>&1
   timeout 1200 python3 follow_the_blocker.py "$1" "$2" 10 > "runtime/blocker-t$2-r10.log" 2>&1
   timeout 900 python3 lock_round.py "$1" "$2" 10 > "runtime/lock-t$2-r10.log" 2>&1
 done
