@@ -97,3 +97,30 @@ describe('W-CE-13: the supply-chain sections are not lock requirements', () => {
       .toBe(true);
   });
 });
+
+describe('queued-acquisition affordability guidance', () => {
+  const guidance = {
+    en: 'Committed spend of $29,820,000.00 exceeds available funds of $28,994,307.21 — $28,994,307.21 of cash plus $0.00 of financing decided this round. Cut $825,692.79: your largest reducible commitment is the queued acquisition (withdraw it in Corporate Strategy → M&A) at $18,000,000.00. A queued acquisition is not eligible for financing before it is fulfilled.',
+    zh: '承诺支出 $29,820,000.00 超过可用资金 $28,994,307.21——现金 $28,994,307.21 加上本回合已决定的融资 $0.00。需要削减 $825,692.79：目前可削减的最大承诺是已排队的收购（前往“公司战略”→“并购”撤回），金额 $18,000,000.00。排队中的收购在完成前不属于可融资用途。',
+  };
+
+  test.each(Object.values(guidance))(
+    'renders the bilingual server guidance verbatim: %s',
+    async (message) => {
+      getDecisionSummary.mockResolvedValue(summaryPayload({
+        lock_blockers: [message],
+        categories: {
+          ...summaryPayload().data.categories,
+          budget: { status: 'error', errors: [message], warnings: [] },
+        },
+      }));
+      render(<SummaryPage />);
+      await screen.findByText('summary_page.title');
+      expect(screen.getAllByText(message).length).toBeGreaterThan(0);
+      expect(screen.queryByText(/strategy budget at \$23,250,000\.00/))
+        .not.toBeInTheDocument();
+      expect(screen.queryByText(/战略预算，金额 \$23,250,000\.00/))
+        .not.toBeInTheDocument();
+    },
+  );
+});

@@ -50,7 +50,7 @@ from core.models.scenario import (AcquisitionTarget, EntryModeDefinition,
 from core.models.talent import DecisionTalent
 from core.models.team_state import (TeamMarketPresence, TeamPlatform,
                                     TeamProduct, TeamProductMarket)
-from core.services.funding_need import decision_outlays
+from core.services.funding_need import decision_outlays, funding_requirement
 from core.services.rd_costs import budget_assessment
 from core.tests.test_compliance_investment_charge import _Context
 from core.tests.test_operator_concurrency import build_minimal_game
@@ -140,8 +140,9 @@ class CommittedSpendBase(TestCase):
             format='json')
         self.assertEqual(response.status_code, 200, response.data)
 
-    def summary(self):
-        response = self.client.get(f'{self.url()}summary/')
+    def summary(self, language=None):
+        headers = ({'HTTP_ACCEPT_LANGUAGE': language} if language else {})
+        response = self.client.get(f'{self.url()}summary/', **headers)
         self.assertEqual(response.status_code, 200, response.data)
         return response.data
 
@@ -182,9 +183,48 @@ class AcquisitionAffordabilityTests(CommittedSpendBase):
         # line the team can cut. The figures are the same figures.
         self.assertIn('Committed spend of $1,500,000.00 exceeds available '
                       'funds of $1,000,000.00', str(lock.data))
-        self.assertIn('the strategy budget at $1,500,000.00', str(lock.data))
+        self.assertIn(
+            'the queued acquisition (withdraw it in Corporate Strategy '
+            '→ M&A) at $1,500,000.00', str(lock.data))
         self.submission.refresh_from_db()
         self.assertEqual(self.submission.status, 'draft')
+
+    def test_summary_names_the_withdrawal_path_in_both_languages(self):
+        self.declare(strategy=STRATEGY_BUDGET)
+        self.queue_acquisition()
+
+        assessment = budget_assessment(self.submission, self.team)
+        self.assertEqual(assessment['largest_reducible_line'],
+                         'committed_acquisitions')
+        self.assertEqual(D(assessment['largest_reducible_amount']),
+                         ACQUISITION)
+
+        english = self.summary(language='en')['lock_blockers'][0]
+        self.assertEqual(
+            english,
+            'Committed spend of $1,500,000.00 exceeds available funds of '
+            '$1,000,000.00 — $1,000,000.00 of cash plus $0.00 of financing '
+            'decided this round. Cut $500,000.00: your largest reducible '
+            'commitment is the queued acquisition (withdraw it in Corporate '
+            'Strategy → M&A) at $1,500,000.00. A queued acquisition is not '
+            'eligible for financing before it is fulfilled.')
+
+        chinese = self.summary(language='zh-CN')['lock_blockers'][0]
+        self.assertEqual(
+            chinese,
+            '承诺支出 $1,500,000.00 超过可用资金 $1,000,000.00——现金 '
+            '$1,000,000.00 加上本回合已决定的融资 $0.00。需要削减 '
+            '$500,000.00：目前可削减的最大承诺是已排队的收购（前往“公司战略”'
+            '→“并购”撤回），金额 $1,500,000.00。排队中的收购在完成前不属于可融资用途。')
+
+    def test_guidance_fix_does_not_make_acquisitions_equity_eligible(self):
+        self.declare(strategy=STRATEGY_BUDGET)
+        self.queue_acquisition()
+
+        funding = funding_requirement(
+            self.scenario, self.team, self.submission, current_round=1)
+        self.assertEqual(D(funding['maximum_new_equity']), D('0'))
+        self.assertNotIn('acquisitions', funding['outlays'])
 
     def test_the_summary_and_finance_context_show_the_same_figures(self):
         """V2-057: lock, Summary and Finance agree, before the lock."""

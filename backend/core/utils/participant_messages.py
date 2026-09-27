@@ -923,6 +923,10 @@ MESSAGES = {
         'en': 'Committed spend of {committed} exceeds available funds of {available} — {cash} of cash plus {financing} of financing decided this round. Cut {shortfall}: your largest reducible commitment is {line} at {amount}. Raising more debt or equity has the same effect.',
         'zh-CN': '承诺支出 {committed} 超过可用资金 {available}——现金 {cash} 加上本回合已决定的融资 {financing}。需要削减 {shortfall}：目前可削减的最大承诺是{line}，金额 {amount}。增加债务或股权融资也可达到同样效果。',
     },
+    'committed_spend_exceeds_available_funds_acquisition': {
+        'en': 'Committed spend of {committed} exceeds available funds of {available} — {cash} of cash plus {financing} of financing decided this round. Cut {shortfall}: your largest reducible commitment is {line} at {amount}. A queued acquisition is not eligible for financing before it is fulfilled.',
+        'zh-CN': '承诺支出 {committed} 超过可用资金 {available}——现金 {cash} 加上本回合已决定的融资 {financing}。需要削减 {shortfall}：目前可削减的最大承诺是{line}，金额 {amount}。排队中的收购在完成前不属于可融资用途。',
+    },
     'available_funds_short_with_nothing_to_cut': {
         'en': 'Available funds are {available} — {cash} of cash plus {financing} of financing decided this round — and this round still commits {committed}. Nothing committed can be cut any further, so raise at least {shortfall} of debt or equity on the Finance page before locking.',
         'zh-CN': '可用资金为 {available}——现金 {cash} 加上本回合已决定的融资 {financing}——本回合仍承诺支出 {committed}。已承诺的支出无法再削减，请在财务页面至少增加 {shortfall} 的债务或股权融资后再锁定。',
@@ -942,8 +946,11 @@ MESSAGES = {
     'committed_platform_development': {
         'en': 'platform development', 'zh-CN': '平台开发支出'},
     'committed_plant': {'en': 'plant construction', 'zh-CN': '工厂建设支出'},
-    'committed_acquisitions': {'en': 'the queued acquisition',
-                               'zh-CN': '已排队的收购'},
+    'committed_acquisitions': {
+        'en': ('the queued acquisition (withdraw it in Corporate Strategy '
+               '→ M&A)'),
+        'zh-CN': '已排队的收购（前往“公司战略”→“并购”撤回）',
+    },
     'committed_compliance': {'en': 'compliance investment',
                              'zh-CN': '合规投入'},
     'committed_talent': {'en': 'payroll and talent', 'zh-CN': '薪酬与人才支出'},

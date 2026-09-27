@@ -395,6 +395,10 @@ def committed_outlay(submission, team=None):
 REDUCIBLE_COMMITTED_LINES = (
     ('platform_development', 'committed_platform_development'),
     ('plant_capex', 'committed_plant'),
+    # A queued acquisition is still a draft and Corporate Strategy → M&A
+    # offers Withdraw. Name that real correction instead of folding its cost
+    # into "strategy budget", which cannot be reduced below the queued spend.
+    ('acquisitions', 'committed_acquisitions'),
     ('compliance_investment', 'committed_compliance'),
     ('talent', 'committed_talent'),
 )
@@ -422,9 +426,18 @@ def largest_reducible_line(lines, spent):
                   for name, key in REDUCIBLE_COMMITTED_LINES]
     candidates.append(('budget_research',
                        Decimal(lines.get('research_budget', ZERO) or ZERO)))
+    acquisitions = Decimal(lines.get('acquisitions', ZERO) or ZERO)
     for budget_name, spent_name, key in REDUCIBLE_BUDGET_LINES:
-        candidates.append((key, max(Decimal(lines.get(budget_name, ZERO) or ZERO),
-                                    Decimal(spent.get(spent_name, ZERO) or ZERO))))
+        declared = Decimal(lines.get(budget_name, ZERO) or ZERO)
+        actual = Decimal(spent.get(spent_name, ZERO) or ZERO)
+        if spent_name == 'strategy' and acquisitions > ZERO:
+            # Acquisitions appear in strategy spend for accounting, but their
+            # draft is withdrawn on the M&A screen. Remove that authored cost
+            # from the generic budget candidate so the guidance cannot call
+            # an $18M queued acquisition a $23.25M "strategy budget".
+            declared = max(declared - acquisitions, ZERO)
+            actual = max(actual - acquisitions, ZERO)
+        candidates.append((key, max(declared, actual)))
     best = None
     for key, amount in candidates:
         if amount <= ZERO:
@@ -551,8 +564,14 @@ def describe_budget_problems(assessment, language='en'):
             shortfall=f'${shortfall:,.2f}',
         )
         if assessment.get('largest_reducible_line'):
+            message_key = (
+                'committed_spend_exceeds_available_funds_acquisition'
+                if assessment['largest_reducible_line'] ==
+                'committed_acquisitions'
+                else 'committed_spend_exceeds_available_funds'
+            )
             problems.append(participant_message(
-                'committed_spend_exceeds_available_funds', language=language,
+                message_key, language=language,
                 line=participant_message(
                     assessment['largest_reducible_line'], language=language),
                 amount=f'${Decimal(assessment["largest_reducible_amount"]):,.2f}',
