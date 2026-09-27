@@ -9,6 +9,7 @@ refuses equity for an acquisition that has not yet been fulfilled.
 """
 import json
 import pathlib
+import re
 import sys
 
 from walk import (BASE, Recorder, api, modal_text, sign_in, sync_playwright,
@@ -105,7 +106,12 @@ def main():
             for i in range(page.locator('button').count())
         ])
         R.observe('ma_text', visible_text(page)[-5000:])
-        withdraw = page.locator('button', has_text=T('corporate_strategy.withdraw'))
+        # Ant Design inserts a visual space between two Chinese characters
+        # ("撤 回"), so match the localized word with optional whitespace.
+        withdraw_label = T('corporate_strategy.withdraw')
+        withdraw_pattern = re.compile(
+            r'\s*'.join(map(re.escape, withdraw_label)), re.I)
+        withdraw = page.locator('button', has_text=withdraw_pattern)
         offered = withdraw.count() and withdraw.first.is_enabled()
         R.step('the queued acquisition offers a Withdraw action',
                'pass' if offered else 'fail',
