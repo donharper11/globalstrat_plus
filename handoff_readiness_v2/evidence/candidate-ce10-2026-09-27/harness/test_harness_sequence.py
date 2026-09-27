@@ -110,5 +110,15 @@ class AntdTabTraversalTests(unittest.TestCase):
             driver)
 
 
+class InstructorGradingContractTests(unittest.TestCase):
+    def test_saved_override_uses_documented_team_grades_route(self):
+        driver = (HERE / 'instructor_setup.py').read_text()
+        self.assertIn("'/api/team-grades/?instance_id=%s'", driver)
+        self.assertNotIn("'/api/grades/?instance_id=%s'", driver)
+        self.assertIn("str(row.get('override_score')) == '88.00'", driver)
+        self.assertIn('saved override is readable from the documented team-grades route',
+                      driver)
+
+
 if __name__ == '__main__':
     unittest.main()

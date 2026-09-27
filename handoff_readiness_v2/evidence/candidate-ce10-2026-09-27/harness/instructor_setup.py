@@ -474,8 +474,20 @@ def control(page, GID, resumed):
             R.observe('override_toast', toast(page, 15))
             page.wait_for_timeout(4000)
             R.screen(page, 'i29c-grading-after-override')
-            gr = api(page, 'GET', '/api/grades/?instance_id=%s' % GID)
-            R.observe('grades_after_override', json.dumps(gr['body'])[:900] if gr else None)
+            gr = api(page, 'GET', '/api/team-grades/?instance_id=%s' % GID)
+            grade_rows = gr['body'] if gr and isinstance(gr.get('body'), list) else []
+            saved_override = next(
+                (row for row in grade_rows
+                 if str(row.get('override_score')) == '88.00'
+                 and row.get('instructor_comments') ==
+                 'Walkthrough 2: override driven from the console.'),
+                None,
+            )
+            R.observe('grades_after_override', json.dumps(grade_rows)[:900])
+            R.step('saved override is readable from the documented team-grades route',
+                   'pass' if gr and gr.get('status') == 200 and saved_override else 'fail',
+                   'status=%s matched=%s' %
+                   (gr.get('status') if gr else None, bool(saved_override)))
             R.step('grading override saved from the console',
                    'pass' if (R.record['observed'].get('override_toast') or '') and 'fail' not in (R.record['observed'].get('override_toast') or '').lower() else 'fail',
                    R.record['observed'].get('override_toast'))
