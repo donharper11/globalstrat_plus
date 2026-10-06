@@ -3491,3 +3491,28 @@ Record: `completion/WALKTHROUGH_CE_4_2026-09-23.md`; evidence `evidence/walkthro
 
 **Not drivable, recorded:** the plant-collision refusal and acquisition withdrawal (every target was bought by round 7); a refused marketing row naming its product (no undecided rows left); round 8 without a database intervention; rounds 5/6/8/9 without an operator reopening them; Phase 2 from a real model; an analyst answer; marking a heat from the console.
 
+
+## Gate 3 combined-load and Gate 1 candidate work, 2026-10-06 — V2-138..V2-140
+
+Candidate line `e55b6193` → `9646faf9` → `f3ebfd4f`. Reports:
+`COMBINED_RESOLUTION_LOAD_REPORT_2026-10-06.md`; evidence
+`evidence/load-failure/combined-resolution-2026-10-06/` and
+`evidence/gate1-2026-10-06-e171/`, both with `SHA256SUMS`.
+
+| ID | Sev | What it was | Status |
+|---|---|---|---|
+| V2-138 | P1 (evidence integrity) | The combined-load profile's database-connection ceiling was **unmeasured in the one condition it exists to measure**, and the gate accepted it. The sampler forked `psql` per reading; at smoke size that worked (63 samples), and at field size every fork+exec after the first exceeded its 10 s timeout while `except Exception: pass` hid all of them. The first field run of 2026-10-06 reported a connection **peak of 1 from a single pre-load sample**. The gate only asked whether the sample list was non-empty and whether its maximum exceeded 80 — both true of one sample of value 1. | **Repaired** (`9646faf9`). One long-lived psycopg2 connection, attempted/failed counts recorded for the caller, and admissibility tested before threshold: at least half the ticks the sampling window implies, never fewer than 20. The certified runs carry 897 and 958 samples with 0 sampler failures and a real peak of 33 and 32 of 100. Deadlock and lock-wait figures were never affected — cumulative `pg_stat_database` counters, read after the run. |
+| V2-139 | P1 (evidence integrity) | A combined-load **latency breach was attributed to the product without being measured there**. The profile gated on client-observed latency alone, so the 3× margin result read as a product limit. `gunicorn.conf.py` already ends `access_log_format` with `%(D)s` — the server's own service time — and it was simply never read. | **Repaired** (`f3ebfd4f`). The profile parses it, publishes `server_side_latency`, and adjudicates: client p95 more than 2.5× server p95 makes the run **inadmissible** for latency, naming the ratio and the remedy; otherwise client thresholds apply unchanged; a server-side p95 over threshold is always a breach. **An inadmissible run is not a pass** — the margin result was deliberately *not* rewritten into one on the server's kinder numbers. Verified at smoke, where the two agree to 0.1% (715.4 ms against 714.7 ms). |
+| V2-140 | P1 | **Which game an instructor's console opens on was PostgreSQL's choice, not the product's.** `_user_payload` resolved `game_id` from `Section.objects.filter(course__in=courses, is_active=True).first()` and served `payload['courses']` from a bare `values()` — compiled SQL confirmed as `LIMIT 1` and an unordered scan, with no `Meta.ordering` on either model. With two active courses the answer is heap order, which an unrelated `UPDATE` to a row rewrites. **A competition reaches this directly:** Gate 4 runs a rehearsal heat and Gate 5 creates the real one, so one account owning both can land on the wrong game, or follow an edit to a different one. | **Repaired** (this candidate). Both queries ordered by primary key, lowest id stated as the winner. `SimulationInstance.objects.filter(section_id=...).first()` was checked and **is not the same defect** — `section` is a `OneToOneField`, so that query returns at most one row. |
+
+**How far V2-140 is demonstrated, stated rather than overclaimed.** The
+regression test is red on the unfixed code for the **course list**: rewriting
+only the lower-id course row inverts what the console is served,
+`[8, 7] != [7, 8]`. PostgreSQL writes an updated row's new version after the
+old one and a sequential scan returns physical order, so touching one row of
+two is what exposes it — rewriting both in id order preserves scan order and
+proves nothing, and an earlier version of this test did exactly that and
+passed against the defect. **The section selection did not invert in this
+fixture** and is fixed on the compiled SQL rather than on a failing
+assertion: it reaches the rows through an `IN (SELECT …)` subquery, whose
+plan did not reorder at two rows. Same pattern, same repair, weaker proof.

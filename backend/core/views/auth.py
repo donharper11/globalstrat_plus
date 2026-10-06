@@ -119,9 +119,18 @@ def _user_payload(user, enrollment=None):
         role = (user.role or '').lower()
         if role in ('instructor', 'admin'):
             # Instructor gets their courses + resolve game_id from first active section
+            # Ordered deliberately. Both of these were `LIMIT 1` and a bare
+            # `values()` over no ORDER BY, so an instructor who owns more
+            # than one active course had the game their console opens on
+            # chosen by PostgreSQL's heap order -- which an unrelated UPDATE
+            # to a `section` row can change under them. A competition runs a
+            # rehearsal heat and the real heat side by side, so this is
+            # reachable, and landing on the wrong game is the kind of silent
+            # wrong answer R17 ruled against. Lowest id wins, stated here
+            # rather than left to the storage layer.
             courses = Course.objects.filter(
                 instructor_id=user.user_id, is_active=True
-            )
+            ).order_by('course_id')
             if courses.exists():
                 payload['courses'] = list(courses.values(
                     'course_id', 'course_code', 'course_name',
@@ -130,7 +139,7 @@ def _user_payload(user, enrollment=None):
                 # Find game_id from first section's simulation instance
                 first_section = Section.objects.filter(
                     course__in=courses, is_active=True
-                ).first()
+                ).order_by('course_id', 'section_id').first()
                 if first_section:
                     instance = SimulationInstance.objects.filter(
                         section_id=first_section.section_id

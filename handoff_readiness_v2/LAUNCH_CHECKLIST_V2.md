@@ -203,6 +203,17 @@
       running in the suite and in CI). **Stage 4 was explicitly not performed**,
       so CRV2-12 is not complete — only its code half is. Six named checks are
       listed in `completion/GSP-CRV2-12-completion.md` §7. Added 2026-09-12.
+- [ ] The rehearsal heat and the competition heat do not share an instructor
+      account, or the competition heat is the lowest-id active course that
+      account owns. Added 2026-10-06 (V2-140). The console resolves the game
+      it opens on from the instructor's first active section, and that query
+      was unordered until this candidate: an instructor owning both heats
+      could be shown the wrong one, and an unrelated edit could move them.
+      The ordering is now stated — lowest id wins — which makes the outcome
+      predictable rather than safe: the rehearsal course is created first, so
+      a shared account lands on the **rehearsal**. Operational control, not a
+      code change: give the rehearsal its own instructor account, or
+      deactivate the rehearsal course before the event.
 - [ ] `reset_simulation` withheld from the competition deployment. Its unscoped
       `TRUNCATE`/`UPDATE` statements are unchanged and reach every instance on
       the host, swallowing failures (V2-076). The routed form was deleted under
