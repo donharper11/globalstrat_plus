@@ -16,6 +16,7 @@ Business refusals are not errors. A save after the deadline, or against a
 locked submission, is the product working; those are counted and reported
 separately from transport failures and 5xx.
 """
+import contextlib
 import json
 import multiprocessing
 import os
@@ -254,25 +255,54 @@ def sample_checkpoints(stop, samples, interval=2.0):
         stop.wait(interval)
 
 
-def sample_database(database, stop, samples, interval=2.0):
+def sample_database(database, stop, samples, interval=2.0, attempts=None):
     """Peak database use has to be sampled while the load runs.
 
     The first field run read connection count after the profile finished and
     recorded 1, which is an idle stack rather than a peak. This samples on a
     thread until told to stop.
+
+    It samples over one long-lived connection rather than forking `psql` per
+    sample. The forking sampler worked at smoke size and then collapsed at
+    field size: with 8 shard processes, 96 client threads and 32 gunicorn
+    workers competing for the host, every fork+exec after the first exceeded
+    its 10-second timeout, the `except Exception` swallowed each one, and the
+    combined field profile recorded a `peak` of 1 from a single pre-load
+    sample. A silent single sample is worse than none, because the threshold
+    gate accepted it. `attempts` is written for the caller so an
+    under-sampled run can be refused instead of read as a measurement.
     """
-    import subprocess
-    query = ("SELECT count(*) FROM pg_stat_activity WHERE datname = "
-             f"'{database}'")
+    import psycopg2
+    counters = attempts if attempts is not None else {}
+    counters.setdefault('attempted', 0)
+    counters.setdefault('failed', 0)
+    query = ('SELECT count(*) FROM pg_stat_activity WHERE datname = %s')
+    connection = None
     while not stop.is_set():
+        counters['attempted'] += 1
         try:
-            out = _psql(query)
-            value = out.stdout.strip()
-            if value.isdigit():
-                samples.append(int(value))
+            if connection is None or connection.closed:
+                connection = psycopg2.connect(
+                    dbname='postgres',
+                    user=os.environ.get('DB_USER', 'globalstrat_test'),
+                    password=os.environ['DB_PASSWORD'],
+                    host=os.environ.get('DB_HOST', '127.0.0.1'),
+                    port=os.environ.get('DB_PORT', '5432'),
+                    connect_timeout=5)
+                connection.autocommit = True
+            with connection.cursor() as cursor:
+                cursor.execute(query, [database])
+                samples.append(int(cursor.fetchone()[0]))
         except Exception:
-            pass
+            counters['failed'] += 1
+            with contextlib.suppress(Exception):
+                if connection is not None:
+                    connection.close()
+            connection = None
         stop.wait(interval)
+    with contextlib.suppress(Exception):
+        if connection is not None:
+            connection.close()
 
 
 def _psql(query):

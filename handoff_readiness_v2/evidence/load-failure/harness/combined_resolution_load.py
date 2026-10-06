@@ -46,6 +46,10 @@ THRESHOLDS = {
     'deadlocks': 0,
     'lost_or_duplicated_or_unexplained_writes': 0,
 }
+# The sampler ticks every 0.25 s. Scheduling, and the psql call itself, will
+# always lose some ticks, so a run is admissible at a fraction of the ideal
+# count rather than at all of it -- but not at 1 sample in 215 seconds.
+MIN_SAMPLE_COVERAGE = 0.5
 
 
 def _actor(session, ready, start, deadline, final_ready, final_release,
@@ -298,11 +302,14 @@ def run(profile, think_time=(0.3, 0.8)):
                   for index in range(min(multiprocessing.cpu_count(), max(1, len(identities) // 8)))]
 
         connection_samples = []
+        sampler_attempts = {}
         stop = threading.Event()
-        sampler = threading.Thread(target=driver.sample_database,
-                                   args=(database, stop, connection_samples, 0.25),
-                                   daemon=True)
+        sampler = threading.Thread(
+            target=driver.sample_database,
+            args=(database, stop, connection_samples, 0.25, sampler_attempts),
+            daemon=True)
         sampler.start()
+        sampling_started = time.time()
         with multiprocessing.Pool(len(shards)) as pool:
             pending = pool.map_async(_shard, [
                 (base, shard, seeded['game_id'], seeded['round_number'], ready,
@@ -329,6 +336,7 @@ def run(profile, think_time=(0.3, 0.8)):
             if control.is_alive():
                 resolution['status'] = 'timed_out'
         stop.set()
+        sampling_elapsed = time.time() - sampling_started
         sampler.join(timeout=20)
         result = summarize(shards_result)
         ack, refused = result.pop('acknowledged_writes'), result.pop('refused_writes')
@@ -367,8 +375,21 @@ def run(profile, think_time=(0.3, 0.8)):
             breaches.append('interactive max threshold breach')
         if (result['error_rate_pct'] or 0) > THRESHOLDS['error_rate_pct']:
             breaches.append('transport/5xx error-rate threshold breach')
-        if not connection_samples or max(connection_samples) > THRESHOLDS['db_connections']:
-            breaches.append('database connection measurement/threshold breach')
+        # Admissibility before threshold. A sampler that starves returns a
+        # handful of pre-load readings, and `max(...) <= 80` is then true of a
+        # measurement that never saw the load: the combined field profile of
+        # 2026-10-06 passed this gate on ONE sample of value 1. Require that
+        # the sampler actually covered the window it claims to measure.
+        expected_samples = int(sampling_elapsed / 0.25 * MIN_SAMPLE_COVERAGE)
+        if len(connection_samples) < max(20, expected_samples):
+            breaches.append(
+                'database connection measurement inadmissible: '
+                f'{len(connection_samples)} samples over {sampling_elapsed:.0f}s '
+                f'({sampler_attempts.get("failed", 0)} of '
+                f'{sampler_attempts.get("attempted", 0)} attempts failed); '
+                f'at least {max(20, expected_samples)} required')
+        elif max(connection_samples) > THRESHOLDS['db_connections']:
+            breaches.append('database connection threshold breach')
         if db.get('deadlocks', 0) > THRESHOLDS['deadlocks']:
             breaches.append('database deadlock threshold breach')
         if not reconciliation.get('reconciles'):
@@ -380,7 +401,10 @@ def run(profile, think_time=(0.3, 0.8)):
             'db_connections': {'samples': len(connection_samples),
                                'peak': max(connection_samples) if connection_samples else None,
                                'mean': round(statistics.mean(connection_samples), 2)
-                               if connection_samples else None},
+                               if connection_samples else None,
+                               'sampling_window_s': round(sampling_elapsed, 1),
+                               'sampler_attempted': sampler_attempts.get('attempted'),
+                               'sampler_failed': sampler_attempts.get('failed')},
             'reconciliation': reconciliation, 'threshold_breaches': breaches,
             'passed': not breaches,
         })
