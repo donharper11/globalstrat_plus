@@ -71,6 +71,15 @@ def _build_enrollment_context(enrollment):
 
 def _user_payload(user, enrollment=None):
     """Build user payload with optional enrollment context."""
+    # An instructor normally has no Enrollment.  Preserve the language they
+    # chose in the console in the login/current-user payload so a fresh
+    # browser can restore its chrome and send localized API headers.  An
+    # active enrollment below remains authoritative for students.
+    from core.models.preferences import UserLanguagePreference
+    preference = UserLanguagePreference.objects.filter(
+        user_id=user.user_id,
+        language__in=('en', 'zh-CN'),
+    ).values_list('language', flat=True).first()
     payload = {
         'user_id': user.user_id,
         'username': user.username,
@@ -78,6 +87,7 @@ def _user_payload(user, enrollment=None):
         'role': user.role,
         'team_id': None,
         'team_name': None,
+        'language': preference or 'en',
     }
 
     # Find enrollments for this user

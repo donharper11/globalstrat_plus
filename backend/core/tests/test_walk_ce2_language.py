@@ -196,6 +196,18 @@ class InstructorLanguagePreferenceTests(WalkCEBase):
         read = self.client_for(self.instructor).get('/api/user/preferences/')
         self.assertEqual(read.data['language'], 'zh-CN')
 
+    def test_an_unenrolled_instructors_login_payload_restores_preference(self):
+        """A fresh console browser receives the language it last chose."""
+        from core.models.preferences import UserLanguagePreference
+        from core.views.auth import _user_payload
+
+        UserLanguagePreference.objects.create(
+            user_id=self.instructor.user_id, language='zh-CN')
+
+        payload = _user_payload(self.instructor)
+
+        self.assertEqual(payload['language'], 'zh-CN')
+
     def test_an_unsupported_language_is_still_refused_and_stores_nothing(self):
         from core.models.preferences import UserLanguagePreference
         response = self.client_for(self.instructor).put(
