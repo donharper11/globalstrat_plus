@@ -1,0 +1,321 @@
+{
+  "code_revision": "9646faf962a3ad5c7421061c97a5e97971afcb00",
+  "database": {
+    "commits": 9747,
+    "connections_now": 2,
+    "deadlocks": 0,
+    "max_connections": 100,
+    "rollbacks": 1,
+    "waiting_on_locks": 0
+  },
+  "db_connections": {
+    "mean": 1.22,
+    "peak": 7,
+    "sampler_attempted": 72,
+    "sampler_failed": 0,
+    "samples": 72,
+    "sampling_window_s": 17.9
+  },
+  "execution_class": "development smoke \u2014 not capacity evidence",
+  "instructor_resolution": {
+    "body": "{\"message\":\"CRV2 load fixture (24 firms): round 1 processed in 8.2s. Results are available; narratives are generating in the background.\",\"game_name\":\"CRV2 load fixture (24 firms)\",\"phase_1_time\":8.164400577545166,\"phase_2_status\":\"dispatched\",\"request_id\":\"combined-resolution-instructor\",\"round\":{\"round_id\":2,\"round_number\":1,\"status\":\"processed\",\"processing_status\":\"RESULTS_AVAILABLE\",\"narrative_generated\":false,\"narrative_error\":\"\",\"opened_at\":\"2026-10-06T10:53:21.915398+00:00\",\"deadline\":nul",
+    "login": {
+      "ms": 445.9,
+      "status": 200
+    },
+    "ms": 9962.0,
+    "status": 200
+  },
+  "passed": true,
+  "profile": "smoke",
+  "profile_spec": {
+    "duration": 5,
+    "release_evidence": false,
+    "resolution_window": 5,
+    "sessions": 8
+  },
+  "reconciliation": {
+    "acknowledged_writes": 40,
+    "audit_rows_with_request_id": 40,
+    "duplicated_write_count": 0,
+    "duplicated_writes": {},
+    "lost_write_count": 0,
+    "lost_writes": [],
+    "reconciles": true,
+    "refused_but_recorded": [],
+    "refused_but_recorded_count": 0,
+    "refused_writes": 19,
+    "unexplained_row_count": 0,
+    "unexplained_rows": []
+  },
+  "result": {
+    "business_refusals_4xx": 27,
+    "endpoint_classes": {
+      "lock": "POST decision lock",
+      "refresh": "GET decision summary",
+      "save": "PATCH budget decision"
+    },
+    "error_rate_pct": 0.0,
+    "interactive_requests": 135,
+    "latency_ms": {
+      "max": 769.7,
+      "p50": 85.5,
+      "p95": 715.4
+    },
+    "login_failures": [],
+    "phase_latency": {
+      "deadline-burst": {
+        "max_ms": 732.1,
+        "p50_ms": 97.5,
+        "p95_ms": 683.0,
+        "request_mix": {
+          "lock": 8,
+          "save": 24
+        },
+        "requests": 32,
+        "status_distribution": {
+          "200": 20,
+          "400": 5,
+          "409": 7
+        }
+      },
+      "resolution": {
+        "max_ms": 745.5,
+        "p50_ms": 82.8,
+        "p95_ms": 155.8,
+        "request_mix": {
+          "refresh": 39,
+          "save": 17
+        },
+        "requests": 56,
+        "status_distribution": {
+          "200": 41,
+          "409": 15
+        }
+      },
+      "steady": {
+        "max_ms": 769.7,
+        "p50_ms": 85.5,
+        "p95_ms": 740.7,
+        "request_mix": {
+          "refresh": 29,
+          "save": 18
+        },
+        "requests": 47,
+        "status_distribution": {
+          "200": 47
+        }
+      }
+    },
+    "request_class_latency": {
+      "lock": {
+        "max_ms": 683.0,
+        "p50_ms": 98.5,
+        "p95_ms": 683.0,
+        "requests": 8,
+        "status_distribution": {
+          "400": 5,
+          "409": 3
+        }
+      },
+      "refresh": {
+        "max_ms": 769.7,
+        "p50_ms": 86.7,
+        "p95_ms": 722.0,
+        "requests": 68,
+        "status_distribution": {
+          "200": 68
+        }
+      },
+      "save": {
+        "max_ms": 748.1,
+        "p50_ms": 59.4,
+        "p95_ms": 715.4,
+        "requests": 59,
+        "status_distribution": {
+          "200": 40,
+          "409": 19
+        }
+      }
+    },
+    "server_errors": 0,
+    "sessions_authenticated": 8,
+    "slowest_requests": [
+      {
+        "completed_at_utc": "2026-10-06T10:53:29.170951+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 769.7,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:29.009031+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 748.1,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:36.934979+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 745.5,
+        "phase": "resolution",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:31.673309+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 740.7,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:34.773829+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 732.1,
+        "phase": "deadline-burst",
+        "status": 409
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:32.053011+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 722.0,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:29.048309+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 720.4,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:34.957981+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 715.4,
+        "phase": "deadline-burst",
+        "status": 409
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:28.896814+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 715.2,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:31.608673+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 713.8,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:36.735668+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 702.9,
+        "phase": "resolution",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:31.732177+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 698.4,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:28.868972+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 691.4,
+        "phase": "steady",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:35.053426+00:00",
+        "endpoint_class": "POST decision lock",
+        "kind": "lock",
+        "ms": 683.0,
+        "phase": "deadline-burst",
+        "status": 409
+      },
+      {
+        "completed_at_utc": "2026-10-06T10:53:32.802029+00:00",
+        "endpoint_class": "GET decision summary",
+        "kind": "refresh",
+        "ms": 678.4,
+        "phase": "steady",
+        "status": 200
+      }
+    ],
+    "status_distribution": {
+      "200": 108,
+      "400": 5,
+      "409": 22
+    },
+    "transport_failures": 0
+  },
+  "round_state": {
+    "phase_1_duration": 8.164400577545166,
+    "processing_status": "RESULTS_AVAILABLE",
+    "round_status": "processed"
+  },
+  "scenario": "Consumer Electronics 2026",
+  "server_side_latency": {
+    "interactive_requests": 135,
+    "max_ms": 769.1,
+    "p50_ms": 85.0,
+    "p95_ms": 714.7,
+    "p99_ms": 747.4,
+    "request_class_latency": {
+      "lock": {
+        "max_ms": 682.5,
+        "p50_ms": 98.8,
+        "p95_ms": 682.5,
+        "requests": 8
+      },
+      "refresh": {
+        "max_ms": 769.1,
+        "p50_ms": 86.2,
+        "p95_ms": 721.3,
+        "requests": 68
+      },
+      "save": {
+        "max_ms": 747.4,
+        "p50_ms": 58.7,
+        "p95_ms": 714.7,
+        "requests": 59
+      }
+    },
+    "resolution_route_ms": [
+      9961.4
+    ],
+    "source": "/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/load-failure/gunicorn-combined-smoke.log"
+  },
+  "teams": 24,
+  "threshold_breaches": [],
+  "thresholds": {
+    "db_connections": 80,
+    "deadlocks": 0,
+    "error_rate_pct": 0.5,
+    "interactive_max_ms": 10000,
+    "interactive_p95_ms": 2000,
+    "lost_or_duplicated_or_unexplained_writes": 0
+  },
+  "traffic_inventory": "/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/load-failure/COMBINED_RESOLUTION_INVENTORY.md",
+  "working_tree_clean": false
+}

@@ -1,0 +1,320 @@
+{
+  "code_revision": "f3ebfd4f2f77b3bcae5fcaf25ede579e51573519",
+  "database": {
+    "commits": 1436613,
+    "connections_now": 2,
+    "deadlocks": 0,
+    "max_connections": 100,
+    "rollbacks": 1,
+    "waiting_on_locks": 0
+  },
+  "db_connections": {
+    "mean": 29.51,
+    "peak": 32,
+    "sampler_attempted": 958,
+    "sampler_failed": 0,
+    "samples": 958,
+    "sampling_window_s": 241.5
+  },
+  "execution_class": "release-candidate evidence",
+  "instructor_resolution": {
+    "body": "{\"message\":\"CRV2 load fixture (24 firms): round 1 processed in 23.7s. Results are available; narratives are generating in the background.\",\"game_name\":\"CRV2 load fixture (24 firms)\",\"phase_1_time\":23.656713485717773,\"phase_2_status\":\"dispatched\",\"request_id\":\"combined-resolution-instructor\",\"round\":{\"round_id\":2,\"round_number\":1,\"status\":\"processed\",\"processing_status\":\"RESULTS_AVAILABLE\",\"narrative_generated\":false,\"narrative_error\":\"\",\"opened_at\":\"2026-10-06T10:59:33.903247+00:00\",\"deadline\":n",
+    "login": {
+      "ms": 473.8,
+      "status": 200
+    },
+    "ms": 37783.5,
+    "status": 200
+  },
+  "passed": false,
+  "profile": "margin",
+  "profile_spec": {
+    "duration": 180,
+    "release_evidence": true,
+    "resolution_window": 30,
+    "sessions": 288
+  },
+  "reconciliation": {
+    "acknowledged_writes": 7590,
+    "audit_rows_with_request_id": 7590,
+    "duplicated_write_count": 0,
+    "duplicated_writes": {},
+    "lost_write_count": 0,
+    "lost_writes": [],
+    "reconciles": true,
+    "refused_but_recorded": [],
+    "refused_but_recorded_count": 0,
+    "refused_writes": 1297,
+    "unexplained_row_count": 0,
+    "unexplained_rows": []
+  },
+  "result": {
+    "business_refusals_4xx": 1321,
+    "endpoint_classes": {
+      "lock": "POST decision lock",
+      "refresh": "GET decision summary",
+      "save": "PATCH budget decision"
+    },
+    "error_rate_pct": 0.0,
+    "interactive_requests": 19533,
+    "latency_ms": {
+      "max": 5778.2,
+      "p50": 2591.8,
+      "p95": 3267.1
+    },
+    "login_failures": [],
+    "phase_latency": {
+      "deadline-burst": {
+        "max_ms": 5778.2,
+        "p50_ms": 1608.1,
+        "p95_ms": 4970.0,
+        "request_mix": {
+          "lock": 24,
+          "save": 864
+        },
+        "requests": 888,
+        "status_distribution": {
+          "200": 305,
+          "409": 583
+        }
+      },
+      "resolution": {
+        "max_ms": 3034.5,
+        "p50_ms": 2492.4,
+        "p95_ms": 2747.7,
+        "request_mix": {
+          "refresh": 1705,
+          "save": 738
+        },
+        "requests": 2443,
+        "status_distribution": {
+          "200": 1705,
+          "409": 738
+        }
+      },
+      "steady": {
+        "max_ms": 3899.5,
+        "p50_ms": 2621.2,
+        "p95_ms": 3250.4,
+        "request_mix": {
+          "refresh": 8917,
+          "save": 7285
+        },
+        "requests": 16202,
+        "status_distribution": {
+          "200": 16202
+        }
+      }
+    },
+    "request_class_latency": {
+      "lock": {
+        "max_ms": 2458.5,
+        "p50_ms": 1476.4,
+        "p95_ms": 2434.8,
+        "requests": 24,
+        "status_distribution": {
+          "409": 24
+        }
+      },
+      "refresh": {
+        "max_ms": 3899.5,
+        "p50_ms": 2529.7,
+        "p95_ms": 2970.0,
+        "requests": 10622,
+        "status_distribution": {
+          "200": 10622
+        }
+      },
+      "save": {
+        "max_ms": 5778.2,
+        "p50_ms": 2780.9,
+        "p95_ms": 3396.4,
+        "requests": 8887,
+        "status_distribution": {
+          "200": 7590,
+          "409": 1297
+        }
+      }
+    },
+    "server_errors": 0,
+    "sessions_authenticated": 288,
+    "slowest_requests": [
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.968823+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5778.2,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.932378+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5761.5,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.879302+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5726.3,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.837474+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5704.2,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.793994+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5682.6,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.751119+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5661.0,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.720257+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5649.3,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.683585+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5631.9,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.643447+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5613.6,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.604640+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5597.9,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.564018+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5576.8,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.506910+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5540.3,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.459728+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5514.8,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.258090+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5493.8,
+        "phase": "deadline-burst",
+        "status": 200
+      },
+      {
+        "completed_at_utc": "2026-10-06T11:03:07.408558+00:00",
+        "endpoint_class": "PATCH budget decision",
+        "kind": "save",
+        "ms": 5485.8,
+        "phase": "deadline-burst",
+        "status": 200
+      }
+    ],
+    "status_distribution": {
+      "200": 18212,
+      "409": 1321
+    },
+    "transport_failures": 0
+  },
+  "round_state": {
+    "phase_1_duration": 23.656713485717773,
+    "processing_status": "RESULTS_AVAILABLE",
+    "round_status": "processed"
+  },
+  "scenario": "Consumer Electronics 2026",
+  "server_side_latency": {
+    "interactive_requests": 19533,
+    "max_ms": 1036.1,
+    "p50_ms": 338.6,
+    "p95_ms": 646.9,
+    "p99_ms": 715.2,
+    "request_class_latency": {
+      "lock": {
+        "max_ms": 115.9,
+        "p50_ms": 58.5,
+        "p95_ms": 92.1,
+        "requests": 24
+      },
+      "refresh": {
+        "max_ms": 724.6,
+        "p50_ms": 234.5,
+        "p95_ms": 488.2,
+        "requests": 10622
+      },
+      "save": {
+        "max_ms": 1036.1,
+        "p50_ms": 498.3,
+        "p95_ms": 683.3,
+        "requests": 8887
+      }
+    },
+    "resolution_route_ms": [
+      33027.4
+    ],
+    "source": "/home/ubuntu/projects/globalstrat-plus-candidate-f3eb/handoff_readiness_v2/evidence/load-failure/gunicorn-combined-margin.log"
+  },
+  "teams": 24,
+  "threshold_breaches": [
+    "latency measurement inadmissible: load generator saturated (client p95 3267.1 ms against server p95 646.9 ms, ratio 5.05); certify this profile from a generator host separate from the stack"
+  ],
+  "thresholds": {
+    "db_connections": 80,
+    "deadlocks": 0,
+    "error_rate_pct": 0.5,
+    "interactive_max_ms": 10000,
+    "interactive_p95_ms": 2000,
+    "lost_or_duplicated_or_unexplained_writes": 0
+  },
+  "traffic_inventory": "/home/ubuntu/projects/globalstrat-plus-candidate-f3eb/handoff_readiness_v2/evidence/load-failure/COMBINED_RESOLUTION_INVENTORY.md",
+  "working_tree_clean": true
+}

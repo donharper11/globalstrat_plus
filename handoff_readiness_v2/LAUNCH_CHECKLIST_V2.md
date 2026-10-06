@@ -43,9 +43,43 @@
 - [x] Field and 3× traffic profiles carried with reconciled writes — 96 and
       288 sessions, p95 90.1 ms / 175.0 ms, zero 5xx, transport failures,
       deadlocks or lost writes; `GSP-CRV2-07_LOAD_REPORT.md`.
-- [ ] Combined deadline burst + refresh + Phase-1 resolution under load. CRV2-07
+- [x] Combined deadline burst + refresh + Phase-1 resolution under load. CRV2-07
       measured refresh/save/lock traffic at field and 3× but explicitly did not
       drive instructor resolution under load; do not relabel that evidence.
+      **Run and passed at the pinned field size 2026-10-06** from candidate
+      `f3ebfd4f`, clean tree; `COMBINED_RESOLUTION_LOAD_REPORT_2026-10-06.md`
+      and `evidence/load-failure/combined-resolution-2026-10-06/`. 96 sessions,
+      18,964 interactive requests, the owning instructor's real
+      `POST /round-control/process/` closing the round and running synchronous
+      Phase 1 while the cohort still refreshed, saved and locked: client p95
+      901.4 ms and server p95 669.2 ms against a 2000 ms threshold, 0 5xx, 0
+      transport failures, 984 correct 409 refusals, round ended `processed` /
+      `RESULTS_AVAILABLE` in 26.2 s, peak 33 of 100 database connections from
+      897 real samples, 0 deadlocks, 0 lock waits, and 7,227 acknowledged
+      writes reconciling exactly — 0 lost, 0 duplicated, 0 unexplained, and 0
+      of 960 refusals recorded. **Ticked for the field profile only.** The 3×
+      margin profile is recorded **inadmissible, not passed**: the client saw
+      p95 3267.1 ms while the server spent 646.9 ms at p95, a ratio of 5.05,
+      because the generator shares eight cores with the 32 workers and
+      PostgreSQL and total throughput did not rise with sessions. 3× combined
+      load needs a generator host separate from the stack and stays open below.
+      **Two harness defects were found and repaired on the way, and both had
+      been passing gates on measurements that never happened:** the
+      database-connection sampler forked `psql` per reading and starved at
+      field size, so the first field run reported a connection peak of 1 from
+      one pre-load sample and the gate accepted it (`9646faf9`); and the
+      latency gate read only client-observed time, so a generator limit was
+      attributed to the product (`f3ebfd4f`). Neither touches product code —
+      `backend/` and `frontend/` trees are byte-identical across `e55b6193`,
+      `9646faf9` and `f3ebfd4f`.
+- [ ] Combined deadline burst + refresh + Phase-1 resolution at **3×** field.
+      Added 2026-10-06. The profile exists and runs; it cannot be certified on
+      this host because the load generator cannot be separated from the stack
+      under test. Supporting evidence from the inadmissible run: at 288
+      sessions the server's per-request latency was unchanged (p95 646.9 ms
+      against 669.2 ms at field) with 0 5xx, 0 transport failures, 0 deadlocks,
+      a successful synchronous Phase-1 resolution and 7,590 acknowledged writes
+      reconciling exactly. That is supporting, not certifying.
 - [x] Supported load ceiling measured at at least 3× field; staged
       authentication procedure and session-readiness gate proven.
 - [x] Post-close browser retrieval captured for both roles; all six disputes
