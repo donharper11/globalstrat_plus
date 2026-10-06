@@ -1,0 +1,1684 @@
+{
+ "driver": "follow-blocker-t3-r3",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:50011",
+ "started": "2026-10-06T15:04:27",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the round as the team played it does not fit its funds",
+   "outcome": "observed",
+   "detail": "cash None, committed None; [\"锁定前，请先设置预算分配。\"]"
+  },
+  {
+   "name": "following the Decision Summary's own instructions makes the lock available (W-CE3-02, decision 13)",
+   "outcome": "fail",
+   "detail": "after 5 attempt(s): can_lock=False; what is still refused: [\"锁定前，请先设置预算分配。\"]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:38"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:38"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:04:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:04:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:05:13"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:05:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:05:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:05:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:05:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:05:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:05:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:05:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:05:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:06:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:06:08"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:06:08"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/rounds/3/reasoning/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/reasoning/history/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/2/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/2/",
+   "status": 200,
+   "at": "15:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "15:04:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:04:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:51"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:04:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:04:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:08"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:05:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:05:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:05:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:25"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:05:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:42"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:05:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:05:59"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:06:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "15:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:06:14"
+  }
+ ],
+ "refused": [
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:04:56",
+   "body": "{\"detail\":\"本回合的截止时间已过。您的决策已锁定。\"}",
+   "request": "{\"budget_allocation\":{\"rd_budget\":0,\"marketing_budget\":0,\"strategy_budget\":0}}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:05:13",
+   "body": "{\"detail\":\"本回合的截止时间已过。您的决策已锁定。\"}",
+   "request": "{\"budget_allocation\":{\"rd_budget\":0,\"marketing_budget\":0,\"strategy_budget\":0}}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:05:30",
+   "body": "{\"detail\":\"本回合的截止时间已过。您的决策已锁定。\"}",
+   "request": "{\"budget_allocation\":{\"rd_budget\":0,\"marketing_budget\":0,\"strategy_budget\":0}}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:05:47",
+   "body": "{\"detail\":\"本回合的截止时间已过。您的决策已锁定。\"}",
+   "request": "{\"budget_allocation\":{\"rd_budget\":0,\"marketing_budget\":0,\"strategy_budget\":0}}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 403,
+   "at": "15:06:04",
+   "body": "{\"detail\":\"本回合的截止时间已过。您的决策已锁定。\"}",
+   "request": "{\"budget_allocation\":{\"rd_budget\":0,\"marketing_budget\":0,\"strategy_budget\":0}}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v4-blocker-t3-r3-0-budgets",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the declared budgets set to the spending already made",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/rounds/3/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 403
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-1-budgets",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the declared budgets set to the spending already made",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 403
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-2-budgets",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the declared budgets set to the spending already made",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 403
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-3-budgets",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the declared budgets set to the spending already made",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 403
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-4-budgets",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the declared budgets set to the spending already made",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 403
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v4-blocker-t3-r3-0-budgets",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-1-budgets",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-2-budgets",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-3-budgets",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-4-budgets",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r3-summary",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Prism Tech",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "as_played": {
+   "can_lock": false,
+   "blockers": [
+    "锁定前，请先设置预算分配。"
+   ],
+   "budget_summary": {}
+  },
+  "attempts": [
+   {
+    "attempt": 0,
+    "available": 0.0,
+    "committed": 0.0,
+    "shortfall": 0.0,
+    "blockers": [
+     "锁定前，请先设置预算分配。"
+    ],
+    "financing_cleared": true,
+    "shortfall_after_clearing_debt": 0.0,
+    "after_equity": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ],
+     "total_available": null
+    },
+    "budgets_set_to": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "after_budgets": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ]
+    }
+   },
+   {
+    "attempt": 1,
+    "available": 0.0,
+    "committed": 0.0,
+    "shortfall": 0.0,
+    "blockers": [
+     "锁定前，请先设置预算分配。"
+    ],
+    "after_equity": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ],
+     "total_available": null
+    },
+    "budgets_set_to": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "after_budgets": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ]
+    }
+   },
+   {
+    "attempt": 2,
+    "available": 0.0,
+    "committed": 0.0,
+    "shortfall": 0.0,
+    "blockers": [
+     "锁定前，请先设置预算分配。"
+    ],
+    "after_equity": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ],
+     "total_available": null
+    },
+    "budgets_set_to": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "after_budgets": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ]
+    }
+   },
+   {
+    "attempt": 3,
+    "available": 0.0,
+    "committed": 0.0,
+    "shortfall": 0.0,
+    "blockers": [
+     "锁定前，请先设置预算分配。"
+    ],
+    "after_equity": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ],
+     "total_available": null
+    },
+    "budgets_set_to": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "after_budgets": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ]
+    }
+   },
+   {
+    "attempt": 4,
+    "available": 0.0,
+    "committed": 0.0,
+    "shortfall": 0.0,
+    "blockers": [
+     "锁定前，请先设置预算分配。"
+    ],
+    "after_equity": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ],
+     "total_available": null
+    },
+    "budgets_set_to": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "after_budgets": {
+     "can_lock": false,
+     "blockers": [
+      "锁定前，请先设置预算分配。"
+     ]
+    }
+   }
+  ],
+  "summary_text": "GS\nGLOBALSTRAT\n消费电子模拟\nR3 / 10草稿开放\n预算 $0/$5.0M\n研发 $0/$0\n营销 $0/$0\n战略 $0/$0\nEN\nJB\nJonas Berg · Prism Tech\n实时\n⏰\n第3回合截止日期：剩余-8天 — 0/8 个团队已提交\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n💱\nNGN 兑 CNY 贬值 3.0% — 非洲收入兑换减少\n│\n📉\n北美增长放缓 — 需求降温\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n西欧关税上调 — 进口成本上升\n│\n📉\n非洲增长放缓 — 需求降温\n│\n📉\n南美增长放缓 — 需求降温\n│\n📈\n南美关税上调 — 进口成本上升\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n⚠️\n太平洋沿岸分销商在东亚的关系紧张 — 满意度36%\n│\n⏰\n第3回合截止日期：剩余-8天 — 0/8 个团队已提交\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n💱\nNGN 兑 CNY 贬值 3.0% — 非洲收入兑换减少\n│\n📉\n北美增长放缓 — 需求降温\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n西欧关税上调 — 进口成本上升\n│\n📉\n非洲增长放缓 — 需求降温\n│\n📉\n南美增长放缓 — 需求降温\n│\n📈\n南美关税上调 — 进口成本上升\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n⚠️\n太平洋沿岸分销商在东亚的关系紧张 — 满意度36%\n│\nPRISM TECH\n东亚\n回合 3\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n决策总结与提交\n回合 3 · 审核并锁定您的决策\n进行中\n决策清单\n预算分配\n请打开“财务管理”页面，分配研发、营销和战略预算。\n前往预算分配修正\n未开始\n研发投资\n本回合尚未安排研发投入。请打开“研发投入”页面添加。\n前往研发投资修正\n未开始\n产品组合\n请打开“产品组合”完成此项要求。\n前往产品组合修正\n未开始\n营销组合\n请打开“营销组合”完成此项要求。\n0 / 2 已配置\n前往营销组合修正\n未开始\n战略组合\n您的团队已在 北美 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 北美 添加为目标市场。\n您的团队在 东亚 已有产品，但尚未设置营销组合。请打开“营销组合”页面设置单价、生产数量和促销。\n前往战略组合修正\n未开始\n融资\n本回合没有融资变动，无需操作。\n已完成\n采购\n本回合为可选项，锁定决策时无需完成。\n可选\n物流\n本回合为可选项，锁定决策时无需完成。\n可选\n贸易融资\n本回合为可选项，锁定决策时无需完成。\n可选\n库存\n本回合为可选项，锁定决策时无需完成。\n可选\n预算摘要\n研发\n$0 / $0\n营销\n$0 / $0\n战略\n$0 / $0\n研究\n$0 / $0\n团队笔记\n0 / 2000\n无法提交 — 需解决相关问题\n锁定前，请先设置预算分配。\n请先完成上方受阻的事项，再锁定本回合。\n点击各“修正”按钮可跳转到完成该决策的页面。\n锁定并提交第3回合决策"
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 1,
+  "observed": 1,
+  "screens": 6,
+  "screens_with_leaks": 6,
+  "console_errors": 21,
+  "api_calls": 105,
+  "api_refused": 5
+ }
+}

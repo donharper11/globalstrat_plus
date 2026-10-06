@@ -1,0 +1,504 @@
+{
+ "driver": "overproduce-t2-r3",
+ "language": "en",
+ "base": "http://127.0.0.1:50011",
+ "started": "2026-10-06T15:00:15",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2607 = en"
+  },
+  {
+   "name": "s2607 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the production volume the page stored is the number typed",
+   "outcome": "fail",
+   "detail": "3 rows touched, 0 stored at 600000 units"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:00:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:00:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:00:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:00:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:00:25"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "15:00:25"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:00:36"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:00:41"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:00:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "15:00:50"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/dashboard/scorecard/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/rounds/3/reasoning/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/reasoning/history/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/investor-relations/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/results/round/2/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/competitors/round/2/",
+   "status": 200,
+   "at": "15:00:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "15:00:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:00:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=8&section_id=1",
+   "status": 200,
+   "at": "15:00:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "15:00:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/marketing/",
+   "status": 200,
+   "at": "15:00:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "15:00:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "15:00:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "15:00:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "15:00:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "15:00:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/marketing/",
+   "status": 200,
+   "at": "15:00:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "15:00:31"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:36"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:41"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:43"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "15:00:52"
+  }
+ ],
+ "refused": [
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:36",
+   "body": "{\"detail\":\"The deadline for this round has passed. Your decisions are locked.\"}",
+   "request": "{\"marketing_decisions\":[{\"team_product\":3,\"market\":3,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":600000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:41",
+   "body": "{\"detail\":\"The deadline for this round has passed. Your decisions are locked.\"}",
+   "request": "{\"marketing_decisions\":[{\"team_product\":3,\"market\":3,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":600000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:43",
+   "body": "{\"detail\":\"The deadline for this round has passed. Your decisions are locked.\"}",
+   "request": "{\"marketing_decisions\":[{\"team_product\":3,\"market\":3,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":600000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 403,
+   "at": "15:00:50",
+   "body": "{\"detail\":\"The deadline for this round has passed. Your decisions are locked.\"}",
+   "request": "{\"marketing_decisions\":[{\"team_product\":3,\"market\":3,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":600000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":18,\"market\":3,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distrib"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v4-overproduce-t2-r3",
+   "url": "/games/1/teams/2/decisions/marketing",
+   "screenshot": "not-captured",
+   "note": "600000 units typed into every production-volume box",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/rounds/3/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=8&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/3/marketing/",
+     "s": 403
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/3/marketing/",
+     "s": 403
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/3/marketing/",
+     "s": 403
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/3/marketing/",
+     "s": 403
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Titan Micro",
+  "units_per_row": 600000,
+  "server_language_after_sign_in": {
+   "user": "s2607",
+   "asked": "en",
+   "server": "en"
+  },
+  "before": [],
+  "market_tabs": 3,
+  "after": [],
+  "summary_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 10DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\n中文\nGK\nGrace Kim · Titan Micro\nLIVE\n⏰\nRound 3 deadline: -8 days remaining — 0 of 8 teams submitted\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n💱\nCNY weakened 2.0% against EUR — East Asia revenue converts to fewer EUR\n│\n💱\nNGN weakened 3.0% against EUR — Africa revenue converts to fewer EUR\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📉\nEast Asia growth slowing — demand cooling\n│\n📈\nWestern Europe tariffs increased — import costs rising\n│\n📉\nAfrica growth slowin"
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 1,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 10,
+  "api_calls": 33,
+  "api_refused": 4
+ }
+}
