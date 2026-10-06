@@ -12,6 +12,7 @@ import json
 import multiprocessing
 import os
 import pathlib
+import re
 import statistics
 import subprocess
 import sys
@@ -145,6 +146,56 @@ def request_resolution(base, instructor, game_id, result):
         'status': reply['status'], 'ms': round(reply['ms'], 1),
         'body': reply.get('body', b'')[:500].decode('utf-8', 'replace'),
     })
+
+
+# gunicorn's access_log_format ends with %(D)s -- the request's own service
+# time in microseconds, measured by the server. Client-observed latency is
+# the only thing the driver can see, and on this host the driver, gunicorn
+# and PostgreSQL share eight cores: at 288 sessions the generator itself
+# becomes the bottleneck and inflates what it reports. Reading the server's
+# own timing separates the product's latency from the generator's.
+ACCESS_LINE = re.compile(
+    r'"(?:GET|POST|PATCH|PUT|DELETE) ([^ ]+) [^"]*" (\d{3}) \S+ (\d+)$')
+# A run whose client-observed p95 is this many times its server-side p95 has
+# measured its own generator, not the product. Such a run is inadmissible as
+# a latency certification either way -- it is not converted into a pass.
+GENERATOR_SATURATION_RATIO = 2.5
+
+
+def server_side_latency(label):
+    """Per-request service times as gunicorn measured them."""
+    path = EVIDENCE / f'gunicorn-{label}.log'
+    if not path.exists():
+        return None
+    rows = []
+    for line in path.read_text(errors='replace').splitlines():
+        match = ACCESS_LINE.search(line)
+        if match:
+            rows.append((match.group(1), int(match.group(2)),
+                         int(match.group(3)) / 1000.0))
+    interactive = [row for row in rows if '/decisions/round/' in row[0]]
+    if not interactive:
+        return None
+    values = [row[2] for row in interactive]
+    by_class = {}
+    for name, needle in (('refresh', '/summary/'), ('save', '/budget/'),
+                         ('lock', '/lock/')):
+        subset = [row[2] for row in interactive if needle in row[0]]
+        if subset:
+            by_class[name] = {
+                'requests': len(subset), 'p50_ms': _pct(subset, 50),
+                'p95_ms': _pct(subset, 95),
+                'max_ms': round(max(subset), 1)}
+    resolution = [round(row[2], 1) for row in rows
+                  if 'round-control/process' in row[0]]
+    return {
+        'source': str(path),
+        'interactive_requests': len(interactive),
+        'p50_ms': _pct(values, 50), 'p95_ms': _pct(values, 95),
+        'p99_ms': _pct(values, 99), 'max_ms': round(max(values), 1),
+        'request_class_latency': by_class,
+        'resolution_route_ms': resolution,
+    }
 
 
 def _pct(values, p):
@@ -290,7 +341,8 @@ def run(profile, think_time=(0.3, 0.8)):
         'profile_spec': spec,
         'traffic_inventory': str(EVIDENCE / 'COMBINED_RESOLUTION_INVENTORY.md'),
     }
-    with stack.disposable_stack(f'combined-{profile}') as (base, database, seeded):
+    label = f'combined-{profile}'
+    with stack.disposable_stack(label) as (base, database, seeded):
         identities = select_cohort(seeded['identities'], spec['sessions'],
                                    teams=seeded['teams'])
         manager = multiprocessing.Manager()
@@ -369,10 +421,35 @@ def run(profile, think_time=(0.3, 0.8)):
             breaches.append(f"Phase-1 process route status {resolution.get('status')}")
         if state['round_status'] != 'processed':
             breaches.append(f"round ended {state['round_status']}, not processed")
-        if result['latency_ms']['p95'] is None or result['latency_ms']['p95'] > THRESHOLDS['interactive_p95_ms']:
-            breaches.append('interactive p95 threshold breach')
-        if result['latency_ms']['max'] is None or result['latency_ms']['max'] > THRESHOLDS['interactive_max_ms']:
-            breaches.append('interactive max threshold breach')
+        server = server_side_latency(label)
+        client_p95 = result['latency_ms']['p95']
+        client_max = result['latency_ms']['max']
+        if client_p95 is None or client_max is None:
+            breaches.append('no interactive latency measured')
+        else:
+            # Attribute a latency breach before reporting one. If the client
+            # saw multiples of what the server spent serving, the generator
+            # was the bottleneck and this run cannot certify latency -- in
+            # either direction. It is recorded as inadmissible, never
+            # rewritten into a pass on the server's kinder numbers.
+            saturated = (
+                server is not None and server['p95_ms']
+                and client_p95 > GENERATOR_SATURATION_RATIO * server['p95_ms'])
+            if saturated:
+                breaches.append(
+                    'latency measurement inadmissible: load generator '
+                    f'saturated (client p95 {client_p95} ms against server '
+                    f'p95 {server["p95_ms"]} ms, ratio '
+                    f'{round(client_p95 / server["p95_ms"], 2)}); certify this '
+                    'profile from a generator host separate from the stack')
+            else:
+                if client_p95 > THRESHOLDS['interactive_p95_ms']:
+                    breaches.append('interactive p95 threshold breach')
+                if client_max > THRESHOLDS['interactive_max_ms']:
+                    breaches.append('interactive max threshold breach')
+            if server is not None and server['p95_ms'] and (
+                    server['p95_ms'] > THRESHOLDS['interactive_p95_ms']):
+                breaches.append('server-side p95 threshold breach')
         if (result['error_rate_pct'] or 0) > THRESHOLDS['error_rate_pct']:
             breaches.append('transport/5xx error-rate threshold breach')
         # Admissibility before threshold. A sampler that starves returns a
@@ -396,7 +473,8 @@ def run(profile, think_time=(0.3, 0.8)):
             breaches.append('write reconciliation failed')
         report.update({
             'scenario': seeded['scenario'], 'teams': seeded['teams'],
-            'result': result, 'instructor_resolution': resolution,
+            'result': result, 'server_side_latency': server,
+            'instructor_resolution': resolution,
             'round_state': state, 'database': db,
             'db_connections': {'samples': len(connection_samples),
                                'peak': max(connection_samples) if connection_samples else None,
