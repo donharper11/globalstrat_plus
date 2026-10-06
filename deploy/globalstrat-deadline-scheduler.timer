@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the GlobalStrat+ deadline scheduler every minute
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+AccuracySec=1s
+RandomizedDelaySec=0
+Persistent=true
+Unit=globalstrat-deadline-scheduler.service
+
+[Install]
+WantedBy=timers.target

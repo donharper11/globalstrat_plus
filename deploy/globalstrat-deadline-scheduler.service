@@ -1,0 +1,18 @@
+[Unit]
+Description=GlobalStrat+ deadline scheduler
+After=network-online.target globalstrat-backend.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/projects/globalstrat+/backend
+Environment=GLOBALSTRAT_ENV=production
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/etc/globalstrat-plus.env
+UMask=0077
+TimeoutStartSec=10min
+# Deliberately omits --auto-process and --auto-advance: elapsed deadlines
+# close the current round only, leaving scoring and advancement to instructors.
+ExecStart=/usr/bin/python3 manage.py check_round_deadlines
