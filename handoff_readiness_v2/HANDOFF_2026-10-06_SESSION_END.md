@@ -10,7 +10,7 @@ checkpoint's candidate:
 
 | commit | what | product code? |
 |---|---|---|
-| `f0cf7be4` | previous candidate; what the production services still run | — |
+| `f0cf7be4` | previous candidate; what the production services ran until the 2026-10-07 cutover | — |
 | `e171a8b6` | instructor language preference restored on fresh login | yes (pre-existing) |
 | `e55b6193` | deadline scheduler unit + timer | no, `deploy/` only |
 | `9646faf9` | load sampler: refuse an under-sampled connection measurement | no, harness only |
@@ -24,7 +24,9 @@ half had already been run at `e171a8b6` by an earlier session; those artifacts
 were volatile in `/tmp` and are now preserved at
 `evidence/gate1-2026-10-06-e171/` with `SHA256SUMS`.
 
-**The production services still run `f0cf7be4`** from
+**SUPERSEDED 2026-10-07:** production was cut over to `f62fc720`; see
+`evidence/cutover-2026-10-07/README.md`. As of this 2026-10-06 handoff,
+**the production services still run `f0cf7be4`** from
 `/home/ubuntu/projects/globalstrat-plus-candidate-f0cf`. Nothing in this
 session changed production, any service, or any production data. Cutting over
 to `a0631e5d` is a Gate 2 action and has **not** been done.

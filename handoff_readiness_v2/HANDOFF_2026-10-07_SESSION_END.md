@@ -25,13 +25,14 @@ repair.
 |---|---|
 | Certified by the browser pass | **`a0631e5d`** — frontend `main.81b42bcc.js` |
 | Merged tip after the repairs | **`ed6d8776`** — frontend `main.3ba3e3e1.js` |
-| Production serves | **`f62fc720`** from `globalstrat-plus-candidate-f62f` — **cut over 2026-10-07 05:48 UTC**, backend only |
+| Production serves | **`f62fc720`** backend from `globalstrat-plus-candidate-f62f`, and the **`main.615bbd73.js`** frontend built from the identical tree — **cut over 2026-10-07, both halves** |
 
-**The backend cutover is done and verified**; see
+**The cutover is done and verified, backend and frontend**; see
 `evidence/cutover-2026-10-07/README.md`, which also records the systemd trap that
-made the first attempt look successful while it was not. **The frontend was not
-deployed**, so the ECS still serves the pre-repair bundle and the bilingual
-repairs are not yet in front of a student.
+made the first backend attempt look successful while it was not. The ECS served
+the pre-repair bundle `main.81b42bcc.js` until this session; it now serves
+`main.615bbd73.js`, so the V2-145…V2-148 repairs are in front of a student for the
+first time. Rollback for each half is one command and is written down there.
 
 The automated half of Gate 1 was re-run on the merged tip: backend **1,912
 tests OK**, Jest **56 suites / 531 tests**, production build compiles with
@@ -69,8 +70,8 @@ V2-148 actually landed.
 ## Open, and whose
 
 **The owner's, and only these:**
-* **whether to deploy the frontend to the ECS** (`47.86.57.36`) — the backend is
-  cut over, so until this happens the two halves are from different commits;
+* **Gate 4** — the isolated rehearsal heat on the now-cut-over deployment, with
+  its own instructor account. This is the next gate and nothing blocks it;
 * Gate 4 on the serving deployment;
 * the VM sudo credential rotation — **parked until after MVP by decision, 2026-10-07**;
 * whether to take `fix/extend-deadline-reason` (`d5f855b5`), which is **not

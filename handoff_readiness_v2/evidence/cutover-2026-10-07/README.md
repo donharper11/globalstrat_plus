@@ -5,8 +5,8 @@ Production now serves **`f62fc7200725`**, the merged candidate, from the worktre
 `f0cf7be47264`, which was two repairs behind the commit the ten-round browser
 pass certified.
 
-This is the backend only. **The frontend was not deployed in this action** — see
-*What is still owed* below.
+The frontend was deployed afterwards, in the same session — see
+*The frontend* below. Both halves now come from the same tree.
 
 ## What changed on the host
 
@@ -82,21 +82,65 @@ only `handoff_readiness_v2/` and `docs/` — no backend or frontend file. `f62f`
 also the tree the merged-candidate gate was run against, so it is the commit with
 evidence behind it.
 
+## The frontend
+
+Built from the main checkout at `447b4569`, whose `frontend/` tree is **identical
+to `f62f`** (`git diff f62fc720..HEAD -- frontend/` is empty), and deployed with
+`frontend/deploy-frontend.sh --skip-build` so the artifact that shipped is the one
+that was verified.
+
+| | |
+|---|---|
+| Was on the ECS | `main.81b42bcc.js` — the pre-repair bundle from `a0631e5d` |
+| Now on the ECS | **`main.615bbd73.js`** + `main.429abf4d.css`, 37 files |
+| Rollback | `/var/www/globalstrat-backup-20261007-060022` holds `main.81b42bcc.js` |
+
+Verified before shipping, against the built bundle rather than the source:
+
+* all **48** `trade_finance` Chinese strings are present in the bundle, found in
+  their `\uXXXX`-escaped form — a literal search returns 0, which is a property of
+  webpack output and not of the catalogue;
+* a random sample of 40 Chinese catalogue strings: **40/40** present;
+* `en.json` 2,540 keys, `zh-CN.json` 2,534. The six that differ are i18next
+  `_one` plural forms (`sa_active_sessions_one`, `of_teams_one`, …). Chinese has no
+  singular/plural split, so `_other` alone is correct and these are not gaps.
+
+Verified after shipping:
+
+* origin, bypassing Cloudflare: `index.html` references `main.615bbd73.js`
+* public `https://globalstrat.camdani.com/`: same two hashes, and the bundle
+  itself returns **200, 2,879,964 bytes**
+* the deploy gate ran: `aide-checks` full, and the model-routing guard
+  (21 tests, OK)
+
+**Two things the script could not finish, done by hand.** SSH to that host resets
+mid-session intermittently. The deploy record did not get written by the script,
+and the verification step died on a broken pipe. The record was appended by hand
+and reads
+
+    2026-10-07T06:00:35Z rev=447b4569 … bundle=main.615bbd73.js note=record-written-by-hand-ssh-reset
+
+It went in three times before the log was deduplicated: the attempts that
+reported *SSH FAILED* had in fact succeeded server-side and then lost the
+connection before returning. `/var/www/globalstrat-deploys.log` now holds two
+lines, this deploy and the 2026-10-05 one.
+
+**No Cloudflare purge was needed or made.** No `CF_TOKEN` is present on this host,
+and none was required: the HTML is served `cf-cache-status: DYNAMIC` and already
+carried the new hashes, and the bundle filenames are content-hashed.
+
+A note for anyone testing the public URL: `curl` with its default user agent gets
+**200 with a zero-byte body** from Cloudflare. Pass a browser user agent or the
+site looks broken when it is not.
+
 ## What is still owed
 
-**The frontend.** The repairs changed `FinancialReportsPage.js`, `FinancePage.js`,
-`CorporateStrategyPage.js`, `ReasoningAnalysisTab.js` and both locale catalogues.
-Students are served a build from `/var/www/globalstrat/build` on the Alibaba ECS
-(`47.86.57.36`), which still carries the pre-repair bundle. Until that is rebuilt
-and deployed, **a Chinese student still meets the English strings V2-145 to
-V2-148 repaired** — the serving half landed, the rendering half did not. The `f62f`
-worktree has no `node_modules` and no `build`, so this is an install, a build and
-`frontend/deploy-frontend.sh`, whose `aide-checks` gate refuses a deploy if the
-checks do not run.
+**Gate 4** — the isolated rehearsal heat on this deployment with its own
+instructor account. Unstarted, and now the next thing.
 
-**Gate 2 for this revision.** The read-only half is above and clean. **Gate 4**
-is unstarted: the isolated rehearsal heat on this deployment with its own
-instructor account.
+**A browser pass on the deployed pair.** The repaired screens were driven in the
+bilingual re-drive against a local stack; they have not been driven against this
+deployment. That is part of Gate 4 rather than separate from it.
 
 ## Revert
 
