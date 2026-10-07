@@ -5,10 +5,28 @@ from core.utils.auth_context import get_request_user
 
 
 def record_decision_event(request, game, team, round_obj, action, payload):
+    """One immutable row per accepted decision write.
+
+    ``request_id`` used to be ``request.headers.get('X-Request-ID', '')`` — the
+    caller's header or nothing. The product's own client never sends that
+    header, so **every row a real user created carried an empty id**, and the
+    instructor's evidence panel printed ``—`` in the column the dispute
+    procedure asks for. The one caller in the tree that does send it is
+    ``run_deadline_rehearsal``, which is why the synthetic rehearsal produced
+    correlation ids no browser would.
+
+    It is minted here exactly as ``record_operator_event`` mints it, through
+    ``request_id_for``, which caches the value on the request so the id on this
+    row is the id in the response and in anything else written for the same
+    request. Nothing hashed moves: ``resolution_manifest`` never reads
+    ``request_id`` — it carries ``decision_event_count``, a count — so no
+    manifest digest, envelope version or replay changes.
+    """
+    from core.services.lifecycle import request_id_for
     return DecisionAuditEvent.objects.create(
         game=game, team=team, round=round_obj, user=get_request_user(request),
         action=action, endpoint=request.path, payload=payload,
-        request_id=request.headers.get('X-Request-ID', ''),
+        request_id=request_id_for(request),
     )
 
 

@@ -1068,3 +1068,79 @@ class ApiTamperingTests(TestCase):
             if 'SensitiveReadEvent' in _view_source(view_class):
                 offenders.append(route)
         self.assertEqual(offenders, [])
+
+class DecisionAuditCorrelationTests(AuditIntegrityBase):
+    """The request id on a decision row, which the dispute procedure asks for.
+
+    Every row a real user created used to carry an empty one.
+    ``record_decision_event`` read ``X-Request-ID`` from the caller and the
+    product's own client has never sent it, so the instructor's evidence panel
+    printed ``—`` in that column for every save, lock and purchase. The one
+    caller in the tree that sends the header is ``run_deadline_rehearsal``,
+    which is why the synthetic rehearsal's rows carried ids that no browser
+    would. CRV2-08's recorded dispute answer says the saves are "recorded with
+    server timestamps and request ids" beside its own evidence showing
+    ``request_id: ""``.
+
+    These assert the repair and the two things it must not break: a caller that
+    DOES supply an id keeps it, and two rows written for one request carry the
+    same id.
+    """
+
+    def _request(self, headers=None):
+        from rest_framework.request import Request
+        from rest_framework.test import APIRequestFactory
+        factory = APIRequestFactory()
+        kwargs = {}
+        for name, value in (headers or {}).items():
+            kwargs['HTTP_' + name.upper().replace('-', '_')] = value
+        drf_request = Request(factory.post('/api/test/', **kwargs))
+        drf_request.user = self.student
+        return drf_request
+
+    def test_a_decision_row_carries_a_request_id_the_client_never_sent(self):
+        from core.services.competition_audit import record_decision_event
+        event = record_decision_event(
+            self._request(), self.game, self.team, self.round, 'save',
+            {'budget': 1000})
+        self.assertTrue(
+            event.request_id,
+            'a decision audit row was written with no correlation id, so the '
+            'save cannot be tied to the request that made it')
+
+    def test_two_rows_written_for_one_request_share_its_id(self):
+        """The correlation is only worth having if it identifies the request.
+
+        A fresh uuid per call would give one save two ids and the operator a
+        third, which is the failure ``request_id_for`` caches against.
+        """
+        from core.services.competition_audit import record_decision_event
+        request = self._request()
+        first = record_decision_event(request, self.game, self.team, self.round,
+                                      'save', {'budget': 1})
+        second = record_decision_event(request, self.game, self.team,
+                                       self.round, 'lock', {'budget': 1})
+        self.assertTrue(first.request_id)
+        self.assertEqual(first.request_id, second.request_id)
+
+    def test_a_caller_that_supplies_an_id_keeps_it(self):
+        from core.services.competition_audit import record_decision_event
+        event = record_decision_event(
+            self._request({'X-Request-ID': 'rehearsal-7-team-3-seq-2'}),
+            self.game, self.team, self.round, 'save', {'budget': 1000})
+        self.assertEqual(event.request_id, 'rehearsal-7-team-3-seq-2')
+
+    def test_the_request_id_is_not_part_of_anything_hashed(self):
+        """Why this repair is not a determinism change.
+
+        ``resolution_manifest`` records how MANY decision events a round had,
+        never their correlation ids, so filling the column moves no manifest
+        digest, no envelope version and no replay. Asserted rather than
+        asserted-in-prose, so a future change that hashes the id has to come
+        past this test.
+        """
+        import inspect
+
+        from core.services import resolution_manifest
+        source = inspect.getsource(resolution_manifest)
+        self.assertNotIn('request_id', source)
