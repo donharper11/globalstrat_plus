@@ -140,8 +140,19 @@ const ReasoningComparison = ({ gameId, round }) => {
     return <Empty description={t('instructor.reasoning_empty_comparison')} />;
   }
 
-  const radarData = ['coherence_ext', 'responsiveness', 'trajectory'].map(dim => {
-    const point = { dimension: dim.replace('_', ' ') };
+  // `dim.replace('_', ' ')` printed the STORAGE KEY on the chart -- a Chinese
+  // instructor read "coherence ext" on the comparison radar, which is the
+  // F-PL-01 class of string (a database column shown to a user) that the
+  // Stage-5 check's A3 forbids in a catalogue sentence and cannot see here,
+  // because this one never went through the catalogue. Seen on a zh-CN console
+  // in the ten-round pass, on a tab no previous tour had opened.
+  const DIMENSION_LABELS = {
+    coherence_ext: 'instructor.coherence',
+    responsiveness: 'instructor.reasoning_col_responsiveness',
+    trajectory: 'instructor.reasoning_col_trajectory',
+  };
+  const radarData = Object.keys(DIMENSION_LABELS).map(dim => {
+    const point = { dimension: t(DIMENSION_LABELS[dim]) };
     data.comparison.forEach(t => {
       point[t.team_name] = t.dimensions[dim] || 0;
     });
