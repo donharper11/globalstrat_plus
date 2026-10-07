@@ -24,13 +24,22 @@ const BAND_COLORS = {
   needs_attention: '#ff4d4f',
 };
 
-const PATTERN_LABELS = {
-  consistent: 'Consistent Executor',
-  reactive: 'Reactive Adjuster',
-  aggressive: 'Aggressive Expander',
-  conservative: 'Conservative Optimizer',
-  erratic: 'Erratic',
+// The five behavioural labels an instructor reads beside a team's score.
+// They were English constants, so a Chinese console printed them in English
+// along with every column header and tab in this panel -- 27 strings in one
+// component, none of them in the catalogue. The map now holds keys and the
+// wording comes from the catalogue at render, which is also what lets A8 see
+// that these keys exist.
+const PATTERN_KEYS = {
+  consistent: 'instructor.reasoning_pattern_consistent',
+  reactive: 'instructor.reasoning_pattern_reactive',
+  aggressive: 'instructor.reasoning_pattern_aggressive',
+  conservative: 'instructor.reasoning_pattern_conservative',
+  erratic: 'instructor.reasoning_pattern_erratic',
 };
+
+const patternLabel = (code, t) => (
+  PATTERN_KEYS[code] ? t(PATTERN_KEYS[code]) : (code || '—'));
 
 const TEAM_COLORS = [
   '#1677ff', '#52c41a', '#faad14', '#ff4d4f', '#722ed1',
@@ -38,6 +47,7 @@ const TEAM_COLORS = [
 ];
 
 const ReasoningTeamTable = ({ gameId, round }) => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -57,41 +67,41 @@ const ReasoningTeamTable = ({ gameId, round }) => {
 
   if (loading) return <Spin />;
   if (!data || !data.teams || data.teams.length === 0) {
-    return <Empty description="No reasoning analysis data available" />;
+    return <Empty description={t('instructor.reasoning_empty_teams')} />;
   }
 
   const columns = [
-    { title: 'Team', dataIndex: 'team_name', key: 'team_name', sorter: (a, b) => a.team_name.localeCompare(b.team_name) },
+    { title: t('common.team'), dataIndex: 'team_name', key: 'team_name', sorter: (a, b) => a.team_name.localeCompare(b.team_name) },
     {
-      title: 'Deterministic', dataIndex: 'reasoning_score_deterministic', key: 'det',
+      title: t('instructor.reasoning_col_deterministic'), dataIndex: 'reasoning_score_deterministic', key: 'det',
       sorter: (a, b) => a.reasoning_score_deterministic - b.reasoning_score_deterministic,
       render: v => <Text strong>{v.toFixed(1)}</Text>,
     },
     {
-      title: 'Coherence', dataIndex: 'coherence_ext_score', key: 'coh',
+      title: t('instructor.coherence'), dataIndex: 'coherence_ext_score', key: 'coh',
       sorter: (a, b) => a.coherence_ext_score - b.coherence_ext_score,
       render: v => v.toFixed(1),
     },
     {
-      title: 'Responsiveness', dataIndex: 'responsiveness_score', key: 'resp',
+      title: t('instructor.reasoning_col_responsiveness'), dataIndex: 'responsiveness_score', key: 'resp',
       sorter: (a, b) => a.responsiveness_score - b.responsiveness_score,
       render: v => v.toFixed(1),
     },
     {
-      title: 'Trajectory', dataIndex: 'trajectory_score', key: 'traj',
+      title: t('instructor.reasoning_col_trajectory'), dataIndex: 'trajectory_score', key: 'traj',
       sorter: (a, b) => a.trajectory_score - b.trajectory_score,
       render: v => v.toFixed(1),
     },
     {
-      title: 'Justification', dataIndex: 'justification_score', key: 'just',
+      title: t('instructor.reasoning_col_justification'), dataIndex: 'justification_score', key: 'just',
       render: v => v != null ? v.toFixed(1) : <Text type="secondary">-</Text>,
     },
     {
-      title: 'Pattern', dataIndex: 'trajectory_pattern', key: 'pattern',
-      render: v => PATTERN_LABELS[v] || v,
+      title: t('instructor.reasoning_col_pattern'), dataIndex: 'trajectory_pattern', key: 'pattern',
+      render: v => patternLabel(v, t),
     },
     {
-      title: 'Band', dataIndex: 'overall_band', key: 'band',
+      title: t('instructor.reasoning_col_band'), dataIndex: 'overall_band', key: 'band',
       render: v => <Tag color={BAND_COLORS[v]}>{v.replace('_', ' ')}</Tag>,
     },
   ];
@@ -103,12 +113,13 @@ const ReasoningTeamTable = ({ gameId, round }) => {
       rowKey="team_id"
       size="small"
       pagination={false}
-      title={() => <Text type="secondary">Round {data.round_number}</Text>}
+      title={() => <Text type="secondary">{t('instructor.reasoning_round_label', { round: data.round_number })}</Text>}
     />
   );
 };
 
 const ReasoningComparison = ({ gameId, round }) => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -126,7 +137,7 @@ const ReasoningComparison = ({ gameId, round }) => {
 
   if (loading) return <Spin />;
   if (!data || !data.comparison || data.comparison.length === 0) {
-    return <Empty description="No comparison data" />;
+    return <Empty description={t('instructor.reasoning_empty_comparison')} />;
   }
 
   const radarData = ['coherence_ext', 'responsiveness', 'trajectory'].map(dim => {
@@ -163,6 +174,7 @@ const ReasoningComparison = ({ gameId, round }) => {
 };
 
 const ReasoningAggregate = ({ gameId }) => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -179,30 +191,30 @@ const ReasoningAggregate = ({ gameId }) => {
 
   if (loading) return <Spin />;
   if (!data || !data.aggregates || data.aggregates.length === 0) {
-    return <Empty description="No aggregate data" />;
+    return <Empty description={t('instructor.reasoning_empty_aggregate')} />;
   }
 
   const columns = [
     {
-      title: 'Rank', key: 'rank',
+      title: t('results.rank'), key: 'rank',
       render: (_, __, idx) => idx + 1,
     },
-    { title: 'Team', dataIndex: 'team_name', key: 'team_name' },
+    { title: t('common.team'), dataIndex: 'team_name', key: 'team_name' },
     {
-      title: 'Avg Score', dataIndex: 'aggregate_reasoning_score', key: 'score',
+      title: t('instructor.reasoning_col_avg_score'), dataIndex: 'aggregate_reasoning_score', key: 'score',
       render: v => <Text strong>{v.toFixed(1)}</Text>,
     },
-    { title: 'Rounds', dataIndex: 'rounds_evaluated', key: 'rounds' },
+    { title: t('instructor.rounds'), dataIndex: 'rounds_evaluated', key: 'rounds' },
     {
-      title: 'Dominant Pattern', dataIndex: 'dominant_pattern', key: 'pattern',
-      render: v => PATTERN_LABELS[v] || v,
+      title: t('instructor.reasoning_col_dominant_pattern'), dataIndex: 'dominant_pattern', key: 'pattern',
+      render: v => patternLabel(v, t),
     },
     {
-      title: 'Consistency', dataIndex: 'pattern_consistency', key: 'consistency',
+      title: t('instructor.reasoning_col_consistency'), dataIndex: 'pattern_consistency', key: 'consistency',
       render: v => `${(v * 100).toFixed(0)}%`,
     },
     {
-      title: 'Trend', dataIndex: 'score_trend', key: 'trend',
+      title: t('market_research.trend'), dataIndex: 'score_trend', key: 'trend',
       render: v => {
         const colors = { improving: '#52c41a', stable: '#1677ff', declining: '#ff4d4f' };
         return <Tag color={colors[v] || '#999'}>{v}</Tag>;
@@ -244,28 +256,28 @@ const ReasoningAnalysisTab = ({ gameId }) => {
   const tabItems = [
     {
       key: 'scores',
-      label: 'Team Scores',
+      label: t('instructor.reasoning_tab_team_scores'),
       children: <ReasoningTeamTable gameId={gameId} round={selectedRound} />,
     },
     {
       key: 'comparison',
-      label: 'Comparison',
+      label: t('instructor.reasoning_tab_comparison'),
       children: <ReasoningComparison gameId={gameId} round={selectedRound} />,
     },
     {
       key: 'aggregate',
-      label: 'Competition Summary',
+      label: t('instructor.reasoning_tab_competition'),
       children: <ReasoningAggregate gameId={gameId} />,
     },
   ];
 
   return (
     <Card
-      title="Reasoning Analysis"
+      title={t('instructor.reasoning_analysis')}
       extra={
         <Space>
           <Button icon={<DownloadOutlined />} size="small" onClick={handleExport}>
-            Export CSV
+            {t('results_page.export_csv')}
           </Button>
         </Space>
       }

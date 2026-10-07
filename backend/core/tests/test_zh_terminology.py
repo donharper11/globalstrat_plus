@@ -40,6 +40,11 @@ COMPETITION_KEYS = {
     'cohort_messages:competition_game_not_deletable',
     # A heat cannot be reset either (W-CE-26): the same sentence, for reset.
     'cohort_messages:competition_game_not_resettable',
+    # The Reasoning Analysis panel's third tab aggregates every team in the
+    # heat, so 竞赛汇总 is the competition as such and not a game. Added when
+    # that panel's 27 English strings were brought into the catalogue
+    # (2026-10-07, V2-146).
+    'frontend:instructor.reasoning_tab_competition',
 }
 
 

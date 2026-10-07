@@ -35,7 +35,20 @@ class AllianceStateView(APIView):
                 'description': get_localized_field(p, 'description', language),
                 'satisfaction': float(a.satisfaction),
                 'feature_satisfaction': a.feature_satisfaction or {},
-                'preferences': p.preferences,
+                # The partner's name and description beside this line both go
+                # through `get_localized_field`; these did not, because
+                # `preferences` is a JSONField and `get_localized_field` cannot
+                # reach inside one. A Chinese reader got the partner in Chinese
+                # and the questions it judges them on in English. The scenario
+                # now authors `description_zh` in each preference dict and this
+                # picks it for the reader, falling back to the English the
+                # engine itself reads.
+                'preferences': [
+                    dict(pref, description=(
+                        (pref.get('description_zh') or pref.get('description', ''))
+                        if language == 'zh-CN' else pref.get('description', '')))
+                    for pref in (p.preferences or [])
+                ],
                 'status': a.status,
                 'benefit_delivery_pct': float(a.benefit_delivery_pct),
                 'renegotiation_demands': a.renegotiation_demands,

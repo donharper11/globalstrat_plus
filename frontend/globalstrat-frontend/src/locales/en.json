@@ -565,7 +565,12 @@
     "units_label": "units",
     "revoke_penalty_warning": "Revoking triggers a {{rounds}}-round investor confidence penalty ({{drop}}).",
     "revocation_penalty_active": "Revocation penalty active: {{rounds}} round(s) remaining",
-    "hq_count": "HQ: {{count}}"
+    "hq_count": "HQ: {{count}}",
+    "revoke_investor_penalty": "{{rounds}}-round investor confidence penalty ({{pct}}%)",
+    "revoke_regulator_penalty": "Regulator satisfaction drop ({{pct}}%)",
+    "revoke_turnover_spike": "Turnover spike +{{pct}}%",
+    "revoke_news": "News: “{{headline}}”",
+    "amplifier_label": "Amplifier"
   },
   "market_strategy": {
     "title": "Market Strategy",
@@ -986,7 +991,9 @@
     "amount_entry_hint": "Enter dollar amounts directly. Examples: 2500000, $2,500,000, or 2.5M.",
     "setup_cost": "Setup: {{cost}}",
     "regulators_modifier": "Regulators: {{value}}",
-    "over_allocated": "Allocated budget {{allocated}} exceeds the Round {{round}} operating budget {{available}}."
+    "over_allocated": "Allocated budget {{allocated}} exceeds the Round {{round}} operating budget {{available}}.",
+    "audit_risk_sentence": "{{pct}}% audit risk per round — expected audit cost about {{cost}} per audit.",
+    "expected_value_over_rounds": "Expected value over {{rounds}} remaining rounds:"
   },
   "results": {
     "performance_overview": "Performance Overview",
@@ -2330,7 +2337,28 @@
     "game_name_placeholder": "e.g. Spring 2026 Simulation",
     "csv_example_placeholder": "student_id,display_name,email\n12345,John Doe,john@university.edu",
     "reasoning_analysis": "Reasoning Analysis",
-    "export_failed": "Export failed"
+    "export_failed": "Export failed",
+    "reasoning_col_deterministic": "Deterministic",
+    "reasoning_col_responsiveness": "Responsiveness",
+    "reasoning_col_trajectory": "Trajectory",
+    "reasoning_col_justification": "Justification",
+    "reasoning_col_pattern": "Pattern",
+    "reasoning_col_band": "Band",
+    "reasoning_col_avg_score": "Avg Score",
+    "reasoning_col_dominant_pattern": "Dominant Pattern",
+    "reasoning_col_consistency": "Consistency",
+    "reasoning_tab_team_scores": "Team Scores",
+    "reasoning_tab_comparison": "Comparison",
+    "reasoning_tab_competition": "Competition Summary",
+    "reasoning_empty_teams": "No reasoning analysis data available",
+    "reasoning_empty_comparison": "No comparison data",
+    "reasoning_empty_aggregate": "No aggregate data",
+    "reasoning_round_label": "Round {{round}}",
+    "reasoning_pattern_consistent": "Consistent Executor",
+    "reasoning_pattern_reactive": "Reactive Adjuster",
+    "reasoning_pattern_aggressive": "Aggressive Expander",
+    "reasoning_pattern_conservative": "Conservative Optimizer",
+    "reasoning_pattern_erratic": "Erratic"
   },
   "route_recovery": {
     "title": "This page needs your active game",
@@ -2504,7 +2532,14 @@
       "status": "Status",
       "validation_row": "Trade finance row {{row}}: choose a segment and market.",
       "saved_toast": "Trade finance saved.",
-      "load_error": "Unable to load trade finance data."
+      "load_error": "Unable to load trade finance data.",
+      "short_hedge_note": "A short receivables hedge gains when the foreign currency weakens.",
+      "no_positions_here": "No FX hedge positions yet — set a hedge ratio on the Trade Finance page and advance a round.",
+      "payment_posture": "Payment & export-credit posture",
+      "buyer_instruments_short": "Buyer payment instruments",
+      "none_set": "None set.",
+      "sinosure_row": "Market {{market}}: {{pct}}%",
+      "no_sinosure": "No export-credit insurance set."
     },
     "inventory": {
       "title": "Inventory & Resilience",

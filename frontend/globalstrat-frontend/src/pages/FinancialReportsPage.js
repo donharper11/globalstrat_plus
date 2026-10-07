@@ -792,43 +792,47 @@ const TradeFinanceFXTab = ({ gameId, teamId, round }) => {
   const sinosure = tf.sinosure || [];
   const instruments = [...new Set(tfRows.map(r => r.buyer_payment_instrument).filter(Boolean))];
 
+  // This whole tab was written in hard-coded English, including its table
+  // headers and both empty states, so a Chinese reader opened it and read
+  // nothing but English. Most of the wording already existed, translated,
+  // under `sc.trade_finance.*` -- the Trade Finance page was localised
+  // properly and this tab restated it -- so it is reused rather than
+  // retranslated; only the five strings peculiar to this tab are new.
   return (
     <div>
-      <Title level={5} style={{ marginTop: 0 }}>Open FX hedge positions</Title>
+      <Title level={5} style={{ marginTop: 0 }}>{t('sc.trade_finance.hedge_positions')}</Title>
       <Text type="secondary" style={{ fontSize: 12 }}>
-        Hedges open against your foreign receivables at round-advance, mark to market each round, and settle
-        at maturity — realized P&amp;L flows into net income. A short receivables hedge gains when the foreign
-        currency weakens.
+        {t('sc.trade_finance.hedge_help')} {t('sc.trade_finance.short_hedge_note')}
       </Text>
       {hedges.length === 0
-        ? <Empty style={{ margin: '12px 0' }} description="No FX hedge positions yet — set a hedge ratio on the Trade Finance page and advance a round." />
+        ? <Empty style={{ margin: '12px 0' }} description={t('sc.trade_finance.no_positions_here')} />
         : (
           <Table rowKey="id" size="small" pagination={false} scroll={{ x: true }} style={{ marginTop: 8 }}
             dataSource={hedges}
             columns={[
-              { title: 'Pair', dataIndex: 'currency_pair', render: (v) => <Text strong>{v}</Text> },
-              { title: 'Notional', dataIndex: 'notional', render: money },
-              { title: 'Locked rate', dataIndex: 'locked_rate', render: (v) => Number(v).toFixed(4) },
-              { title: 'Mark-to-market', dataIndex: 'mtm_current', render: signed },
-              { title: 'Realized P&L', dataIndex: 'realized_pnl', render: (v) => (v == null ? <Text type="secondary">—</Text> : signed(v)) },
-              { title: 'Status', dataIndex: 'status', render: (v) => <Tag color={v === 'open' ? 'blue' : v === 'matured' ? 'green' : 'default'}>{v}</Tag> },
+              { title: t('sc.trade_finance.pair'), dataIndex: 'currency_pair', render: (v) => <Text strong>{v}</Text> },
+              { title: t('sc.trade_finance.notional'), dataIndex: 'notional', render: money },
+              { title: t('sc.trade_finance.locked_rate'), dataIndex: 'locked_rate', render: (v) => Number(v).toFixed(4) },
+              { title: t('sc.trade_finance.mark_to_market'), dataIndex: 'mtm_current', render: signed },
+              { title: t('sc.trade_finance.realized_pnl'), dataIndex: 'realized_pnl', render: (v) => (v == null ? <Text type="secondary">—</Text> : signed(v)) },
+              { title: t('sc.trade_finance.status'), dataIndex: 'status', render: (v) => <Tag color={v === 'open' ? 'blue' : v === 'matured' ? 'green' : 'default'}>{v}</Tag> },
             ]} />
         )}
 
-      <Title level={5} style={{ marginTop: 20 }}>Payment & export-credit posture</Title>
+      <Title level={5} style={{ marginTop: 20 }}>{t('sc.trade_finance.payment_posture')}</Title>
       <Row gutter={16}>
         <Col xs={24} md={12}>
-          <Card size="small" title="Buyer payment instruments">
+          <Card size="small" title={t('sc.trade_finance.buyer_instruments_short')}>
             {instruments.length ? <Space wrap>{instruments.map(i => <Tag key={i}>{i.replace(/_/g, ' ')}</Tag>)}</Space>
-              : <Text type="secondary">None set.</Text>}
+              : <Text type="secondary">{t('sc.trade_finance.none_set')}</Text>}
           </Card>
         </Col>
         <Col xs={24} md={12}>
-          <Card size="small" title="Export-credit (Sinosure) coverage">
+          <Card size="small" title={t('sc.trade_finance.sinosure')}>
             {sinosure.length
               ? <Space direction="vertical" size={0}>{sinosure.map((s, i) => (
-                  <Text key={i}>Market {s.market}: {s.coverage_pct}%</Text>))}</Space>
-              : <Text type="secondary">No export-credit insurance set.</Text>}
+                  <Text key={i}>{t('sc.trade_finance.sinosure_row', { market: s.market, pct: s.coverage_pct })}</Text>))}</Space>
+              : <Text type="secondary">{t('sc.trade_finance.no_sinosure')}</Text>}
           </Card>
         </Col>
       </Row>

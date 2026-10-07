@@ -119,6 +119,34 @@ COMMUNICATION_CRITERION_LABELS = {
 }
 
 
+# The six audiences a communication assignment can address. `audience_display`
+# served `Model.get_audience_display()`, which is the English half of
+# `AUDIENCE_CHOICES` and nothing else, so a Chinese student was told to write to
+# the "Board of Directors" on a page whose every other word was Chinese. Same
+# shape as the criterion labels above, and for the same reason: the six tokens
+# are fixed in every scenario this repository ships.
+COMMUNICATION_AUDIENCE_LABELS = {
+    'BOARD': {'en': 'Board of Directors', 'zh-CN': '董事会'},
+    'EMPLOYEES': {'en': 'All Employees', 'zh-CN': '全体员工'},
+    'INVESTORS': {'en': 'Investor Community', 'zh-CN': '投资者群体'},
+    'REGULATORS': {'en': 'Regulatory Authorities', 'zh-CN': '监管机构'},
+    'PUBLIC': {'en': 'Press / Public Statement', 'zh-CN': '媒体／公开声明'},
+    'PARTNER': {'en': 'Alliance / JV Partner', 'zh-CN': '联盟／合资伙伴'},
+}
+
+
+def communication_audience_label(audience, display_fallback='', language='en'):
+    """An audience's name in the reader's language.
+
+    Falls back to whatever the model's own display value is, so an audience
+    this table has not been taught still renders a name rather than a token.
+    """
+    labels = COMMUNICATION_AUDIENCE_LABELS.get(audience)
+    if labels is None:
+        return display_fallback or (audience or '').replace('_', ' ').title()
+    return labels.get(language, labels['en'])
+
+
 def communication_criterion_label(criterion, language='en'):
     """A criterion's authored name, or its token prettified.
 
