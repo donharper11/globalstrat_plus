@@ -6,9 +6,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.models.core import Game, Team
+from core.models.scenario import MarketDefinition
 from core.models.cc32f_models import (
     GovernmentProfile, GovernmentSatisfaction, GovernmentAction,
 )
+from core.utils.participant_messages import government_action_narrative
 from core.utils.localization import get_localized_field, get_user_language
 
 
@@ -45,10 +47,31 @@ class GovernmentRelationsView(APIView):
             for a in recent_actions:
                 if a.target_team_id is not None and a.target_team_id != team.id:
                     continue  # Skip actions targeted at other teams
+                # V2-148: the stored sentence is English, composed at
+                # resolution. Rebuild it for this reader from the facts the row
+                # carries; `government_action_narrative` returns the stored one
+                # for any shape it is not taught.
+                # A market-wide bilateral shift carries no origin FK; the
+                # origin is a market CODE in `parameters`. Resolve it to a
+                # market so the sentence names it in the reader's language
+                # rather than printing the code.
+                origin = a.target_origin
+                if origin is None:
+                    origin_code = (a.parameters or {}).get('origin_market')
+                    if origin_code:
+                        origin = MarketDefinition.objects.filter(
+                            scenario=game.scenario, code=origin_code).first()
                 actions_list.append({
                     'round': a.round.round_number if a.round else None,
                     'action_type': a.action_type,
-                    'narrative': a.narrative,
+                    'narrative': government_action_narrative(
+                        a.action_type, a.parameters, language,
+                        stored=a.narrative,
+                        market_name=get_localized_field(
+                            gp.market, 'name', language),
+                        origin_name=(get_localized_field(origin, 'name', language)
+                                     if origin is not None else '')),
+                    'narrative_as_stored': a.narrative,
                     'parameters': a.parameters,
                     'target_is_me': a.target_team_id == team.id if a.target_team_id else False,
                 })

@@ -18,6 +18,7 @@ from core.models.scenario import (
 from core.models.results import EventInstance
 from core.models.decisions import DecisionSubmission
 from core.engine.events import event_narrative_for_reader
+from core.utils.participant_messages import government_action_narrative
 from core.utils.localization import get_localized_field, get_team_language
 
 
@@ -382,11 +383,20 @@ class TickerView(APIView):
                 game=game, round__round_number=current_round,
                 target_team__isnull=True,
             ).select_related('market')[:3]:
+                # V2-148: the same stored English sentence the Government
+                # Relations panel prints, in a student's feed. Rebuilt for the
+                # reader from the row's own facts; the stored sentence is the
+                # fallback, and the prettified action type is the fallback's.
                 items.append({
                     'type': 'government',
                     'priority': 'medium',
                     'icon': '\U0001f4dc',
-                    'text': ga.narrative or ga.action_type.replace('_', ' '),
+                    'text': (government_action_narrative(
+                        ga.action_type, ga.parameters, language,
+                        stored=ga.narrative or '',
+                        market_name=get_localized_field(
+                            ga.market, 'name', language))
+                        or ga.action_type.replace('_', ' ')),
                     'market': ga.market.code,
                 })
         except Exception:
