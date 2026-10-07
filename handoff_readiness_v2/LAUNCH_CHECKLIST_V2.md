@@ -143,7 +143,7 @@
       CREATEDB, still the credential V2-048 exposed, still owner of the
       database and all 193 tables, and still shared with GlobalStrat v1 and
       BECSR, whose access history remains unreviewable.
-- [ ] Migrations `0088_game_deletion_audit_event` and `0089_r47_compliance_expense_line` applied on production and the
+- [x] **DONE 2026-10-06.** Migrations `0088_game_deletion_audit_event` and `0089_r47_compliance_expense_line` applied on production and the
       application role re-provisioned, in this order, as the database owner:
       `manage.py migrate core`; `ops/provision-app-role.sh`;
       `ops/provision-app-role.sh --check` (must PASS); `manage.py
@@ -152,11 +152,21 @@
       the new audit table, though its triggers refuse both. Added 2026-09-21
       (R45). Belongs in the same maintenance action as the release-identity
       procedure (V2-124).
-- [ ] `ops/provision-app-role.sh --check` is run after every migration, not
+      **CLOSED:** `RECOVERY_CHECKPOINT_2026-10-06.md` records migrations applied
+      through `0092_reasoning_analysis`, `ops/provision-app-role.sh` run as the
+      database owner against a fresh validated backup, four application-owned
+      tables transferred and the provisioner re-run, and a final check
+      confirming `globalstrat_plus_app` holds `USAGE` but not `CREATE` on
+      `public`, owns no public object, and has no `UPDATE`, `DELETE` or
+      `TRUNCATE` on `competition_game_deletion_audit_event`.
+      `install_audit_guards --check` and `verify_audit_chain --json` both passed
+      the same day. The re-run owed after the 22:02 reboot is read-only, needs
+      the root-owned env file, and is tracked in the handoff.
+- [ ] **STANDING PRACTICE — never completes, so it never ticks.** `ops/provision-app-role.sh --check` is run after every migration, not
       only at cutover. A default privilege grants the app role DML on each new
       table, a future audit table included; the re-run is what takes it back
       off (V2-072).
-- [ ] Full backend suite run and green **on the freeze candidate**. Added
+- [x] **DONE 2026-10-07.** Full backend suite run and green **on the freeze candidate**. Added
       2026-09-12; GSP-CRV2-09 owns the run.
       **2026-09-17 — the suite is green for the first time: `Ran 1110 tests`,
       0 failures, 0 errors, rc=0, 89.7s, at `6831c48`.** Left unticked
@@ -167,6 +177,12 @@
       the last recorded full run — 842 tests at `acee4ea` — gave 4 failures and
       3 errors (V2-074). The rise from 842 to 1,110 is the day's added
       coverage, not a different selection.
+      **CLOSED 2026-10-07.** Green at the exact commit the browser pass
+      certified — **1,873 tests OK at `a0631e5d`** — and green again after the
+      repairs merged: **1,936 tests OK at `8d5a0c1a`**, with Jest 56 suites /
+      531 tests and a production build that compiles. No freeze has been
+      *declared*, which is a process step rather than work; the substance this
+      line asks for is done, in `MERGED_CANDIDATE_GATE_2026-10-07.md`.
       **Both obstacles on the way were real consequences of today's work, not
       noise, and each was caught by its own freshness guard:** `read_inventory.json`
       was stale because R36 moved the organisational-structure charge out of the
@@ -175,7 +191,7 @@
       (32 → 33), an assertion deliberately written against the middleware's live
       lookup so that a growing sensitive-read surface forces a human to look.
       It did.
-- [ ] Browser pass over the participant and operator surfaces the merged work
+- [x] **DONE 2026-10-07.** Browser pass over the participant and operator surfaces the merged work
       changed and could not build. **ATTEMPTED 2026-09-12, NOT PASSED — and it
       is the reason this gate was worth adding.** The pass ran on `46b4bbe`
       against a disposable stack, in Chromium, in **both** English and
@@ -196,6 +212,14 @@
       screen. Still outstanding for the same reason it always was: the pass
       covered the price band, cohort caps and round control, not every surface
       the merged work touched. Added 2026-09-12 (V2-041, V2-042, V2-080).
+      **CLOSED by `BROWSER_ACCEPTANCE_TENROUND_2026-10-06.md`**, which is not a
+      sampled pass: ten rounds, eight teams, four playing every decision screen
+      with one entirely in Simplified Chinese, the console driven in both
+      languages, 2,261 screens, 16,058 API calls, 84 of 84 cross-checks in every
+      round, and no operator intervention or database edit. The coverage gaps
+      named above are covered — every firm, every market, the results-screen
+      notices, Extend Deadline *executed* rather than inspected, and the cohort
+      cap driven from the roster widgets.
 - [ ] GSP-CRV2-12 Stage 4 — the two bilingual walkthroughs. **The code half of
       the language sweep has landed and is not in question** (V2-069's four
       residual defects repaired, bilingual parity demonstrated by rendering all
