@@ -147,6 +147,148 @@ def communication_audience_label(audience, display_fallback='', language='en'):
     return labels.get(language, labels['en'])
 
 
+# ---------------------------------------------------------------------------
+# Government-agent prose (V2-148)
+# ---------------------------------------------------------------------------
+# `GovernmentAgent._generate_action_narrative` composes an English sentence at
+# RESOLUTION and stores it on `GovernmentAction.narrative`, and the student's
+# Government Relations panel prints it. By the time a reader sees it the words
+# are data, so switching language cannot touch them: the ten-round pass on
+# candidate `a0631e5d` caught *"Government tightening standards due to poor
+# foreign firm compliance"* on a Simplified-Chinese screen.
+#
+# The sentence is rebuilt HERE, at read time, from the facts the row already
+# carries -- `action_type`, the structured values in `parameters`, and the
+# market and origin it names -- which is what `narratives` already does for
+# briefings: *"re-rendered for the reader from figures it already stores; no
+# stored row is written and no envelope moves."* The stored English stays as the
+# historical record and nothing hashed changes.
+#
+# Anything this table has not been taught falls back to the stored sentence, so
+# a new agent string degrades to today's behaviour instead of vanishing.
+
+# The six incentives `_select_incentive` can grant, keyed by its own `type`.
+GOVERNMENT_INCENTIVE_LABELS = {
+    'tax_holiday': {
+        'en': 'a tax holiday for significant local employment',
+        'zh-CN': '因显著带动本地就业而给予的免税期'},
+    'land_grant': {
+        'en': 'a land grant for manufacturing investment',
+        'zh-CN': '为制造业投资提供的土地划拨'},
+    'expedited_permits': {
+        'en': 'fast-tracked approval for a technology partnership',
+        'zh-CN': '技术合作项目的审批快速通道'},
+    'green_subsidy': {
+        'en': 'an environmental compliance subsidy',
+        'zh-CN': '环保合规补贴'},
+    'regulatory_fast_track': {
+        'en': 'priority processing as a major tax contributor',
+        'zh-CN': '作为主要纳税企业获得的优先办理'},
+    'export_subsidy': {
+        'en': 'an export promotion subsidy for a local production hub',
+        'zh-CN': '为本地生产基地提供的出口促进补贴'},
+}
+
+# The policy areas a government scores a firm on. `_get_lowest_objective`
+# returns one of these keys as the `reason` on a warning.
+GOVERNMENT_OBJECTIVE_LABELS = {
+    'local_employment': {'en': 'local employment', 'zh-CN': '本地就业'},
+    'local_manufacturing': {'en': 'local manufacturing',
+                            'zh-CN': '本地制造'},
+    'technology_transfer': {'en': 'technology transfer',
+                            'zh-CN': '技术转移'},
+    'esg_compliance': {'en': 'ESG compliance', 'zh-CN': 'ESG 合规'},
+    'tax_revenue': {'en': 'tax contribution', 'zh-CN': '税收贡献'},
+    'export_contribution': {'en': 'export contribution',
+                            'zh-CN': '出口贡献'},
+    'general_compliance': {'en': 'general compliance', 'zh-CN': '总体合规'},
+}
+
+
+def government_incentive_label(incentive_type, language='en'):
+    labels = GOVERNMENT_INCENTIVE_LABELS.get(incentive_type)
+    if labels is None:
+        return None
+    return labels.get(language, labels['en'])
+
+
+def government_objective_label(objective, language='en'):
+    labels = GOVERNMENT_OBJECTIVE_LABELS.get(objective)
+    if labels is None:
+        return (objective or '').replace('_', ' ')
+    return labels.get(language, labels['en'])
+
+
+def government_action_narrative(action_type, parameters, language='en',
+                               stored='', market_name='', origin_name=''):
+    """What a government did, in the reader's language.
+
+    Returns `stored` unchanged for any shape this is not taught, so a sentence
+    the agent learns to write tomorrow still reaches the screen.
+    """
+    params = parameters if isinstance(parameters, dict) else {}
+    kind = (action_type or '').lower()
+    subtype = params.get('type')
+
+    def say(key, **values):
+        return participant_message(key, language=language, **values)
+
+    if kind == 'grant_incentive':
+        incentive = government_incentive_label(subtype, language)
+        if incentive is None:
+            return stored
+        return say('govt_narrative_incentive', incentive=incentive)
+
+    if kind == 'procurement_award':
+        value = params.get('contract_value')
+        if value is None:
+            return stored
+        return say('govt_narrative_procurement',
+                   amount='${:,.0f}'.format(float(value)))
+
+    if kind == 'warning_issued':
+        # The reason is an objective KEY, but `_resolve_cross_agent_conflicts`
+        # appends " (moderated to prevent capital flight)" to it when a
+        # government softens a warning, and it sets `softened` alongside. Read
+        # the flag rather than the English, and take the key off the front --
+        # a real row reads `local_employment (moderated to prevent capital
+        # flight)`, and treating the whole thing as a key left that clause in
+        # English inside the Chinese sentence.
+        objective = government_objective_label(
+            str(params.get('reason') or '').split('(')[0].strip(), language)
+        if params.get('softened'):
+            return say('govt_narrative_warning_softened', objective=objective)
+        return say('govt_narrative_warning', objective=objective)
+
+    if kind == 'access_restriction':
+        return say('govt_narrative_access_restriction',
+                   percent=int(float(params.get('magnitude', 0.3)) * 100))
+
+    if kind == 'access_restored':
+        return say('govt_narrative_access_restored')
+
+    if kind == 'regulatory_tightening':
+        if subtype == 'compliance_requirement_increase':
+            return say('govt_narrative_tightening_compliance')
+        return stored
+
+    if kind == 'regulatory_relaxation':
+        if subtype == 'tariff_reduction':
+            return say('govt_narrative_relaxation_reward')
+        return stored
+
+    if kind == 'bilateral_shift':
+        origin = origin_name or params.get('origin_market') or ''
+        if subtype == 'trade_facilitation':
+            return say('govt_narrative_bilateral_improving',
+                       market=market_name, origin=origin)
+        if subtype == 'increased_screening':
+            return say('govt_narrative_bilateral_screening', origin=origin)
+        return stored
+
+    return stored
+
+
 def communication_criterion_label(criterion, language='en'):
     """A criterion's authored name, or its token prettified.
 
@@ -161,6 +303,49 @@ def communication_criterion_label(criterion, language='en'):
 
 
 MESSAGES = {
+    # V2-148: the government-agent sentences, rebuilt for the reader rather
+    # than printed as the engine stored them.
+    'govt_narrative_incentive': {
+        'en': 'Incentive granted: {incentive}.',
+        'zh-CN': '已给予激励：{incentive}。',
+    },
+    'govt_narrative_procurement': {
+        'en': 'Procurement contract worth {amount} awarded.',
+        'zh-CN': '已授予价值 {amount} 的政府采购合同。',
+    },
+    'govt_narrative_warning': {
+        'en': 'Official warning: improve {objective}.',
+        'zh-CN': '正式警告：请改善{objective}。',
+    },
+    'govt_narrative_warning_softened': {
+        'en': 'Official warning: improve {objective}. The warning was '
+              'moderated to avoid driving investment out of the market.',
+        'zh-CN': '正式警告：请改善{objective}。为避免资本外流，该警告已从轻处理。',
+    },
+    'govt_narrative_access_restriction': {
+        'en': 'Access restriction applied: sales capped at {percent}%.',
+        'zh-CN': '已实施市场准入限制：销售上限为 {percent}%。',
+    },
+    'govt_narrative_access_restored': {
+        'en': 'Access restrictions lifted.',
+        'zh-CN': '市场准入限制已解除。',
+    },
+    'govt_narrative_tightening_compliance': {
+        'en': 'Standards tightened after poor compliance by foreign firms.',
+        'zh-CN': '因外资企业合规表现不佳，监管标准已收紧。',
+    },
+    'govt_narrative_relaxation_reward': {
+        'en': 'Requirements eased to reward compliant foreign investment.',
+        'zh-CN': '为奖励外商投资的良好合规表现，相关要求已放宽。',
+    },
+    'govt_narrative_bilateral_improving': {
+        'en': 'Bilateral trade relations improving between {market} and {origin}.',
+        'zh-CN': '{market} 与 {origin} 之间的双边贸易关系正在改善。',
+    },
+    'govt_narrative_bilateral_screening': {
+        'en': 'Scrutiny increased on firms from {origin}.',
+        'zh-CN': '对来自 {origin} 的企业的审查已加强。',
+    },
     'reasoning_not_available': {
         'en': 'Strategic reasoning analysis will be available after this round is processed.',
         'zh-CN': '本回合处理完成后即可查看战略推理分析。',
