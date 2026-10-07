@@ -269,7 +269,46 @@ def _fallback_evaluation(team_comm):
         'consistency_flags': [],
         'framework_references': [],
         'overall_feedback': text['overall'],
+        # Marked, so a reader whose language differs from the team's can be
+        # served this in their own. Nothing here is model output -- every
+        # sentence comes from `_FALLBACK_TEXT` -- so it can be re-rendered at
+        # read time, which model prose cannot.
+        'fallback': True,
     }
+
+
+def localized_fallback_evaluation(evaluation, language):
+    """Re-render a FALLBACK evaluation's fixed sentences in `language`.
+
+    The ten-round browser pass on candidate `a0631e5d` had a
+    Simplified-Chinese student read *"Automated evaluation unavailable. Score
+    based on submission completeness."* `_fallback_evaluation` asks for the
+    TEAM's language and a team's language is its first-enrolled member's, so a
+    mixed team writes its artefacts in one member's language. **What language a
+    shared artefact should use when members differ is a separate, open
+    question** and this does not answer it: it only takes the case where the
+    answer costs nothing, because the text is a template and the reader can
+    have it in their own language without changing what was stored.
+
+    A model-generated evaluation is left exactly as stored. It is prose in the
+    language it was generated in and re-rendering it is not possible.
+    """
+    if not isinstance(evaluation, dict) or not evaluation.get('fallback'):
+        return evaluation
+    text = _FALLBACK_TEXT.get(language)
+    if text is None:
+        return evaluation
+    served = dict(evaluation)
+    served['criteria_scores'] = {
+        name: dict(score, feedback=text['criterion'])
+        for name, score in (evaluation.get('criteria_scores') or {}).items()
+        if isinstance(score, dict)}
+    if evaluation.get('strengths'):
+        served['strengths'] = [text['strength']]
+    if evaluation.get('gaps'):
+        served['gaps'] = [text['gap']]
+    served['overall_feedback'] = text['overall']
+    return served
 
 
 def _gather_team_context(team, game, round_obj):

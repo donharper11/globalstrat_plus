@@ -994,7 +994,7 @@ const CorporateStrategyPage = () => {
                             )}
                             {ct.amplifier && (
                               <div style={{ marginTop: 4, color: '#1677ff' }}>
-                                {'\u2726'} Amplifier: {ct.amplifier.description}
+                                {'\u2726'} {t('corporate_strategy.amplifier_label')}: {ct.amplifier.description}
                               </div>
                             )}
                           </div>
@@ -1047,15 +1047,24 @@ const CorporateStrategyPage = () => {
                 <div>
                   <p>{t('corporate_strategy.revoke_warning', { name: revokeTarget.ct.name, round: revokeTarget.state?.activated_round || '?' })}</p>
                   <ul style={{ fontSize: 13 }}>
-                    <li>{revokeTarget.ct.revocation_penalty?.duration_rounds || 2}-round investor confidence penalty ({((revokeTarget.ct.revocation_penalty?.investor_confidence_drop || 0) * 100).toFixed(0)}%)</li>
+                    <li>{t('corporate_strategy.revoke_investor_penalty', {
+                      rounds: revokeTarget.ct.revocation_penalty?.duration_rounds || 2,
+                      pct: ((revokeTarget.ct.revocation_penalty?.investor_confidence_drop || 0) * 100).toFixed(0),
+                    })}</li>
                     {revokeTarget.ct.revocation_penalty?.regulator_penalty && (
-                      <li>Regulator satisfaction drop ({((revokeTarget.ct.revocation_penalty.regulator_penalty) * 100).toFixed(0)}%)</li>
+                      <li>{t('corporate_strategy.revoke_regulator_penalty', {
+                        pct: ((revokeTarget.ct.revocation_penalty.regulator_penalty) * 100).toFixed(0),
+                      })}</li>
                     )}
                     {revokeTarget.ct.revocation_penalty?.talent_turnover_spike && (
-                      <li>Turnover spike +{((revokeTarget.ct.revocation_penalty.talent_turnover_spike) * 100).toFixed(0)}%</li>
+                      <li>{t('corporate_strategy.revoke_turnover_spike', {
+                        pct: ((revokeTarget.ct.revocation_penalty.talent_turnover_spike) * 100).toFixed(0),
+                      })}</li>
                     )}
                     {revokeTarget.ct.revocation_penalty?.news_headline && (
-                      <li>News: &ldquo;{revokeTarget.ct.revocation_penalty.news_headline}&rdquo;</li>
+                      <li>{t('corporate_strategy.revoke_news', {
+                        headline: revokeTarget.ct.revocation_penalty.news_headline,
+                      })}</li>
                     )}
                   </ul>
                   <p>{t('corporate_strategy.revoke_savings', { cost: fmt(revokeTarget.ct.ongoing_cost_per_round) })}</p>

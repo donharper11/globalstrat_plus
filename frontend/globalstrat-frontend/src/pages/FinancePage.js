@@ -757,8 +757,15 @@ const FinancePage = () => {
                     {s.audit_probability_per_round > 0 && (
                       <div style={{ marginTop: 6, fontSize: 11 }}>
                         <Text type="secondary">
-                          {(s.audit_probability_per_round * 100).toFixed(0)}% audit risk/round — expected audit cost ~{fmt(estAuditCost)} per audit.
-                          {roundsRemaining > 0 && ` Expected value over ${roundsRemaining} remaining rounds: `}
+                          {/* Was hard-coded English either side of the two
+                              figures, with only the verdict below going
+                              through the catalogue, so a Chinese reader got a
+                              Chinese verdict inside an English sentence. */}
+                          {t('finance.audit_risk_sentence', {
+                            pct: (s.audit_probability_per_round * 100).toFixed(0),
+                            cost: fmt(estAuditCost),
+                          })}
+                          {roundsRemaining > 0 && ` ${t('finance.expected_value_over_rounds', { rounds: roundsRemaining })} `}
                           {roundsRemaining > 0 && (
                             <Text strong style={{ color: (estNetBenefit * roundsRemaining - estAuditCost) > 0 ? '#16A34A' : '#DC2626' }}>
                               {(estNetBenefit * roundsRemaining - estAuditCost) > 0 ? t('finance.net_positive') : t('finance.net_negative_if_audited')}

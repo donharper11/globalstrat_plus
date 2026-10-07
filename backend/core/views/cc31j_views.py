@@ -39,7 +39,18 @@ class GovernanceContextView(APIView):
                 'interactions': ct.interactions or [],
                 'revocation_penalty': ct.revocation_penalty or {},
                 'prerequisite': ct.prerequisite,
-                'amplifier': ct.amplifier,
+                # The page prints `amplifier.description` to the player, so
+                # it is localised here like the fields above it. The
+                # `interactions` blob beside it is authoring content the page
+                # does not render -- what a player reads about an interaction
+                # is built by `_evaluate_all_interactions` from the bilingual
+                # catalogue -- so it is served as stored.
+                'amplifier': (
+                    dict(ct.amplifier,
+                         description=(ct.amplifier.get('description_zh')
+                                      or ct.amplifier.get('description', '')))
+                    if language == 'zh-CN' and isinstance(ct.amplifier, dict)
+                    else ct.amplifier),
                 'display_order': ct.display_order,
             })
 

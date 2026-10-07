@@ -565,7 +565,12 @@
     "units_label": "单位",
     "revoke_penalty_warning": "撤销将触发持续 {{rounds}} 回合的投资者信心惩罚（{{drop}}）。",
     "revocation_penalty_active": "撤销惩罚生效中：剩余 {{rounds}} 回合",
-    "hq_count": "总部：{{count}}"
+    "hq_count": "总部：{{count}}",
+    "revoke_investor_penalty": "投资者信心受损，持续 {{rounds}} 个回合（{{pct}}%）",
+    "revoke_regulator_penalty": "监管机构满意度下降（{{pct}}%）",
+    "revoke_turnover_spike": "员工流失率上升 +{{pct}}%",
+    "revoke_news": "新闻：“{{headline}}”",
+    "amplifier_label": "放大效应"
   },
   "market_strategy": {
     "title": "市场战略",
@@ -986,7 +991,9 @@
     "amount_entry_hint": "请直接输入美元金额。例如：2500000、$2,500,000 或 2.5M。",
     "setup_cost": "设置费用：{{cost}}",
     "regulators_modifier": "监管机构：{{value}}",
-    "over_allocated": "已分配预算 {{allocated}} 超出第 {{round}} 回合的运营预算 {{available}}。"
+    "over_allocated": "已分配预算 {{allocated}} 超出第 {{round}} 回合的运营预算 {{available}}。",
+    "audit_risk_sentence": "每回合 {{pct}}% 的被稽查概率——每次稽查的预计成本约为 {{cost}}。",
+    "expected_value_over_rounds": "剩余 {{rounds}} 个回合的预期价值："
   },
   "results": {
     "performance_overview": "绩效概览",
@@ -2324,7 +2331,28 @@
     "game_name_placeholder": "例如：2026 春季模拟",
     "csv_example_placeholder": "student_id,display_name,email\n12345,张三,zhangsan@university.edu",
     "reasoning_analysis": "推理分析",
-    "export_failed": "导出失败"
+    "export_failed": "导出失败",
+    "reasoning_col_deterministic": "客观评分",
+    "reasoning_col_responsiveness": "应变性",
+    "reasoning_col_trajectory": "发展轨迹",
+    "reasoning_col_justification": "论据充分性",
+    "reasoning_col_pattern": "决策风格",
+    "reasoning_col_band": "评级",
+    "reasoning_col_avg_score": "平均分",
+    "reasoning_col_dominant_pattern": "主要决策风格",
+    "reasoning_col_consistency": "稳定性",
+    "reasoning_tab_team_scores": "团队评分",
+    "reasoning_tab_comparison": "对比",
+    "reasoning_tab_competition": "竞赛汇总",
+    "reasoning_empty_teams": "暂无推理分析数据",
+    "reasoning_empty_comparison": "暂无对比数据",
+    "reasoning_empty_aggregate": "暂无汇总数据",
+    "reasoning_round_label": "第 {{round}} 回合",
+    "reasoning_pattern_consistent": "稳健执行型",
+    "reasoning_pattern_reactive": "被动调整型",
+    "reasoning_pattern_aggressive": "激进扩张型",
+    "reasoning_pattern_conservative": "保守优化型",
+    "reasoning_pattern_erratic": "反复无常型"
   },
   "route_recovery": {
     "title": "此页面需要您的当前游戏",
@@ -2498,7 +2526,14 @@
       "status": "状态",
       "validation_row": "贸易融资第 {{row}} 行：请选择客户细分和市场。",
       "saved_toast": "贸易融资已保存。",
-      "load_error": "无法加载贸易融资数据。"
+      "load_error": "无法加载贸易融资数据。",
+      "short_hedge_note": "应收款空头对冲在外币走弱时获益。",
+      "no_positions_here": "尚无外汇对冲头寸——请在贸易融资页面设置对冲比例并推进一个回合。",
+      "payment_posture": "付款与出口信用状况",
+      "buyer_instruments_short": "买方付款工具",
+      "none_set": "未设置。",
+      "sinosure_row": "市场 {{market}}：{{pct}}%",
+      "no_sinosure": "未设置出口信用保险。"
     },
     "inventory": {
       "title": "库存与韧性",

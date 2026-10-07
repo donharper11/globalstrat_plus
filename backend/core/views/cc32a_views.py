@@ -12,8 +12,10 @@ Endpoints:
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.response import Response
+from core.rag.communication_eval import localized_fallback_evaluation
 from core.utils.participant_messages import (
-    communication_criterion_label, participant_message,
+    communication_audience_label, communication_criterion_label,
+    participant_message,
     participant_refusal)
 from rest_framework.views import APIView
 from core.views.decisions import (
@@ -110,17 +112,28 @@ class CommunicationAssignmentsView(APIView):
                 'code': ca.code,
                 'name': get_localized_field(ca, 'name', language),
                 'audience': ca.audience,
-                'audience_display': ca.get_audience_display(),
+                'audience_display': communication_audience_label(
+                    ca.audience, ca.get_audience_display(), language),
                 'prompt_text': prompt_text,
                 'word_limit': ca.word_limit,
                 # W-CE3-17: the criterion's authored name beside the token
                 # the page used to prettify, so the screen shows a name and
                 # the storage key stays a storage key. The token is still
                 # served: it is what `evaluation.criteria_scores` is keyed by.
+                # The criterion's NAME was localised by W-CE3-17; the
+                # sentence under it -- what the team is actually told they are
+                # judged on -- went out in English, because it is authored
+                # content inside a JSONField. The scenario now carries
+                # `description_zh` and it is picked here for the reader.
                 'evaluation_criteria': [
                     dict(criterion,
                          criterion_label=communication_criterion_label(
-                             criterion.get('criterion'), language))
+                             criterion.get('criterion'), language),
+                         description=(
+                             (criterion.get('description_zh')
+                              or criterion.get('description', ''))
+                             if language == 'zh-CN'
+                             else criterion.get('description', '')))
                     for criterion in (ca.evaluation_criteria or [])
                     if isinstance(criterion, dict)],
                 'is_mandatory': ca.is_mandatory,
@@ -128,7 +141,8 @@ class CommunicationAssignmentsView(APIView):
                 'status': 'submitted' if tc and not tc.is_draft else ('draft' if tc else 'new'),
                 'draft_content': tc.content if tc and tc.is_draft else None,
                 'draft_word_count': tc.word_count if tc and tc.is_draft else 0,
-                'evaluation': tc.evaluation if tc and not tc.is_draft else None,
+                'evaluation': (localized_fallback_evaluation(tc.evaluation, language)
+                               if tc and not tc.is_draft else None),
                 'coherence_contribution': float(tc.coherence_contribution) if tc else 0,
             })
 
@@ -260,11 +274,13 @@ class CommunicationHistoryView(APIView):
                 'round_number': tc.round.round_number,
                 'assignment_name': get_localized_field(tc.assignment, 'name', language),
                 'assignment_code': tc.assignment.code,
-                'audience': tc.assignment.get_audience_display(),
+                'audience': communication_audience_label(
+                    tc.assignment.audience,
+                    tc.assignment.get_audience_display(), language),
                 'content': tc.content,
                 'word_count': tc.word_count,
                 'submitted_at': tc.submitted_at.isoformat() if tc.submitted_at else None,
-                'evaluation': tc.evaluation,
+                'evaluation': localized_fallback_evaluation(tc.evaluation, language),
                 'coherence_contribution': float(tc.coherence_contribution),
                 'overall_score': tc.evaluation.get('overall_score', 0) if tc.evaluation else 0,
             })
@@ -277,6 +293,10 @@ class InstructorCommunicationsView(APIView):
     """GET — all team submissions for a round (instructor only)."""
 
     def get(self, request, game_id, round_number):
+        # The console is read in the instructor's own language, like every
+        # other panel; this one served the assignment name, the audience and
+        # the evaluation exactly as stored.
+        language = get_user_language(request)
         game = get_object_or_404(Game, id=game_id)
 
         submissions = TeamCommunication.objects.filter(
@@ -289,13 +309,16 @@ class InstructorCommunicationsView(APIView):
             if team_name not in teams_data:
                 teams_data[team_name] = {'team_id': tc.team.id, 'team_name': team_name, 'submissions': []}
             teams_data[team_name]['submissions'].append({
-                'assignment_name': tc.assignment.name,
-                'audience': tc.assignment.get_audience_display(),
+                'assignment_name': get_localized_field(
+                    tc.assignment, 'name', language),
+                'audience': communication_audience_label(
+                    tc.assignment.audience,
+                    tc.assignment.get_audience_display(), language),
                 'content': tc.content,
                 'word_count': tc.word_count,
                 'is_draft': tc.is_draft,
                 'submitted_at': tc.submitted_at.isoformat() if tc.submitted_at else None,
-                'evaluation': tc.evaluation,
+                'evaluation': localized_fallback_evaluation(tc.evaluation, language),
                 'overall_score': tc.evaluation.get('overall_score', 0) if tc.evaluation else None,
                 'coherence_contribution': float(tc.coherence_contribution),
             })

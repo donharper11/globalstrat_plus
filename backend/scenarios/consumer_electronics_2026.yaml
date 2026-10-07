@@ -4499,6 +4499,8 @@ events:
 - name: Taiwan Earthquake — Semiconductor Capacity Shock
   name_zh: 台湾地震——半导体产能冲击
   description_template: A major earthquake near Hsinchu has knocked {value}% of Taiwanese foundry capacity offline. Teams single-sourced on Taiwan face allocation cuts and multi-round recovery.
+  description_template_zh: |-
+    新竹附近发生强烈地震，台湾晶圆代工产能的 {value}% 已停产。单一依赖台湾供应的团队将面临配额削减，并需要多个回合才能恢复。
   category: supply_chain
   severity: critical
   probability_per_round: 0.03
@@ -4517,6 +4519,8 @@ events:
 - name: Red Sea Shipping Disruption
   name_zh: 红海航运中断
   description_template: Attacks on commercial vessels have closed the Red Sea / Suez corridor. Asia–Europe sea rates spike and lead times extend by ~14 days as carriers reroute via the Cape.
+  description_template_zh: |-
+    商船遇袭导致红海／苏伊士航线关闭。承运人改道好望角，亚欧海运费率飙升，交付周期延长约 14 天。
   category: supply_chain
   severity: high
   probability_per_round: 0.08
@@ -4538,6 +4542,8 @@ events:
 - name: Container Freight Rate Shock
   name_zh: 集装箱运费冲击
   description_template: A global surge in shipping demand against tight vessel capacity has pushed container spot rates up ~{value}%. Teams without freight hedges see margins compress.
+  description_template_zh: |-
+    全球航运需求激增而运力紧张，集装箱现货运价上涨约 {value}%。未对运费进行对冲的团队利润率将被压缩。
   category: supply_chain
   severity: high
   probability_per_round: 0.1
@@ -4553,6 +4559,8 @@ events:
 - name: Supplier Financial Distress
   name_zh: 供应商财务困境
   description_template: A key tier-1 supplier has entered financial distress; capacity is cut ~{value}% and quality degrades until the balance sheet stabilizes or teams re-source.
+  description_template_zh: |-
+    一家关键一级供应商陷入财务困境；产能削减约 {value}%，质量下降，直至其资产负债表恢复稳定或团队更换供应来源。
   category: supply_chain
   severity: high
   probability_per_round: 0.04
@@ -4568,6 +4576,8 @@ events:
 - name: Port Congestion — West Coast
   name_zh: 港口拥堵——西海岸
   description_template: Severe congestion at destination ports has added multi-day dwell times and demurrage costs. Transpacific lanes are most exposed.
+  description_template_zh: |-
+    目的港严重拥堵，增加了数日的滞港时间与滞期费。跨太平洋航线受影响最大。
   category: supply_chain
   severity: medium
   probability_per_round: 0.12
@@ -4585,6 +4595,8 @@ events:
 - name: Customs Documentation Rejection
   name_zh: 海关单证被拒
   description_template: Customs authorities have rejected shipments with incomplete or misclassified documentation, holding goods for {value} round and levying reclassification penalties.
+  description_template_zh: |-
+    海关以单据不全或归类错误为由拒收货物，扣留 {value} 个回合并征收重新归类罚款。
   category: supply_chain
   severity: medium
   probability_per_round: 0.1
@@ -4599,6 +4611,8 @@ events:
 - name: Letter of Credit Document Rejection
   name_zh: 信用证单证不符
   description_template: Discrepancies in LC documents have triggered bank rejection, delaying revenue recognition by one round for teams with weak documentation discipline.
+  description_template_zh: |-
+    信用证单据出现不符点，触发银行拒付；单据管理薄弱的团队收入确认延后一个回合。
   category: supply_chain
   severity: medium
   probability_per_round: 0.03
@@ -4613,6 +4627,8 @@ events:
 - name: CNY Appreciation Shock
   name_zh: 人民币升值冲击
   description_template: The renminbi has appreciated ~{value}% against the USD, raising the landed cost of China-sourced components for teams without FX hedges.
+  description_template_zh: |-
+    人民币对美元升值约 {value}%，推高了未进行外汇对冲团队的中国采购件到岸成本。
   category: supply_chain
   severity: medium
   probability_per_round: 0.05
@@ -4626,6 +4642,8 @@ events:
 - name: UFLPA Detention Incident
   name_zh: UFLPA扣押事件
   description_template: US CBP has detained shipments over suspected Xinjiang-linked tier-2/3 inputs. Detained shipment value is lost and market access is frozen pending remediation.
+  description_template_zh: |-
+    美国海关与边境保护局以疑似涉疆二／三级投入品为由扣留货物。被扣货值损失，且在完成整改前市场准入被冻结。
   category: supply_chain
   severity: critical
   probability_per_round: 0.1
@@ -4641,6 +4659,8 @@ events:
 - name: CBAM Phase-In Cost Shock
   name_zh: CBAM分阶段成本冲击
   description_template: The EU has advanced its Carbon Border Adjustment Mechanism phase-in, raising carbon-linked import costs for high-emission supply chains selling into Europe.
+  description_template_zh: |-
+    欧盟提前推进碳边境调节机制，向欧洲销售的高排放供应链进口成本随碳含量上升。
   category: supply_chain
   severity: medium
   probability_per_round: 0.04
@@ -4654,6 +4674,8 @@ events:
 - name: BIS Entity List Expansion
   name_zh: BIS实体清单扩容
   description_template: The US Bureau of Industry and Security has added firms to the Entity List. Teams sourcing restricted technology from listed suppliers face export-control exposure.
+  description_template_zh: |-
+    美国工业与安全局将多家企业列入实体清单。从被列名供应商采购受限技术的团队面临出口管制风险。
   category: supply_chain
   severity: high
   probability_per_round: 0.05
@@ -4668,6 +4690,8 @@ events:
 - name: China Rare-Earth Export Licensing
   name_zh: 中国稀土出口许可
   description_template: China has tightened export licensing on gallium, germanium and heavy rare earths, adding ~{value} days of licensing friction for affected components.
+  description_template_zh: |-
+    中国收紧镓、锗及重稀土的出口许可，相关元器件增加约 {value} 天的许可摩擦。
   category: supply_chain
   severity: medium
   probability_per_round: 0.04
@@ -4685,6 +4709,8 @@ events:
 - name: Panama Canal Drought Restrictions
   name_zh: 巴拿马运河干旱限制
   description_template: Low water levels have cut Panama Canal transit slots, adding delay and surcharges to lanes routed via Panama.
+  description_template_zh: |-
+    水位偏低导致巴拿马运河通行船位减少，经巴拿马的航线出现延误并加收附加费。
   category: supply_chain
   severity: medium
   probability_per_round: 0.04
@@ -4702,6 +4728,8 @@ events:
 - name: Typhoon Season — South China Sea
   name_zh: 台风季——南海
   description_template: An active typhoon season has disrupted South China Sea and intra-Asia sailings, adding delays and blank sailings on affected lanes.
+  description_template_zh: |-
+    台风季活跃，南海及亚洲区内航次受到干扰，相关航线出现延误与跳港。
   category: supply_chain
   severity: medium
   probability_per_round: 0.07
@@ -4718,6 +4746,8 @@ events:
 - name: Air Freight Capacity Crunch
   name_zh: 空运运力紧张
   description_template: A surge in expedited demand has tightened air cargo capacity; air rates jump ~{value}% for teams relying on air for launch volumes.
+  description_template_zh: |-
+    加急需求激增使航空货运运力紧张；依赖空运满足上市量的团队，空运费率上涨约 {value}%。
   category: supply_chain
   severity: medium
   probability_per_round: 0.06
@@ -4733,6 +4763,8 @@ events:
 - name: Cross-Strait Tension Escalation
   name_zh: 两岸紧张升级
   description_template: Heightened cross-strait tension has raised insurance and rerouting costs on Taiwan-origin lanes and pressured Taiwan-dependent sourcing.
+  description_template_zh: |-
+    两岸局势紧张加剧，台湾出发航线的保险与改道成本上升，依赖台湾采购的供应链承压。
   category: supply_chain
   severity: high
   probability_per_round: 0.04
@@ -4749,6 +4781,8 @@ events:
 - name: Supplier Quality Recall
   name_zh: 供应商质量召回
   description_template: A quality defect at a component supplier has forced a recall, temporarily degrading effective quality and adding rework cost for exposed teams.
+  description_template_zh: |-
+    某元器件供应商出现质量缺陷并引发召回，受影响团队的有效质量暂时下降，并增加返工成本。
   category: supply_chain
   severity: medium
   probability_per_round: 0.05
@@ -4763,6 +4797,8 @@ events:
 - name: CNY Depreciation Windfall
   name_zh: 人民币贬值利好
   description_template: The renminbi has depreciated ~{value}% against the USD, lowering the landed cost of China-sourced components — a tailwind for China-weighted supply chains.
+  description_template_zh: |-
+    人民币对美元贬值约 {value}%，降低了中国采购件的到岸成本——对以中国为主的供应链是顺风。
   category: supply_chain
   severity: low
   probability_per_round: 0.05
@@ -4777,6 +4813,8 @@ events:
 - name: BRI Port Capacity Expansion
   name_zh: 一带一路港口扩容
   description_template: New Belt-and-Road port and rail capacity has lowered costs on China–Europe corridors — an opportunity for teams routed through BRI lanes.
+  description_template_zh: |-
+    “一带一路”新增的港口与铁路运力降低了中欧通道成本——对经由该通道的团队是机会。
   category: supply_chain
   severity: low
   probability_per_round: 0.03
@@ -4794,6 +4832,8 @@ events:
 - name: Semiconductor Demand Surge
   name_zh: 半导体需求激增
   description_template: An industry-wide demand surge has tightened foundry allocation; teams without secured capacity face longer lead times and spot-price premiums.
+  description_template_zh: |-
+    全行业需求激增使晶圆代工产能配额趋紧；未锁定产能的团队面临更长交付周期与现货溢价。
   category: supply_chain
   severity: medium
   probability_per_round: 0.06
@@ -6445,18 +6485,23 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.3
     description: Do you operate ethically?
+    description_zh: 你们的经营是否合乎道德？
   - feature: market_investment
     weight: 0.25
     description: Are you committed to the US market?
+    description_zh: 你们是否致力于美国市场？
   - feature: revenue_share
     weight: 0.2
     description: Is the partnership generating value?
+    description_zh: 这项合作是否在创造价值？
   - feature: localization_commitment
     weight: 0.15
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: exclusivity_respect
     weight: 0.1
     description: Are we your primary partner here?
+    description_zh: 在这个市场，我们是你们的主要伙伴吗？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6473,18 +6518,23 @@ alliance_partner_profiles:
   - feature: technology_sharing
     weight: 0.25
     description: Are you sharing technology appropriately?
+    description_zh: 你们的技术共享是否适度？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in Asia-Pacific?
+    description_zh: 你们是否在亚太地区投资？
   - feature: localization_commitment
     weight: 0.2
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: revenue_share
     weight: 0.2
     description: Is the venture profitable for both sides?
+    description_zh: 这项合资对双方是否都有利润？
   - feature: governance_quality
     weight: 0.1
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6501,18 +6551,23 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.3
     description: Do you meet EU governance standards?
+    description_zh: 你们是否符合欧盟治理标准？
   - feature: localization_commitment
     weight: 0.25
     description: Are you invested in local operations?
+    description_zh: 你们是否投入于本地运营？
   - feature: market_investment
     weight: 0.2
     description: Are you committed to the EU market?
+    description_zh: 你们是否致力于欧盟市场？
   - feature: revenue_share
     weight: 0.15
     description: Is the partnership generating value?
+    description_zh: 这项合作是否在创造价值？
   - feature: exclusivity_respect
     weight: 0.1
     description: Are we your primary EU partner?
+    description_zh: 我们是你们在欧盟的主要伙伴吗？
   satisfaction_floor: '0.35'
   renegotiation_threshold: '0.55'
   patience_rounds: 2
@@ -6529,18 +6584,23 @@ alliance_partner_profiles:
   - feature: revenue_share
     weight: 0.3
     description: Are we both making money?
+    description_zh: 双方是否都在盈利？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in Latin America?
+    description_zh: 你们是否在拉丁美洲投资？
   - feature: localization_commitment
     weight: 0.2
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: technology_sharing
     weight: 0.15
     description: Are you sharing knowledge?
+    description_zh: 你们是否在共享知识？
   - feature: governance_quality
     weight: 0.1
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6557,18 +6617,23 @@ alliance_partner_profiles:
   - feature: localization_commitment
     weight: 0.3
     description: Are you hiring Nigerians?
+    description_zh: 你们是否雇用尼日利亚本地员工？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in West Africa?
+    description_zh: 你们是否在西非投资？
   - feature: revenue_share
     weight: 0.25
     description: Are we both making money?
+    description_zh: 双方是否都在盈利？
   - feature: technology_sharing
     weight: 0.1
     description: Are you sharing knowledge?
+    description_zh: 你们是否在共享知识？
   - feature: governance_quality
     weight: 0.1
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6584,15 +6649,19 @@ alliance_partner_profiles:
   - feature: revenue_share
     weight: 0.35
     description: Is volume growing?
+    description_zh: 销量是否在增长？
   - feature: market_investment
     weight: 0.3
     description: Are you committed to this market?
+    description_zh: 你们是否致力于这个市场？
   - feature: exclusivity_respect
     weight: 0.2
     description: Are we your primary distributor?
+    description_zh: 我们是你们的主要分销商吗？
   - feature: governance_quality
     weight: 0.15
     description: Do you operate ethically?
+    description_zh: 你们的经营是否合乎道德？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6608,15 +6677,19 @@ alliance_partner_profiles:
   - feature: revenue_share
     weight: 0.3
     description: Is volume growing?
+    description_zh: 销量是否在增长？
   - feature: market_investment
     weight: 0.3
     description: Are you committed to APAC?
+    description_zh: 你们是否致力于亚太市场？
   - feature: localization_commitment
     weight: 0.25
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: exclusivity_respect
     weight: 0.15
     description: Are we your primary distributor?
+    description_zh: 我们是你们的主要分销商吗？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6632,15 +6705,19 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.3
     description: Do you meet EU compliance standards?
+    description_zh: 你们是否符合欧盟合规标准？
   - feature: revenue_share
     weight: 0.3
     description: Is volume consistent?
+    description_zh: 销量是否稳定？
   - feature: market_investment
     weight: 0.25
     description: Are you committed to EU?
+    description_zh: 你们是否致力于欧盟？
   - feature: exclusivity_respect
     weight: 0.15
     description: Are we your primary distributor?
+    description_zh: 我们是你们的主要分销商吗？
   satisfaction_floor: '0.35'
   renegotiation_threshold: '0.55'
   patience_rounds: 2
@@ -6656,15 +6733,19 @@ alliance_partner_profiles:
   - feature: revenue_share
     weight: 0.35
     description: Are shipments growing?
+    description_zh: 出货量是否在增长？
   - feature: market_investment
     weight: 0.3
     description: Are you committed to LATAM?
+    description_zh: 你们是否致力于拉美市场？
   - feature: localization_commitment
     weight: 0.2
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: governance_quality
     weight: 0.15
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6680,15 +6761,19 @@ alliance_partner_profiles:
   - feature: market_investment
     weight: 0.35
     description: Are you investing in Africa?
+    description_zh: 你们是否在非洲投资？
   - feature: revenue_share
     weight: 0.3
     description: Is volume growing?
+    description_zh: 销量是否在增长？
   - feature: localization_commitment
     weight: 0.25
     description: Are you building local capacity?
+    description_zh: 你们是否在建设本地产能？
   - feature: governance_quality
     weight: 0.1
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6704,15 +6789,19 @@ alliance_partner_profiles:
   - feature: technology_sharing
     weight: 0.35
     description: Are you investing in R&D with us?
+    description_zh: 你们是否与我们共同投入研发？
   - feature: governance_quality
     weight: 0.25
     description: Do you protect shared IP?
+    description_zh: 你们是否保护共享的知识产权？
   - feature: revenue_share
     weight: 0.2
     description: Is the partnership generating value?
+    description_zh: 这项合作是否在创造价值？
   - feature: exclusivity_respect
     weight: 0.2
     description: Are we your primary tech partner?
+    description_zh: 我们是你们的主要技术伙伴吗？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6728,15 +6817,19 @@ alliance_partner_profiles:
   - feature: technology_sharing
     weight: 0.4
     description: Are you sharing technology deeply?
+    description_zh: 你们的技术共享是否深入？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in APAC R&D?
+    description_zh: 你们是否在亚太投入研发？
   - feature: revenue_share
     weight: 0.2
     description: Is the partnership profitable?
+    description_zh: 这项合作是否盈利？
   - feature: localization_commitment
     weight: 0.15
     description: Are you hiring local engineers?
+    description_zh: 你们是否在本地招聘工程师？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6752,15 +6845,19 @@ alliance_partner_profiles:
   - feature: technology_sharing
     weight: 0.3
     description: Are you sharing R&D insights?
+    description_zh: 你们是否共享研发洞见？
   - feature: governance_quality
     weight: 0.3
     description: Do you meet ethical IP standards?
+    description_zh: 你们是否遵守知识产权伦理标准？
   - feature: revenue_share
     weight: 0.2
     description: Is the partnership generating value?
+    description_zh: 这项合作是否在创造价值？
   - feature: exclusivity_respect
     weight: 0.2
     description: Are we your primary tech partner?
+    description_zh: 我们是你们的主要技术伙伴吗？
   satisfaction_floor: '0.35'
   renegotiation_threshold: '0.55'
   patience_rounds: 2
@@ -6776,15 +6873,19 @@ alliance_partner_profiles:
   - feature: technology_sharing
     weight: 0.35
     description: Are you collaborating on R&D?
+    description_zh: 你们是否在研发上协作？
   - feature: revenue_share
     weight: 0.25
     description: Is the venture generating value?
+    description_zh: 这项合资是否在创造价值？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in LATAM tech?
+    description_zh: 你们是否在拉美投入技术？
   - feature: localization_commitment
     weight: 0.15
     description: Are you hiring local engineers?
+    description_zh: 你们是否在本地招聘工程师？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6800,15 +6901,19 @@ alliance_partner_profiles:
   - feature: technology_sharing
     weight: 0.3
     description: Are you sharing knowledge?
+    description_zh: 你们是否在共享知识？
   - feature: localization_commitment
     weight: 0.3
     description: Are you building local tech capacity?
+    description_zh: 你们是否在建设本地技术能力？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in Africa tech?
+    description_zh: 你们是否在非洲投入技术？
   - feature: revenue_share
     weight: 0.15
     description: Is the partnership generating value?
+    description_zh: 这项合作是否在创造价值？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6824,15 +6929,19 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.4
     description: Are you operating ethically?
+    description_zh: 你们的经营是否合乎道德？
   - feature: market_investment
     weight: 0.25
     description: Are you committed to the US?
+    description_zh: 你们是否致力于美国？
   - feature: revenue_share
     weight: 0.2
     description: Is the advisory fee justified?
+    description_zh: 顾问费是否合理？
   - feature: exclusivity_respect
     weight: 0.15
     description: Are we your primary advisor?
+    description_zh: 我们是你们的主要顾问吗？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6848,15 +6957,19 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.3
     description: Do you respect local regulations?
+    description_zh: 你们是否尊重当地法规？
   - feature: localization_commitment
     weight: 0.3
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: market_investment
     weight: 0.25
     description: Are you committed to APAC?
+    description_zh: 你们是否致力于亚太市场？
   - feature: revenue_share
     weight: 0.15
     description: Is the advisory fee justified?
+    description_zh: 顾问费是否合理？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6872,15 +6985,19 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.4
     description: Do you meet EU standards?
+    description_zh: 你们是否符合欧盟标准？
   - feature: market_investment
     weight: 0.25
     description: Are you committed to the EU?
+    description_zh: 你们是否致力于欧盟？
   - feature: localization_commitment
     weight: 0.2
     description: Are you building EU operations?
+    description_zh: 你们是否在欧盟建设运营？
   - feature: revenue_share
     weight: 0.15
     description: Is the relationship worth continuing?
+    description_zh: 这段关系是否值得继续？
   satisfaction_floor: '0.35'
   renegotiation_threshold: '0.55'
   patience_rounds: 2
@@ -6896,15 +7013,19 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.3
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   - feature: localization_commitment
     weight: 0.3
     description: Are you building local operations?
+    description_zh: 你们是否在建设本地运营？
   - feature: market_investment
     weight: 0.25
     description: Are you committed to LATAM?
+    description_zh: 你们是否致力于拉美市场？
   - feature: revenue_share
     weight: 0.15
     description: Is the relationship worthwhile?
+    description_zh: 这段关系是否值得维持？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6920,15 +7041,19 @@ alliance_partner_profiles:
   - feature: localization_commitment
     weight: 0.35
     description: Are you hiring locally?
+    description_zh: 你们在本地招聘吗？
   - feature: governance_quality
     weight: 0.25
     description: Do you operate transparently?
+    description_zh: 你们的经营是否透明？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in Africa?
+    description_zh: 你们是否在非洲投资？
   - feature: revenue_share
     weight: 0.15
     description: Is the relationship worthwhile?
+    description_zh: 这段关系是否值得维持？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -6944,15 +7069,19 @@ alliance_partner_profiles:
   - feature: market_investment
     weight: 0.35
     description: Are you investing in marketing?
+    description_zh: 你们是否在投入市场营销？
   - feature: revenue_share
     weight: 0.3
     description: Is the brand growing?
+    description_zh: 品牌是否在成长？
   - feature: governance_quality
     weight: 0.2
     description: Is the brand reputation clean?
+    description_zh: 品牌声誉是否良好？
   - feature: exclusivity_respect
     weight: 0.15
     description: Are we your primary brand partner?
+    description_zh: 我们是你们的主要品牌伙伴吗？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6968,15 +7097,19 @@ alliance_partner_profiles:
   - feature: market_investment
     weight: 0.3
     description: Are you investing in APAC marketing?
+    description_zh: 你们是否在亚太投入市场营销？
   - feature: localization_commitment
     weight: 0.3
     description: Is the brand culturally adapted?
+    description_zh: 品牌是否适应本地文化？
   - feature: revenue_share
     weight: 0.25
     description: Is the brand growing?
+    description_zh: 品牌是否在成长？
   - feature: governance_quality
     weight: 0.15
     description: Is the brand reputation clean?
+    description_zh: 品牌声誉是否良好？
   satisfaction_floor: '0.30'
   renegotiation_threshold: '0.50'
   patience_rounds: 2
@@ -6992,15 +7125,19 @@ alliance_partner_profiles:
   - feature: governance_quality
     weight: 0.35
     description: Is the brand ethically positioned?
+    description_zh: 品牌定位是否合乎道德？
   - feature: market_investment
     weight: 0.25
     description: Are you investing in EU marketing?
+    description_zh: 你们是否在欧盟投入市场营销？
   - feature: revenue_share
     weight: 0.25
     description: Is the brand growing?
+    description_zh: 品牌是否在成长？
   - feature: localization_commitment
     weight: 0.15
     description: Is the brand locally adapted?
+    description_zh: 品牌是否已本地化？
   satisfaction_floor: '0.35'
   renegotiation_threshold: '0.55'
   patience_rounds: 2
@@ -7016,15 +7153,19 @@ alliance_partner_profiles:
   - feature: revenue_share
     weight: 0.3
     description: Is the brand selling?
+    description_zh: 品牌是否畅销？
   - feature: market_investment
     weight: 0.3
     description: Are you investing in LATAM marketing?
+    description_zh: 你们是否在拉美投入市场营销？
   - feature: localization_commitment
     weight: 0.25
     description: Is the brand culturally adapted?
+    description_zh: 品牌是否适应本地文化？
   - feature: governance_quality
     weight: 0.15
     description: Is the brand reputation clean?
+    description_zh: 品牌声誉是否良好？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -7040,15 +7181,19 @@ alliance_partner_profiles:
   - feature: localization_commitment
     weight: 0.35
     description: Is the brand locally resonant?
+    description_zh: 品牌是否与本地消费者产生共鸣？
   - feature: market_investment
     weight: 0.3
     description: Are you investing in African marketing?
+    description_zh: 你们是否在非洲投入市场营销？
   - feature: revenue_share
     weight: 0.25
     description: Is the brand growing?
+    description_zh: 品牌是否在成长？
   - feature: governance_quality
     weight: 0.1
     description: Is the brand reputation clean?
+    description_zh: 品牌声誉是否良好？
   satisfaction_floor: '0.25'
   renegotiation_threshold: '0.45'
   patience_rounds: 3
@@ -7371,6 +7516,7 @@ governance_commitments:
     target: esg_investment_visibility
     multiplier: 1.3
     description: All ESG investments produce 30% more stakeholder satisfaction with public reporting
+    description_zh: 在公开披露的前提下，所有 ESG 投入带来的利益相关者满意度提升 30%
   display_order: 5
 communication_assignments:
 - code: expansion_memo_r2
@@ -7407,18 +7553,23 @@ communication_assignments:
   - criterion: strategic_consistency
     weight: 0.35
     description: Does the memo match the team's actual market entry decisions, talent allocation, and compliance investment?
+    description_zh: 备忘录是否与团队实际的市场进入决策、人才配置和合规投入相符？
   - criterion: stakeholder_awareness
     weight: 0.2
     description: 'Does it address board concerns: risk, ROI timeline, competitive positioning?'
+    description_zh: 是否回应了董事会关心的问题：风险、投资回报周期、竞争定位？
   - criterion: clarity_and_persuasion
     weight: 0.2
     description: Is the memo well-structured, concise, and convincing?
+    description_zh: 备忘录是否结构清晰、简明且有说服力？
   - criterion: risk_acknowledgment
     weight: 0.15
     description: Does it acknowledge origin trust challenges, currency risk, and competitive threats?
+    description_zh: 是否正视了原产地信任问题、汇率风险和竞争威胁？
   - criterion: framework_grounding
     weight: 0.1
     description: Does it reference relevant frameworks (CAGE distance, Uppsala model, OLI paradigm)?
+    description_zh: 是否引用了相关理论框架（CAGE 距离、乌普萨拉模型、OLI 范式）？
   is_mandatory: true
   coherence_weight: '0.05'
   display_order: 1
@@ -7458,18 +7609,23 @@ communication_assignments:
   - criterion: strategic_consistency
     weight: 0.3
     description: Does the letter match actual financial performance, R&D investment, and ESG commitments?
+    description_zh: 这封信是否与实际财务表现、研发投入和 ESG 承诺相符？
   - criterion: stakeholder_awareness
     weight: 0.3
     description: Does it address the specific concerns of all three investor archetypes?
+    description_zh: 是否回应了三类投资者各自的具体关切？
   - criterion: clarity_and_persuasion
     weight: 0.2
     description: Is the letter professional, balanced, and confidence-inspiring?
+    description_zh: 这封信是否专业、客观且令人信服？
   - criterion: risk_acknowledgment
     weight: 0.1
     description: Does it acknowledge challenges honestly rather than only highlighting positives?
+    description_zh: 是否坦诚说明了挑战，而不是只强调成绩？
   - criterion: framework_grounding
     weight: 0.1
     description: Does it reference strategic rationale grounded in frameworks or industry analysis?
+    description_zh: 是否基于理论框架或行业分析阐述了战略依据？
   is_mandatory: true
   coherence_weight: '0.05'
   display_order: 2
@@ -7515,15 +7671,19 @@ communication_assignments:
   - criterion: strategic_consistency
     weight: 0.35
     description: Does the statement match the team's actual response to the event and their broader strategy?
+    description_zh: 声明是否与团队对该事件的实际应对及整体战略相符？
   - criterion: stakeholder_awareness
     weight: 0.25
     description: Does it address the concerns of affected stakeholders (customers, regulators, investors)?
+    description_zh: 是否回应了受影响各方（客户、监管机构、投资者）的关切？
   - criterion: clarity_and_persuasion
     weight: 0.25
     description: Is the statement clear, professional, and appropriate in tone?
+    description_zh: 声明是否清晰、专业且语气得当？
   - criterion: risk_acknowledgment
     weight: 0.15
     description: Does it acknowledge the impact honestly without being defensive?
+    description_zh: 是否坦诚说明了影响，而非一味辩解？
   is_mandatory: false
   coherence_weight: '0.03'
   display_order: 10
@@ -7560,18 +7720,23 @@ communication_assignments:
   - criterion: strategic_consistency
     weight: 0.25
     description: Does the message align with actual talent decisions, salary levels, and localization investment?
+    description_zh: 这则信息是否与实际的人才决策、薪酬水平和本地化投入一致？
   - criterion: stakeholder_awareness
     weight: 0.3
     description: Does it address employee concerns across different markets and roles?
+    description_zh: 是否回应了不同市场、不同岗位员工的关切？
   - criterion: clarity_and_persuasion
     weight: 0.2
     description: Is it authentic, inclusive, and motivating rather than corporate boilerplate?
+    description_zh: 内容是否真诚、包容并具激励性，而非套话？
   - criterion: risk_acknowledgment
     weight: 0.15
     description: Does it honestly address challenges the company is facing?
+    description_zh: 是否坦诚面对公司当前的挑战？
   - criterion: framework_grounding
     weight: 0.1
     description: Does it connect to organizational values and strategic direction?
+    description_zh: 是否与组织价值观和战略方向相呼应？
   is_mandatory: true
   coherence_weight: '0.05'
   display_order: 3
@@ -7607,18 +7772,23 @@ communication_assignments:
   - criterion: strategic_consistency
     weight: 0.25
     description: Does the review accurately reflect what happened and why?
+    description_zh: 复盘是否准确说明了发生了什么以及原因？
   - criterion: stakeholder_awareness
     weight: 0.15
     description: Does it show awareness of all stakeholder perspectives?
+    description_zh: 是否体现出对各利益相关方视角的理解？
   - criterion: clarity_and_persuasion
     weight: 0.2
     description: Is the review well-structured, insightful, and professionally written?
+    description_zh: 复盘是否结构清晰、有洞见且行文专业？
   - criterion: risk_acknowledgment
     weight: 0.2
     description: Does it honestly assess failures and missed opportunities?
+    description_zh: 是否如实评估了失误与错失的机会？
   - criterion: framework_grounding
     weight: 0.2
     description: Does it demonstrate application of strategic frameworks to analyze outcomes?
+    description_zh: 是否运用战略框架分析了结果？
   is_mandatory: true
   coherence_weight: '0.08'
   display_order: 4
