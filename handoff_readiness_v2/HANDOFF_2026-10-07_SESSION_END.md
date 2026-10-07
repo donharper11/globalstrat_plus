@@ -25,10 +25,13 @@ repair.
 |---|---|
 | Certified by the browser pass | **`a0631e5d`** — frontend `main.81b42bcc.js` |
 | Merged tip after the repairs | **`ed6d8776`** — frontend `main.3ba3e3e1.js` |
-| Production serves | **`f0cf7be4`** from `globalstrat-plus-candidate-f0cf`, two repairs behind the certified commit |
+| Production serves | **`f62fc720`** from `globalstrat-plus-candidate-f62f` — **cut over 2026-10-07 05:48 UTC**, backend only |
 
-**Nothing production runs was changed in this session.** Cutting over is a
-Gate 2 action and has not been done.
+**The backend cutover is done and verified**; see
+`evidence/cutover-2026-10-07/README.md`, which also records the systemd trap that
+made the first attempt look successful while it was not. **The frontend was not
+deployed**, so the ECS still serves the pre-repair bundle and the bilingual
+repairs are not yet in front of a student.
 
 The automated half of Gate 1 was re-run on the merged tip: backend **1,912
 tests OK**, Jest **56 suites / 531 tests**, production build compiles with
@@ -58,7 +61,7 @@ V2-148 actually landed.
 |---|---|
 | 1 — automated | **Closed** at the candidate and re-run green on the merged tip |
 | 1 — browser | **Closed** for `a0631e5d` by this pass; the re-drive above is owed for the merged tip |
-| 2 | Passed 2026-10-06 on `f0cf`. **Owes a re-run after the unplanned reboot** — read-only, but it needs `/etc/globalstrat-plus.env` (root, 0600), so it is the owner's: `verify_audit_chain --json` and `install_audit_guards --check`. A cutover to the merged tip needs the whole gate again |
+| 2 | **Re-run on `f62f` after the cutover and clean**: release identity verified, no unapplied migrations, all append-only guards enabled, chain ok at 1,179 entries with the anchor matching. Zero manifests were written during the eight-minute window when code and revision disagreed |
 | 3 | Field-size combined load **closed**; 3× is recorded inadmissible and needs a generator host separate from the stack. Remaining drills and alert delivery open. New data: PBKDF2 costs **0.378 s per authentication** on this host, so a 96-student sign-in storm is ≈36 s of CPU |
 | 4 | **Not started.** The isolated rehearsal on the serving deployment, with its own instructor account per the V2-140 checklist line |
 | 5 | Not started |
@@ -66,7 +69,8 @@ V2-148 actually landed.
 ## Open, and whose
 
 **The owner's, and only these:**
-* the cutover decision, and Gate 2's re-run that needs the root-owned env file;
+* **whether to deploy the frontend to the ECS** (`47.86.57.36`) — the backend is
+  cut over, so until this happens the two halves are from different commits;
 * Gate 4 on the serving deployment;
 * the VM sudo credential rotation — **parked until after MVP by decision, 2026-10-07**;
 * whether to take `fix/extend-deadline-reason` (`d5f855b5`), which is **not
