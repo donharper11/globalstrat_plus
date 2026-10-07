@@ -234,7 +234,16 @@ Full entries, with causes and repairs, are in `V2_FINDINGS_REGISTER.md`.
   is why switching language cannot touch it. The repair follows the pattern the
   repository already uses for briefings — rebuild the sentence at read time from
   the facts the row carries, leaving the stored English as the historical record,
-  so nothing hashed moves. Not yet repaired.
+  so nothing hashed moves. **Repaired** on
+  `fix/government-narrative-language`, and verified against the **166
+  `GovernmentAction` rows this pass itself wrote**: all six shapes that actually
+  occurred render with no Latin words left, and the origin market code `AFR`
+  resolves to 非洲. Two defects in the first version of that repair were found
+  the same way — a warning whose reason the engine appends *"(moderated to
+  prevent capital flight)"* to, which left an English clause inside a Chinese
+  sentence, and a bilateral origin that printed the market code rather than the
+  market's name. Checking a repair against the data the product actually wrote,
+  rather than the data the repair expected, is what caught both.
 * **V2-147** — a Chinese student read English memo feedback. Corrected in the
   register from a heap-order bug to what it is: the open question of what
   language a team-wide artefact uses when a team's members differ. The half

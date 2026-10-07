@@ -3661,5 +3661,21 @@ new agent string degrades to today's behaviour instead of vanishing.
 
 **Nothing here is the owner's to decide.**
 
-**Not yet repaired, and not in `fix/bilingual-coverage`**, which deliberately
-stops at authored content and the views that serve it.
+**Repaired** on `fix/government-narrative-language`. `participant_messages`
+gained nine bilingual sentences, a six-entry table for the incentives
+`_select_incentive` can grant and a seven-entry table for the policy areas a
+government scores a firm on, plus `government_action_narrative()`, which rebuilds
+the sentence from `action_type`, the structured values in `parameters` and the
+market and origin the row names. **Nothing stored changed**, so no digest moves.
+Two views serve it: the Government Relations panel
+(`cc32f_views`), which also now returns `narrative_as_stored` beside it so the
+record stays visible, and the student's feed (`cc31h_views`), which was printing
+the same English sentence.
+
+**The fallback is the point, and it is tested in both directions.** Every shape
+the agent can write today is rebuilt; any shape the table has not been taught —
+a new `action_type`, a new `type`, an incentive it does not know, a procurement
+with no figure — returns **the stored sentence unchanged**, so a sentence the
+agent learns to write tomorrow still reaches the screen in English rather than
+disappearing. 23 tests, including that every label carries both languages and
+that each sentence interpolates the same values in both.
