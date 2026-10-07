@@ -1,0 +1,30 @@
+# Host reboot, 2026-10-06 — what came back by itself
+
+## Boot
+2026-10-06 22:02:45
+5.15.0-194-generic
+
+## Previous boots
+reboot   system boot  5.15.0-194-gener Tue Oct  6 22:02   still running
+reboot   system boot  5.15.0-191-gener Mon Oct  5 07:39   still running
+reboot   system boot  5.15.0-191-gener Fri Sep 11 05:39   still running
+reboot   system boot  5.15.0-191-gener Mon Sep  7 20:25   still running
+
+## Kernel packages installed today
+2026-10-06 06:38:52 install linux-image-5.15.0-194-generic:amd64 <none> 5.15.0-194.204
+2026-10-06 06:39:00 upgrade linux-image-generic:amd64 5.15.0.191.169 5.15.0.194.171
+2026-10-06 06:39:00 install linux-headers-5.15.0-194:all <none> 5.15.0-194.204
+2026-10-06 06:39:06 install linux-headers-5.15.0-194-generic:amd64 <none> 5.15.0-194.204
+2026-10-06 06:39:07 upgrade linux-headers-generic:amd64 5.15.0.191.169 5.15.0.194.171
+## Reboot scheduling, checked rather than assumed
+
+```
+//Unattended-Upgrade::Automatic-Reboot "false";
+// when Unattended-Upgrade::Automatic-Reboot is set to true
+//Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
+//Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+ls: cannot access '/var/run/reboot-required': No such file or directory
+NEXT                        LEFT    LAST                        PASSED  UNIT                    ACTIVATES
+Wed 2026-10-07 06:23:13 UTC 7h left Tue 2026-10-06 06:38:30 UTC 16h ago apt-daily-upgrade.timer apt-daily-upgrade.service
+
+```

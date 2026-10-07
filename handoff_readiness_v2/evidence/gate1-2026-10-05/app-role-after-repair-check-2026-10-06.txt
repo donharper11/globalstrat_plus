@@ -1,0 +1,29 @@
+V2-072 application-role provisioning
+  server      : /var/run/postgresql:5432/globalstrat_plus
+  admin role  : postgres
+  app role    : globalstrat_plus_app
+  mode        : check
+
+database owner: donwh
+NOTE: you are connected as postgres but globalstrat_plus is owned by donwh; default privileges are recorded per grantor, so run this as donwh.
+
+── role attributes ────────────────────────────────────────────────
+globalstrat_plus_app: super=f createrole=f createdb=f login=t replication=f bypassrls=f inherit=t
+── role memberships (must be empty) ───────────────────────────────
+── can it reach a superuser? (must be f) ──────────────────────────
+postgres reachable: inherit=f set_role=f
+── audit-table privileges (update/delete/truncate must be f) ──────
+competition_decision_audit_event               owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_operator_audit_event               owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_sensitive_read_event               owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_authorization_refusal_event        owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_game_deletion_audit_event          owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_audit_chain                        owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_resolution_manifest                owner=donwh              select=t insert=t update=t delete=f truncate=f
+── schema public (create must be f) ───────────────────────────────
+usage=t create=f
+── application tables the role cannot write (must be empty) ───────
+── sequences the role cannot use (must be empty) ──────────────────
+
+
+PASS: globalstrat_plus_app is a least-privilege, non-owning application role.

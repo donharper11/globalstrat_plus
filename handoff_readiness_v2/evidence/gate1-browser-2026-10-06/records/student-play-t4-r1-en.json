@@ -1,0 +1,75 @@
+{
+ "driver": "student-play-t4-r1",
+ "language": "en",
+ "base": "http://127.0.0.1:49277",
+ "started": "2026-10-06T03:13:23",
+ "steps": [
+  {
+   "name": "student s2613 signs in",
+   "outcome": "fail",
+   "detail": ""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "03:13:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "03:13:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "03:13:24"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "03:13:24"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+   "at": "03:13:26"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 403,
+   "at": "03:13:26"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 403,
+   "at": "03:13:26",
+   "body": "{\"error\":\"No password is set for this account. Please ask your instructor to reset it.\",\"code\":\"login_no_password\"}",
+   "request": "{\"username\":\"s2613\",\"password\":\"s2613\"}"
+  }
+ ],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "student": "s2613",
+  "team": "Photon Labs",
+  "profile": "plain"
+ },
+ "summary": {
+  "passed": 0,
+  "failed": 1,
+  "observed": 0,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 5,
+  "api_calls": 1,
+  "api_refused": 1
+ }
+}
