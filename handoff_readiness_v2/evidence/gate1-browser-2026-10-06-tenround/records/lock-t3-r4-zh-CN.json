@@ -1,0 +1,521 @@
+{
+ "driver": "lock-t3-r4",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-06T23:52:57",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "every product-market row already carries a decision",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "a budget allocation is already in this round",
+   "outcome": "observed",
+   "detail": "{\"id\": 131, \"rd_budget\": \"0.00\", \"marketing_budget\": \"300000.00\", \"strategy_budget\": \"7250000.00\", \"warnings\": [\"研发预算 已设为零。锁定前请确认。\"]}"
+  },
+  {
+   "name": "the supply-chain sections are marked optional on the Summary (W-CE-13)",
+   "outcome": "pass",
+   "detail": "{\"sourcing\": true, \"logistics\": true, \"trade_finance\": true, \"inventory\": true, \"budget\": null, \"rd\": null, \"products\": null, \"marketing\": null, \"strategy\": null, \"financing\": null}"
+  },
+  {
+   "name": "lock offered after the required decisions",
+   "outcome": "fail",
+   "detail": "blockers={\"can_lock\": false, \"lock_blockers\": [\"承诺支出 $11,800,000.00 超过可用资金 $11,378,424.21——现金 $1,878,424.21 加上本回合已决定的融资 $9,500,000.00。需要削减 $421,575.79：目前可削减的最大承诺是战略预算，金额 $7,250,000.00。增加债务或股权融资也可达到同样效果。\", \"预计资产负债率 260.59 超过上限 2.0。请调整融资。\", \"股利总额 $500,000.00 超过预计股东权益。请降低每股股利。\"]}"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:52:57"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:52:57"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:52:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:52:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:53:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:53:07"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/reasoning/history/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/rounds/4/reasoning/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/3/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/3/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/summary/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/summary/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/3/",
+   "status": 200,
+   "at": "23:53:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "23:53:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/",
+   "status": 200,
+   "at": "23:53:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "23:53:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/",
+   "status": 200,
+   "at": "23:53:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/",
+   "status": 200,
+   "at": "23:53:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/summary/",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/summary/",
+   "status": 200,
+   "at": "23:53:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/4/summary/",
+   "status": 200,
+   "at": "23:53:14"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "x-t3-r4-95-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/rounds/4/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/4/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "x-t3-r4-95-summary",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Lumen Devices",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "rows_to_complete": [],
+  "summary": {
+   "can_lock": false,
+   "lock_blockers": [
+    "承诺支出 $11,800,000.00 超过可用资金 $11,378,424.21——现金 $1,878,424.21 加上本回合已决定的融资 $9,500,000.00。需要削减 $421,575.79：目前可削减的最大承诺是战略预算，金额 $7,250,000.00。增加债务或股权融资也可达到同样效果。",
+    "预计资产负债率 260.59 超过上限 2.0。请调整融资。",
+    "股利总额 $500,000.00 超过预计股东权益。请降低每股股利。"
+   ]
+  },
+  "summary_spend_lines": [
+   "预算 $7.5M/$5.0M 超出预算",
+   "研发、营销与战略支出合计 $7.5M，比经营预算 $5.0M 高出 $2.5M",
+   "承诺支出 $11,800,000.00 超过可用资金 $11,378,424.21——现金 $1,878,424.21 加上本回合已决定的融资 $9,500,000.00。需要削减 $421,575.79：目前可削减的最大承诺是战略预算，金额 $7,250,000.00。增加债务或股权融资也可达到同样效果。",
+   "预计期末现金为 $-421,575.79。锁定前请减少支出或增加融资。",
+   "本回合已承诺支出：$11.8M，可用资金共 $11.4M；超出可用现金 $422K",
+   "承诺支出 $11,800,000.00 超过可用资金 $11,378,424.21——现金 $1,878,424.21 加上本回合已决定的融资 $9,500,000.00。需要削减 $421,575.79：目前可削减的最大承诺是战略预算，金额 $7,250,000.00。增加债务或股权融资也可达到同样效果。"
+  ],
+  "summary_optional_lines": [
+   "前往预算分配修正",
+   "前往研发投资修正",
+   "前往融资修正",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。"
+  ],
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "error",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "configured",
+   "strategy": "configured",
+   "financing": "error"
+  },
+  "summary_optional_flags": {
+   "sourcing": true,
+   "logistics": true,
+   "trade_finance": true,
+   "inventory": true,
+   "budget": null,
+   "rd": null,
+   "products": null,
+   "marketing": null,
+   "strategy": null,
+   "financing": null
+  },
+  "lock_button_enabled": false
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 1,
+  "observed": 1,
+  "screens": 1,
+  "screens_with_leaks": 1,
+  "console_errors": 6,
+  "api_calls": 31,
+  "api_refused": 0
+ }
+}

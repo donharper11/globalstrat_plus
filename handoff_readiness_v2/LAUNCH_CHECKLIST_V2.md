@@ -203,6 +203,32 @@
       running in the suite and in CI). **Stage 4 was explicitly not performed**,
       so CRV2-12 is not complete — only its code half is. Six named checks are
       listed in `completion/GSP-CRV2-12-completion.md` §7. Added 2026-09-12.
+      **2026-10-07 — Stage 4's PLAYER half was performed** in the ten-round
+      browser pass on candidate `a0631e5d`: a team played every decision
+      screen entirely in Simplified Chinese, round after round, with the
+      instructor console itself driven in Chinese on several of them — the
+      per-round tally is in `BROWSER_ACCEPTANCE_TENROUND_2026-10-06.md`.
+      It did not pass. Three findings, each traced to its line
+      (`V2_FINDINGS_REGISTER.md`, V2-145..V2-147): **155 player-facing strings
+      in the competition scenario have no Chinese sibling** — 105 of them
+      alliance-partner preferences served raw out of a JSONField by
+      `cc32d_views.py:38` while every field beside them is localised; **nine
+      rendered strings never reach the catalogue at all**, including an entire
+      FX-hedge and export-credit panel on the Financial Reports page and the
+      tax page's audit-risk sentence, read off a zh-CN screen; and **a Chinese
+      student read an English memo evaluation** because a team-wide artefact
+      takes the first-enrolled member's language and that member states
+      English — the Chinese text exists in the catalogue and was never
+      reached. That third one is the owner's open question about mixed teams,
+      not a bug: it was first written up here as a heap-order defect and
+      corrected, because `QuerySet.first()` orders by `pk` on an unordered
+      queryset. **The Stage-5 control cannot see any
+      of the three**, and why is stated per assertion in the register; the two
+      missing coverage questions are implemented in
+      `evidence/gate1-browser-2026-10-06-tenround/harness/bilingual_coverage_scan.py`
+      ready to be lifted in as A10 and A11. Tick this when the three are
+      repaired and the Chinese path is re-driven, not when the pass merely
+      ran.
 - [ ] The rehearsal heat and the competition heat do not share an instructor
       account, or the competition heat is the lowest-id active course that
       account owns. Added 2026-10-06 (V2-140). The console resolves the game

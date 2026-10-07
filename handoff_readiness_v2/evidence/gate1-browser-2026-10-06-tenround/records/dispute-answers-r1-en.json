@@ -1,0 +1,168 @@
+{
+  "1_before_deadline": {
+    "claim": "We submitted before the deadline",
+    "path": "console -> Team Overview -> View Decisions -> audit evidence, against the round schedule the instructor set",
+    "evidence": {
+      "round_deadline": "2026-10-07T22:39:45+00:00",
+      "saves": [
+        {
+          "at": "2026-10-06T22:40:54.337264+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:40:55.883850+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:40:57.434621+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:41:04.761910+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:41:06.387887+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:41:32.468151+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:41:47.500201+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:41:55.156303+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:42:05.443629+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:42:11.142002+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:42:27.038620+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:42:31.850147+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:42:43.525558+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:43:33.669599+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        },
+        {
+          "at": "2026-10-06T22:43:43.774433+00:00",
+          "actor": "Grace Kim",
+          "request_id": ""
+        }
+      ],
+      "locked_at": "2026-10-06T22:43:43.865144+00:00",
+      "submission_origin": "student_locked"
+    },
+    "answerable": true,
+    "conclusion": "15 accepted saves carry an actor and a SERVER timestamp; the last is 2026-10-06T22:43:43.774433+00:00 against a deadline of 2026-10-07T22:39:45+00:00, so the claim is decided on this screen (in time). The request id is empty on 15 of them -- see the step on this record -- so the save can be identified by actor, time, endpoint, payload and hash, but NOT correlated with the server request log the runbook points at."
+  },
+  "2_payload_mismatch": {
+    "claim": "The recorded decision differs from what we entered",
+    "path": "the same panel: one row per accepted save, each with its own payload and SHA-256",
+    "evidence": {
+      "distinct_save_hashes": [
+        "01dcb76d45c57e3e01525cbb5b1de14d65ade678ff1347d1c88eb14bfc3169f6",
+        "0c1009d4a1ffec8db01d0b25e07a94a23a504fa03d00cca8f7f22e9ceb0b5249",
+        "2959969e556b7714539158fd259221ff71a6fc28595d99b60f5bfc85165d3a81",
+        "4c4053ed38948fb1d0d274d20d22283d6607fb77fbcd568884a9a1800b686785",
+        "5902d7e98489f510f03c663a92cfe9d1879041edb890ad5cdcfffc467aad3296",
+        "7a882408e85dabaab43e475411b1dd2c4db910987d2c205f5edf85c0ddfbb89d",
+        "7fbaa7eda8778898bd495f12437adba9f9287fd1447500a0069cc47102cea087",
+        "9334ac24d8fc6ef8017c5d2ebe93600c910ef7b4197f25b332452e1d85e3b68c",
+        "b6551e7dfcbfda991e8eabd58fbf9e188e5727740fcf8c32d26e977eba66c1b0",
+        "b9262a2e7bd37ce27f805a17a488fec26e13d711f14d6a8807032ed78afccb5a",
+        "d686811c05929af790a69d2e0f57c28deee0fb6b650d4ababcddf38993d09c86",
+        "d9684449edebfb85f9577f3b42e94340b3b913346ba781bbd0a2690e17c89153",
+        "e96f5e7e20dc18516c9dddeaba8848613676f42000267ff48afe9123176e6090",
+        "f84af0c08eaaff381e5a00ec0d22e64c445ebb9ba08cf90e0b15b84dd4c375e6",
+        "f97dbaa540ddb70a93b42691046095fad9f1844c19cd5f127401331e75cdc992"
+      ],
+      "rows": 15,
+      "lock_events": 1,
+      "last_before_lock": {
+        "at": "2026-10-06T22:43:43.774433+00:00",
+        "sha256": "f97dbaa540ddb70a93b42691046095fad9f1844c19cd5f127401331e75cdc992"
+      }
+    },
+    "answerable": true,
+    "conclusion": "Each accepted save is a row with its own payload and hash, so the version in force at lock is identifiable and any earlier version is still beside it (15 distinct hashes)."
+  },
+  "5_operator_change": {
+    "claim": "The operator changed something",
+    "path": "console -> Game Control -> Operator Log (read-only), filterable by outcome",
+    "evidence": {
+      "rows_in_product": 18,
+      "actions": [
+        "activate_game",
+        "advance_round",
+        "close_round",
+        "extend_deadline",
+        "inject_event",
+        "pause_game",
+        "process_round",
+        "resume_game",
+        "set_deadline",
+        "set_round_schedule",
+        "set_team_config"
+      ],
+      "committed": 18,
+      "rejected": 0,
+      "columns_on_screen": {
+        "actor_on_screen": true,
+        "action_on_screen": true,
+        "request_id_on_screen": true
+      }
+    },
+    "answerable": true,
+    "conclusion": "18 operator rows are read back inside the product with actor, server time, action, outcome, round, reason, before -> after and request id, refusals included. CRV2-08 recorded this claim UNANSWERABLE because nothing in the product read the rows; this screen is the repair and it holds."
+  },
+  "3_rival_access": {
+    "claim": "Another team saw our decisions",
+    "path": "python3 manage.py who_accessed --game <id> --team <id> --json",
+    "answerable": null,
+    "conclusion": "Answered by an operator command, not from a screen; on record under CRV2-08 and not re-run here."
+  },
+  "4_rerun_after_final": {
+    "claim": "The round was rerun after final",
+    "path": "python3 manage.py replay_round --game-id <id> --round <n> --export-only",
+    "answerable": null,
+    "conclusion": "Answered by an operator command, not from a screen; on record under CRV2-08 and not re-run here."
+  },
+  "6_prove_the_calculation": {
+    "claim": "Prove the calculation",
+    "path": "python3 manage.py replay_round --game-id <id> --round <n> --restore against a disposable database",
+    "answerable": null,
+    "conclusion": "Answered by an operator command, not from a screen; on record under CRV2-08 and not re-run here."
+  }
+}

@@ -3516,3 +3516,150 @@ passed against the defect. **The section selection did not invert in this
 fixture** and is fixed on the compiled SQL rather than on a failing
 assertion: it reaches the rows through an `IN (SELECT …)` subquery, whose
 plan did not reorder at two rows. Same pattern, same repair, weaker proof.
+
+## Ten-round browser acceptance on candidate `a0631e5d`, 2026-10-06/07 — V2-141..V2-144
+
+Report: `BROWSER_ACCEPTANCE_TENROUND_2026-10-06.md`; evidence
+`evidence/gate1-browser-2026-10-06-tenround/` with `SHA256SUMS`. The pass that
+`BROWSER_WALKTHROUGH_CANDIDATE_2026-10-06.md` asked for: every round given a
+deliberate deadline from the console before the teams play, so rounds 2+
+measure the product rather than a refusal.
+
+| ID | Sev | What it is | Status |
+|---|---|---|---|
+| V2-141 | P1 (dispute tooling) | **The decision audit trail has never carried a request id.** Every `DecisionAuditEvent` a real user creates is written with `request_id = ''` — all of them, across every action type — so the column the dispute procedure asks for prints `—` in the instructor's own evidence panel. `record_decision_event` read `request.headers.get('X-Request-ID', '')`, the caller's header or nothing, while `record_operator_event` has always MINTED one through `request_id_for()`. The product's axios client never sends the header. **The one caller in the tree that does is `run_deadline_rehearsal`**, so the synthetic rehearsal produced correlation ids no browser would. This reopens one field of V2-003's repair, which added the column. **It has been in the evidence chain since 2026-08-30:** CRV2-08's own `evidence/post-close-disputes/dispute-answers.json` carries `"request_id": ""` on every save beside a conclusion reading *"recorded with server timestamps and request ids"*. | **Repaired on a branch, deliberately not merged into the candidate under certification.** `fix/decision-audit-request-id` (`4841ec9e`): one line, `request_id=request_id_for(request)`, plus four tests — red before the change with `AssertionError: '' is not true`, green after. **Not a determinism change:** `resolution_manifest` never reads `request_id` (it carries `decision_event_count`, a count), and a test asserts that so a future change which hashes the id has to come past it. Taking it needs the backend suite and a re-read of the evidence panel for one team-round. |
+| V2-142 | P2 (operator dead end) | **`Extend Deadline` on a closed round is refused for a reason its modal cannot take.** On the day the deadline passes, the scheduler closes the round within the minute; `InstructorExtendDeadlineView` reopens a closed round as a side effect and so demands a written reason, exactly as every other reopen does (`require_reason`, asserted by `CloseVersusExtendTests`). The modal offers an hours spinner and nothing else, and the refusal does not name *Reopen round* — which takes both a reason and a new deadline and does the job. The button is rendered on game status, not round status, so it is offered in precisely the state where it cannot work. | **Open.** Driven on the real screens by `probe_extend_closed_round.py`, on its own two-team game so the heat is untouched: past deadline, close from the console, press Extend, record what the operator sees, then *Reopen round* and extend successfully. Repair is a choice for the owner: a reason box on the extend modal when the round is closed, or a refusal that names the control that works. |
+| V2-143 | P1 (evidence integrity) | **Two drivers never blocked requests that leave the host, and a stalled CDN read as a product refusal.** The font-CDN aborts lived in `Recorder.instrument`; `set_round_deadline.py` and `probe_dom.py` never called it. That was harmless while this sandbox's resolver refused `fonts.googleapis.com` outright. Once it began *answering* with an address the host cannot reach, the stylesheet request stalled, `DOMContentLoaded` never fired, and `page.goto` timed out after 30 s against a stack answering curl in 0.6 ms: **the first attempt at the ten-round pass aborted all nine rounds in three minutes, each as "round N has no playable deadline"**. The old `run_round.sh` compounded it by logging `deadline exit $?` and carrying on regardless. | **Repaired.** `walk.py` gained `block_external()` — every non-loopback request aborted — called from both `instrument()` and `sign_in()`, so a driver is covered whether or not it keeps a record. A failed deadline step now stops the round instead of being logged. |
+| V2-144 | P2 (evidence integrity) | **Three reads taken too early, each reporting a working product path as a refusal.** (a) The bulk password control: the roster was read 2 s into a **10.57 s** route that hashes and saves each account as it goes, so 20 of 27 were done and the step reported *"7 still without a password"* — the third time this one step has measured something other than what it claims. (b) The memo submit: a fixed 15 s wait raced a **15.20 s** submit (gunicorn's own `%(D)s`), so the history read landed in the same millisecond as the response and came back empty — the memo was in the database with its evaluation, score 0.55, like the other three teams'. (c) The dispute drill-down opens on the **current** round, not the round under dispute, so round-1 rows were compared against a round-3 screen and the endpoint and hash columns read as missing. | **All three repaired**: the roster and the memo history are polled with the elapsed time recorded, and the dispute driver picks the round on the screen with an exact match so `Round 1` cannot select `Round 10`. |
+
+**A harness convergence defect, repaired mid-pass and worth recording because
+it was reading as a product dead end.** `follow_the_blocker.py` types into the
+equity box, which holds a **total**, not a top-up — so typing the residual
+shortfall REPLACED the equity already decided. Team 1 oscillated for five
+attempts in a perfect two-cycle (type $1.8M → stored $2M → short $0.8M → type
+$1M → stored $1M → short $1.8M) and went to the close as a draft, which
+reads exactly like *"following the Decision Summary's own instructions does not
+make the lock available"* — the decision-13 question. It also cleared the
+team's financing unconditionally, turning a **$100,000** shortfall into a
+$2.8M one on a team whose debt the product WAS counting and whose sentence
+ended *"Raising more debt or equity has the same effect."* Both are fixed: the
+financing is only taken off the round when the product says it is not being
+counted (`new_debt_refused_in_distress`, matched in both languages), and the
+figure typed is what is already decided plus what is still missing. In the
+round after the repair every playing team locked itself.
+
+**What the pass did NOT dispose of.** The teams that still reach the close as a
+draft do so on the **debt-to-equity ceiling** — *"New debt of $11,000,000.00 is
+not available: projected equity of $-2,284,287.83 cannot support additional
+borrowing under the 2.0 debt-to-equity ceiling"* — which is **W-CE4-10, open
+and already registered**, not a new finding. The product names the remedy in
+business language every time it refuses.
+
+## Bilingual coverage, found by the same pass — V2-145..V2-147
+
+**V2-147 was corrected after it was first written here, from a bug to a question; the entry says what the mistake was.**
+
+The ten-round pass put a Simplified-Chinese player through every decision
+screen in every round, and the leak scan on those screens stopped being a list
+of proper nouns. Three findings, each traced to its line. Scan:
+`evidence/gate1-browser-2026-10-06-tenround/harness/bilingual_coverage_scan.py`,
+output at `records/bilingual-coverage-scan.json`.
+
+| ID | Sev | What it is | Status |
+|---|---|---|---|
+| V2-145 | P1 | **155 player-facing strings in the competition scenario have no Chinese sibling**, and the view that serves the biggest group passes them through unlocalised. `consumer_electronics_2026.yaml`: 105 alliance-partner preference descriptions (*"Are you hiring locally?"*, *"Do you operate transparently?"*), 24 communication evaluation criteria — what a student reads about how their memo is judged — 20 event `description_template`s a player reads mid-round, and 6 governance-commitment effects. 30 more are proper nouns (25 supplier names, 5 statute names) and are excused by name. `clean_energy_tech_2026` and `media_entertainment_2026` carry 135 each. **The mechanism is right everywhere, which is why this was invisible:** the same file has 126 `name_zh` and 96 `description_zh` entries. For the 105 alliance preferences there is a second half: `AlliancePartnerProfile.preferences` is a **JSONField**, `get_localized_field` cannot reach inside it, and `cc32d_views.py:38` serves `'preferences': p.preferences` raw while `partner_name`, `market_name` and `description` on the very next lines all go through `get_localized_field`. **Seen live:** a Chinese screen in round 5, `student-play-t3-r5-zh-CN:p3-r5-52-market-home`. | **Repaired** on `fix/bilingual-coverage`. **150 translations written** into the competition scenario — 20 event narratives, the 67 distinct alliance questions (105 occurrences), 24 memo criteria and the ESG amplifier — and **three views stopped serving blobs raw**: `cc32d_views` picks each preference's `description_zh`, `cc32a_views` does the same for criteria and translates `audience_display` through a new six-entry label table, and `cc31j_views` localises the amplifier the page prints. Every rewrite keeps the fields the engine reads, asserted. **Five strings are deliberately left English and named with the reason:** the `interactions` blob is an authoring note that `CorporateStrategyPage` renders no field of — what a player reads about an interaction is built by `_evaluate_all_interactions` from the bilingual catalogue. 25 supplier names and 5 statute titles are proper nouns, also named. **The gate that stops this recurring:** `test_scenario_bilingual_coverage` fails on any authored player-facing field with no `_zh` sibling, and against the unfixed scenario it fails with exactly the 150. The other two shipped scenarios are held to a stated ceiling rather than completed — they are not what the competition runs. |
+| V2-146 | P2 | **Rendered English that never reaches the catalogue.** Nine strings in three files, a deliberate floor: `FinancialReportsPage.js` renders an entire FX-hedge and export-credit panel in English — *"Open FX hedge positions"*, the paragraph explaining how hedges mark to market, *"Payment & export-credit posture"*, *"Buyer payment instruments"*, *"Export-credit (Sinosure) coverage"*, *"No export-credit insurance set."*; `CorporateStrategyPage.js` renders two penalty sentences; `ReasoningAnalysisTab.js` titles a tab. Hand-verified beyond the scan: `FinancePage.js:760-761` renders *"…% audit risk/round — expected audit cost ~… per audit."* and *"Expected value over N remaining rounds:"* with the verdict beside them going through `t()` properly — **read off a zh-CN tax page in this pass**. | **Repaired** on `fix/bilingual-coverage`. The FX-hedge panel's wording already existed, translated, under `sc.trade_finance.*` — the Trade Finance page was localised properly and this tab restated it in English — so it is reused rather than retranslated, with five new keys for the strings peculiar to the tab. `FinancePage`'s audit sentence and `CorporateStrategyPage`'s four revocation-penalty lines are keyed. **The Reasoning Analysis panel turned out to be entirely English — 27 strings including a tab called *Competition Summary*** — and is now fully catalogued; its 竞赛 is allow-listed in `test_zh_terminology` with the reason, which is the guard that caught it. Also found and keyed: the hard-coded `Amplifier:` label beside the description V2-145 translated. **The scan now reports 0**, and the Stage-5 control still passes (6,036 units, 0 findings) — it was left unchanged, with the two coverage questions it cannot ask implemented separately in `bilingual_coverage_scan.py` ready to lift in as A10 and A11. |
+| V2-147 | P2 — and it is the owner's question, not a bug | **A Simplified-Chinese student read an English memo evaluation** — *"Automated evaluation unavailable. Score based on submission completeness."* `_fallback_evaluation` asks for the TEAM's language, `get_team_language` returns its **first-enrolled** member's, and for this team that member states English. `_FALLBACK_TEXT` carries a complete zh-CN block, so nothing is missing from the catalogue: the team was resolved as English. **CORRECTED, 2026-10-07.** This was first written here as a heap-order bug of the V2-140 class, because `Enrollment.objects.filter(…).exclude(language='').first()` carries no `ORDER BY`. That reading is wrong. **Django's `QuerySet.first()` orders by `pk` when the queryset is unordered** (`django/db/models/query.py`, 5.2.4), so the answer is the lowest `enrollment_id` that states a language, every time. The enrolment order `9, 11, 10` quoted in the first version of this entry came from an unfiltered listing query written to inspect the data, **not** from the function under test, and V2-140's own perturbation changes nothing here. No production change is called for. | **Open as the question this register already carries for the owner:** *what language a team-wide document uses when members differ.* What was done is the characterisation that was missing — `fix/team-language-ordering` (`edf4163e`), **tests only, no production change**: the stated rule, a blank-language member not deciding by being enrolled first, the all-blank fallback to English, and an assertion on the captured SQL that the enrolment read is ordered — so a future `Meta.ordering`, or a slice in place of `first()`, is noticed rather than assumed. |
+
+**Why the Stage-5 control did not catch any of the three.**
+`backend/scripts/check-participant-strings` is nine assertions and they are
+sound; V2-145 and V2-146 fell between them. V2-147 is not a string-coverage
+question at all — the Chinese text exists — so no assertion of this kind would
+have caught it.
+
+* **A4's scope is eight backend files**, named in
+  `participant-strings.config.json`. `cc32d_views.py` is not one of them and
+  nothing checks the remaining view modules.
+* **No assertion looks at rendered JSX that never calls `t()`.** A9 is A4's
+  frontend twin and catches `t('key', 'Fallback')` — a hard-coded fallback
+  *inside* a catalogue call. `<Title level={5}>Open FX hedge positions</Title>`
+  is not a catalogue call at all, so all nine pass over it.
+* **Nothing asserts that scenario content HAS a `_zh` sibling.** A7 asks
+  whether a scenario-authored name is localised rather than interpolated raw —
+  a mechanism question — not whether the authored content exists in both
+  languages.
+
+The two coverage questions are implemented in `bilingual_coverage_scan.py` so
+they can be lifted into the check as A10 and A11 if the owner wants them
+enforced. The scan asserts nothing and fails nothing by design: it is evidence
+for this report, not a new gate added during a certification.
+
+## V2-148 — engine-generated prose a Chinese student reads in English
+
+Found by the tab sweep added in the same pass, and it is a **different class**
+from V2-145/146: not catalogue coverage and not authored scenario content, but
+sentences the **engine composes at resolution time, stores, and a screen then
+prints**.
+
+**Confirmed on a Chinese student's own screen** (`student-tour-t3-after-r5`,
+Financial Reports → Government Relations tabs, round 5 of the ten-round pass):
+
+> Government tightening standards due to poor foreign firm compliance
+>
+> Government increasing scrutiny of firms from LATAM
+
+The first exists in exactly one place in the tree:
+`backend/core/engine/agents/governments.py:449`, built as a `reason` on a
+`regulatory_tightening` action and stored with it. Nothing localises it,
+because by the time a reader sees it the sentence is data.
+
+**Why it was invisible until now.** Every bilingual walkthrough to date
+screened each page on the tab it opens on; only the results page had its tabs
+walked. The Government Relations panel is a *tab* of Financial Reports, so no
+Chinese reader in any previous pass had ever opened it. Both tours now sweep
+every tab, which is also what surfaced V2-146's FX-hedge panel.
+
+**Scope is NOT yet measured, deliberately.** A scan for English prose literals
+of four or more words across `backend/core/engine` returns **204 in 24 files**,
+and that number would overstate the finding badly: the largest groups are LLM
+*prompts* (`narratives.py`, `coherence.py`, the `reasoning_*` modules'
+"You are a strategic management professor…"), which are model input and are
+correctly English, and `strategy_advisory.py`'s 67 are injected into the memo
+evaluation prompt rather than displayed. The honest inventory has to separate
+text that is *displayed* from text that is *sent to a model*, file by file.
+Candidates the walkthrough implicates directly: `agents/governments.py` (8),
+`events.py` (6), `alliance_engine.py` (4, e.g. *"Allocate at least 8 staff to
+this market"*), and the `reasoning_*` modules' pattern prose, which is the
+backend half of the panel V2-146 translated in the frontend.
+
+**The repair, and the correction to how this entry first read it.** This was
+first written here as the owner's decision, on the grounds that the sentence is
+stored at resolution and that re-rendering it might move the determinism
+envelope. That framing was wrong and is withdrawn. What the screen prints is
+`GovernmentAction.narrative`, which the manifest section already declares as a
+**narrative field** (`narrative_fields=('narrative',)`) — hashed into
+`narrative_sha256`, not into the competitive `output_sha256` — and the
+repository already re-renders narrative prose for the reader without writing
+anything: *"The briefing is re-rendered for the reader from figures it already
+stores; no stored row is written and no envelope moves."*
+
+So the fix is the same one: build the sentence **at read time** from the facts
+the row already carries — `action_type`, the structured values in
+`parameters`, and the market and origin foreign keys — through the bilingual
+catalogue, exactly as `_evaluate_all_interactions` builds the governance
+warnings a player reads. The stored English stays as the historical record and
+nothing hashed changes.
+
+One wrinkle to handle rather than gloss over: two of the seven shapes
+(`bilateral_shift`, `regulatory_tightening`/`relaxation`) take their whole
+sentence from `parameters['reason']`, which the agent writes as free English —
+sometimes interpolated, as in *"Bilateral trade relations improving between
+{market} and {origin}"*. Those must be rebuilt from `parameters['type']` and
+the row's own foreign keys rather than parsed back out of the English, and any
+shape the table has not been taught must fall back to the stored sentence so a
+new agent string degrades to today's behaviour instead of vanishing.
+
+**Nothing here is the owner's to decide.**
+
+**Not yet repaired, and not in `fix/bilingual-coverage`**, which deliberately
+stops at authored content and the views that serve it.

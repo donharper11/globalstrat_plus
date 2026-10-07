@@ -1,0 +1,81 @@
+{
+ "driver": "set-deadline-r4",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-06T23:28:44",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "walk_instructor = en"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the open round is the one being given a deadline",
+   "outcome": "pass",
+   "detail": "console reports round 4, asked for 4"
+  },
+  {
+   "name": "set-deadline control is offered",
+   "outcome": "pass",
+   "detail": "1"
+  },
+  {
+   "name": "round 4 deadline set from the console",
+   "outcome": "pass",
+   "detail": "before=2026-09-30T18:00:00+00:00 after=2026-10-07T23:28:44+00:00 typed=2026-10-07 23:28:44"
+  },
+  {
+   "name": "round 4 deadline is now in the future",
+   "outcome": "pass",
+   "detail": "after=2026-10-07T23:28:44+00:00"
+  }
+ ],
+ "console": [],
+ "api": [],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "deadline-r4-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "deadline-r4-set",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "en"
+  },
+  "deadline_modal": "Set round deadline — CE 2026 Heat AThe round closes automatically at this time and students are locked out. Clear it to let the round run until you close it by hand.Times are in your local timezone. Server time is currently 2026/10/6 23:29:03.CancelSave deadline",
+  "deadline_toast": "CE 2026 Heat A: deadline updated.",
+  "deadline_before": "2026-09-30T18:00:00+00:00",
+  "deadline_after": "2026-10-07T23:28:44+00:00"
+ },
+ "summary": {
+  "passed": 6,
+  "failed": 0,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 0,
+  "api_calls": 0,
+  "api_refused": 0
+ }
+}

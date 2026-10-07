@@ -1,0 +1,707 @@
+{
+ "driver": "verify-operator-log-refusal",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-07T02:28:22",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "walk_instructor = en"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "processing an already-processed round is refused",
+   "outcome": "pass",
+   "detail": "{\"status\": 409, \"body\": {\"error\": \"The game has moved to round 10; this request was for round 9.\", \"code\": \"state_moved\", \"guidance\": \"Refresh the console and repeat the action if it is still what you want.\", \"request_id\": \"srv-54fa82b1-3710-4a91-98f1-9e13eebcfdbd\"}}"
+  },
+  {
+   "name": "the lifecycle override with no written reason is refused",
+   "outcome": "pass",
+   "detail": "{\"status\": 409, \"body\": {\"error\": \"Round 10 has already been processed.\", \"code\": \"round_already_processed\", \"guidance\": \"Refresh the console and advance instead.\", \"request_id\": \"srv-6f9bf283-080a-4717-a475-57c4269f9bee\"}}"
+  },
+  {
+   "name": "no storage name, Python argument or raw exception in the Operator Log (W-CE2-04)",
+   "outcome": "pass",
+   "detail": "found []; the refused rows read: [\"Refused: Round 10 has already been processed.\", \"Refusal code round_already_processed\", \"Refused: The game has moved to round 10; this request was for round 9.\", \"Refusal code state_moved\"]"
+  },
+  {
+   "name": "the log carries a row for the refusals just made",
+   "outcome": "pass",
+   "detail": "[\"Refused: Round 10 has already been processed.\", \"Refusal code round_already_processed\", \"Refused: The game has moved to round 10; this request was for round 9.\", \"Refusal code state_moved\"]"
+  },
+  {
+   "name": "nothing in the served log carries developer text either",
+   "outcome": "pass",
+   "detail": "[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+   "at": "02:28:35"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+   "at": "02:28:35"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:35"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:35"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "02:28:25"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "02:28:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "02:28:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 409,
+   "at": "02:28:35"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/advance-round/",
+   "status": 409,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "02:28:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "02:28:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "02:28:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "02:28:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "02:28:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "02:28:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "02:28:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "02:28:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "02:28:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "02:28:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "02:28:58"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 409,
+   "at": "02:28:35",
+   "body": "{\"error\":\"The game has moved to round 10; this request was for round 9.\",\"code\":\"state_moved\",\"guidance\":\"Refresh the console and repeat the action if it is still what you want.\",\"request_id\":\"srv-54fa82b1-3710-4a91-98f1-9e13eebcfdbd\"}",
+   "request": "{\"expected_round_number\":9}"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/advance-round/",
+   "status": 409,
+   "at": "02:28:35",
+   "body": "{\"error\":\"Round 10 has already been processed.\",\"code\":\"round_already_processed\",\"guidance\":\"Refresh the console and advance instead.\",\"request_id\":\"srv-6f9bf283-080a-4717-a475-57c4269f9bee\"}",
+   "request": "{\"force\":true}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v-oplog-refusals-en",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "the Operator Log after two refused actions",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/process/",
+     "s": 409
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/advance-round/",
+     "s": 409
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "en"
+  },
+  "round_control": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "completed",
+   "current_round": 10,
+   "total_rounds": 10,
+   "server_time": "2026-10-07T02:28:35.702340+00:00",
+   "round": {
+    "round_id": 11,
+    "round_number": 10,
+    "status": "processed",
+    "processing_status": "FULLY_COMPLETE",
+    "narrative_generated": true,
+    "narrative_error": "",
+    "opened_at": "2026-10-07T01:41:07.229353+00:00",
+    "deadline": "2026-10-08T01:41:35+00:00",
+    "closed_at": "2026-10-07T01:54:57.687303+00:00",
+    "close_reason": "manual",
+    "processed_at": "2026-10-07T01:55:23.629643+00:00",
+    "phase_1_duration": 8.25960087776184,
+    "phase_2_duration": 0.6274173259735107,
+    "seconds_remaining": 83579,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 8,
+    "teams_pending": 0,
+    "next_action": "advance"
+   },
+   "narratives": {
+    "jobs": [
+     {
+      "narrative_type": "briefing",
+      "label": "Strategic briefings",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "analyst",
+      "last_error": "8/8 calls fell back to templates: no response",
+      "created_at": "2026-10-07T01:55:24.920712+00:00",
+      "claimed_at": "2026-10-07T01:55:25.169469+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-10-07T01:55:25.411727+00:00"
+     },
+     {
+      "narrative_type": "coaching",
+      "label": "Instructor coaching alerts",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "analyst",
+      "last_error": "8/8 calls fell back to templates: no response",
+      "created_at": "2026-10-07T01:55:24.923480+00:00",
+      "claimed_at": "2026-10-07T01:55:25.415004+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-10-07T01:55:25.567184+00:00"
+     },
+     {
+      "narrative_type": "coherence_rag",
+      "label": "Coherence RAG evaluation",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "analyst",
+      "last_error": "8/8 calls fell back to templates: no response",
+      "created_at": "2026-10-07T01:55:24.922282+00:00",
+      "claimed_at": "2026-10-07T01:55:25.572053+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-10-07T01:55:25.711819+00:00"
+     },
+     {
+      "narrative_type": "compliance",
+      "label": "Compliance enforcement narratives",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "tutor",
+      "last_error": "1/1 calls fell back to templates: no response",
+      "created_at": "2026-10-07T01:55:24.926190+00:00",
+      "claimed_at": "2026-10-07T01:55:25.716465+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-10-07T01:55:25.766074+00:00"
+     },
+     {
+      "narrative_type": "outlook",
+      "label": "Market outlooks",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": false,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "tutor",
+      "last_error": "",
+      "created_at": "2026-10-07T01:55:24.924408+00:00",
+      "claimed_at": "2026-10-07T01:55:25.769252+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-10-07T01:55:25.777269+00:00"
+     },
+     {
+      "narrative_type": "sc_event",
+      "label": "Supply-chain event narratives",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": false,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "tutor",
+      "last_error": "",
+      "created_at": "2026-10-07T01:55:24.925302+00:00",
+      "claimed_at": "2026-10-07T01:55:25.780514+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-10-07T01:55:25.793131+00:00"
+     }
+    ],
+    "summary": {
+     "total": 6,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 6,
+     "failed": 0,
+     "degraded": 4
+    }
+   },
+   "processing_failure": null
+  },
+  "already_processed_round": 9,
+  "reprocess_refusal": {
+   "status": 409,
+   "body": {
+    "error": "The game has moved to round 10; this request was for round 9.",
+    "code": "state_moved",
+    "guidance": "Refresh the console and repeat the action if it is still what you want.",
+    "request_id": "srv-54fa82b1-3710-4a91-98f1-9e13eebcfdbd"
+   }
+  },
+  "advance_no_reason_refusal": {
+   "status": 409,
+   "body": {
+    "error": "Round 10 has already been processed.",
+    "code": "round_already_processed",
+    "guidance": "Refresh the console and advance instead.",
+    "request_id": "srv-6f9bf283-080a-4717-a475-57c4269f9bee"
+   }
+  },
+  "operator_log_text": "Operator actions\nAll outcomes\nTIME (SERVER)\tACTOR\tACTION\tOUTCOME\tROUND\tREASON\tBEFORE → AFTER\tREQUEST ID\n\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\n10/7/2026, 2:28:35 AM\tWalkthrough Instructor\tadvance_round_legacy\trejected\t10\tOperator requested advance_round_legacy\t\nRefused: Round 10 has already been processed.\nRefusal code round_already_processed\nCopy the raw record\n\tsrv-6f9bf283-080a-4717-a475-57c4269f9bee\n\n10/7/2026, 2:28:35 AM\tWalkthrough Instructor\tprocess_round\trejected\t10\tOperator requested process_round\t\nRefused: The game has moved to round 10; this request was for round 9.\nRefusal code state_moved\nCopy the raw record\n\tsrv-54fa82b1-3710-4a91-98f1-9e13eebcfdbd\n\n10/7/2026, 1:55:39 AM\tWalkthrough Instructor\tadvance_round\tcommitted\t10\tOperator requested advance_round\t\nNo fields changedCopy the raw record\n\tsrv-2ec2e10c-4740-4c22-834f-40cefeaf65fe\n\n10/7/2026, 1:55:24 AM\tWalkthrough Instructor\tprocess_round\tcommitted\t10\tOperator requested process_round\t\nStatus: closed → processed\nProcessed at: — → 10/7/2026, 1:55:23 AM\nProcessing: Not yet processed → Results ready — narratives generating\nCopy the raw record\n\tsrv-05e5833b-f9c9-4bb7-bd25-c177caf5e058\n\n10/7/2026, 1:54:57 AM\tWalkthrough Instructor\tclose_round\tcommitted\t10\tOperator requested close_round\t\nStatus: open → closed\nClosed at: — → 10/7/2026, 1:54:57 AM\nClosed by: — → closed by instructor\nTeams locked: 4 → 8\nTeams pending: 4 → 0\nCopy the raw record\n\tsrv-bb9b6cb5-c7bf-42d8-b2c8-26a284987ad9\n\n10/7/2026, 1:42:02 AM\tWalkthrough Instructor\tset_deadline\tcommitted\t10\tOperator requested set_deadline\t\nDeadline: 10/12/2026, 6:00:00 PM → 10/8/2026, 1:41:35 AM\nCopy the raw record\n\tsrv-ae4af846-f86d-430c-979e-3a0b4336cbeb\n\n10/7/2026, 1:41:07 AM\tWalkthrough Instructor\tadvance_round\tcommitted\t10\tOperator requested advance_round\t\nStatus: processed → open\nDeadline: 10/8/2026, 1:17:30 AM → 10/12/2026, 6:00:00 PM\nClosed at: 10/7/2026, 1:39:38 AM → —\nOpened at: 10/7/2026, 1:17:03 AM → 10/7/2026, 1:41:07 AM\nClosed by: closed by instructor → —\nProcessed at: 10/7/2026, 1:40:05 AM → —\nRound: 9 → 10\nTeams locked: 8 → 0\nTeams pending: 0 → 8\nProcessing: Complete → Not yet processed\nCopy the raw record\n\tsrv-2374e4a2-1feb-467e-b860-dbbc6db4f287\n\n10/7/2026, 1:40:06 AM\tWalkthrough Instructor\tprocess_round\tcommitted\t9\tOperator requested process_round\t\nStatus: closed → processed\nProcessed at: — → 10/7/2026, 1:40:05 AM\nProcessing: Not yet processed → Results ready — narratives generating\nCopy the raw record\n\tsrv-98c1b236-3ed8-4247-9e5b-7a453f1a7a37\n\n10/7/2026, 1:39:38 AM\tWalkthrough Instructor\tclose_round\tcommitted\t9\tOperator requested close_round\t\nStatus: open → closed\nClosed at: — → 10/7/2026, 1:39:38 AM\nClosed by: — → closed by instructor\nTeams locked: 3 → 8\nTeams pending: 5 → 0\nCopy the raw record\n\tsrv-214305c0-38b7-4005-b8a0-117ed04cd4ce\n\n10/7/2026, 1:17:58 AM\tWalkthrough Instructor\tset_deadline\tcommitted\t9\tOperator requested set_deadline\t\nDeadline: 10/10/2026, 6:00:00 PM → 10/8/2026, 1:17:30 AM\nCopy the raw record\n\tsrv-b0f98d36-50d1-4dad-a74a-d4eed0f3421b\n1\n2\n3\n4\n5",
+  "refused_rows": [
+   "Refused: Round 10 has already been processed.",
+   "Refusal code round_already_processed",
+   "Refused: The game has moved to round 10; this request was for round 9.",
+   "Refusal code state_moved"
+  ],
+  "operator_log_api": 200,
+  "rows_with_developer_text": []
+ },
+ "summary": {
+  "passed": 7,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 10,
+  "api_calls": 36,
+  "api_refused": 2
+ }
+}

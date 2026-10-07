@@ -1,0 +1,880 @@
+{
+ "driver": "probe-extend-closed-round",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-07T01:44:56",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "walk_instructor = en"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "a game of its own exists for this probe",
+   "outcome": "pass",
+   "detail": "{\"game_id\": 2, \"game_name\": \"CE 2026 Heat C\", \"scenario_name\": \"Consumer Electronics 2026\", \"scenario_id\": 1, \"section_id\": 2, \"status\": \"active\", \"current_round\": 1, \"num_rounds\": 10, \"team_count\": 2"
+  },
+  {
+   "name": "the game is active with round 1 open",
+   "outcome": "fail",
+   "detail": "{\"round_id\": 13, \"round_number\": 1, \"status\": \"closed\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_error\": \"\", \"opened_at\": \"2026-10-07T01:41:09.005410+00:00\", \"deadline\""
+  },
+  {
+   "name": "the console offers Close round now",
+   "outcome": "fail",
+   "detail": ""
+  },
+  {
+   "name": "round 1 is closed, as the deadline leaves it",
+   "outcome": "pass",
+   "detail": "status=closed deadline=2026-09-28T18:00:00+00:00"
+  },
+  {
+   "name": "on-a-closed-round: the console offers Extend Deadline",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "on-a-closed-round: the extend modal offers somewhere to write a reason",
+   "outcome": "fail",
+   "detail": "0 textarea/text inputs; modal='Extend round deadline — CE 2026 Heat CExtend deadline by:hoursCancelOK'"
+  },
+  {
+   "name": "Extend Deadline on a closed round is refused by the server",
+   "outcome": "pass",
+   "detail": "[\"reason_required\"]"
+  },
+  {
+   "name": "the instructor is told what to do instead of being refused for a reason the modal cannot take",
+   "outcome": "fail",
+   "detail": "refusal shown to the operator: 'ErrorThis action overrides an integrity check, so it requires a written reason of at least 10 characters. Repeat the action with a written reason explaining why this override is correct.OK'; names Reopen round: False"
+  },
+  {
+   "name": "the refused extension left the round exactly as it was",
+   "outcome": "pass",
+   "detail": "{\"round_id\": 13, \"round_number\": 1, \"status\": \"closed\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_error\": \"\", \"opened_at\": \"2026-10-07T01:41:09.005410+00:00\", \"deadline\""
+  },
+  {
+   "name": "the console offers Reopen round on a closed round",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the reopen modal takes the written reason the extension needed",
+   "outcome": "fail",
+   "detail": ""
+  },
+  {
+   "name": "Reopen round puts the round back to open with a new deadline",
+   "outcome": "pass",
+   "detail": "status=open deadline=2026-11-01T18:00:00+00:00"
+  },
+  {
+   "name": "on-an-open-round: the console offers Extend Deadline",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "on-an-open-round: the extend modal offers somewhere to write a reason",
+   "outcome": "fail",
+   "detail": "0 textarea/text inputs; modal='Extend round deadline — CE 2026 Heat CExtend deadline by:hoursCancelOK'"
+  },
+  {
+   "name": "Extend Deadline works once the round is open again",
+   "outcome": "pass",
+   "detail": "before=2026-11-01T18:00:00+00:00 after=2026-11-02T18:00:00+00:00"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "01:44:57"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "01:44:57"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "01:44:57"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "01:44:57"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "01:45:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "01:45:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+   "at": "01:45:29"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "01:45:44"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "01:45:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "01:45:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "01:45:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=2",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=2",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=2",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-schedule/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/teams/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/briefings/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/research-queries/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/event-templates/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/alerts/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/dashboard/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/dashboard/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "01:45:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:22"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/2/round-control/deadline/",
+   "status": 409,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/research-queries/",
+   "status": 200,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/event-templates/",
+   "status": 200,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-schedule/",
+   "status": 200,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/briefings/",
+   "status": 200,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/dashboard/",
+   "status": 200,
+   "at": "01:45:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:37"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/2/instructor/extend-deadline/",
+   "status": 400,
+   "at": "01:45:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:51"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/2/round-control/reopen/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/research-queries/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-schedule/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/event-templates/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/briefings/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/dashboard/",
+   "status": 200,
+   "at": "01:45:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:46:02"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/2/instructor/extend-deadline/",
+   "status": 200,
+   "at": "01:46:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/research-queries/",
+   "status": 200,
+   "at": "01:46:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/briefings/",
+   "status": 200,
+   "at": "01:46:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/event-templates/",
+   "status": 200,
+   "at": "01:46:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/instructor/dashboard/",
+   "status": 200,
+   "at": "01:46:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/2/round-control/",
+   "status": 200,
+   "at": "01:46:14"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/games/2/round-control/deadline/",
+   "status": 409,
+   "at": "01:45:29",
+   "body": "{\"error\":\"Round 1 is closed; deadline changes are refused unless the round is open.\",\"code\":\"round_not_open\",\"guidance\":\"Reopen the round with a new deadline if students still need time.\",\"request_id\":\"srv-d0c314e0-33fb-4516-b572-3a52634a31d7\"}",
+   "request": "{\"deadline\":\"2026-09-28T18:00:00.000Z\",\"expected_round_number\":1,\"expected_status\":\"closed\"}"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/2/instructor/extend-deadline/",
+   "status": 400,
+   "at": "01:45:44",
+   "body": "{\"error\":\"This action overrides an integrity check, so it requires a written reason of at least 10 characters.\",\"code\":\"reason_required\",\"guidance\":\"Repeat the action with a written reason explaining why this override is correct.\",\"request_id\":\"srv-a77d6d68-8af2-4357-a88c-f1599e16ba49\"}",
+   "request": "{\"hours\":24}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "x-closed-on-a-closed-round-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=2",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=2",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=2",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/2/round-control/deadline/",
+     "s": 409
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-closed-on-a-closed-round-result",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "ErrorThis action overrides an integrity check, so it requires a written reason of at least 10 characters. Repeat the act",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/2/instructor/extend-deadline/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-closed-reopen-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-closed-on-an-open-round-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/2/round-control/reopen/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-closed-on-an-open-round-result",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/2/instructor/extend-deadline/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/2/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "en"
+  },
+  "probe_game_id": 2,
+  "past_deadline_toast": "Round 1 is closed; deadline changes are refused unless the round is open. Reopen the round with a new deadline if students still need time.",
+  "extend_modal_on-a-closed-round": "Extend round deadline — CE 2026 Heat CExtend deadline by:hoursCancelOK",
+  "extend_modal_text_inputs_on-a-closed-round": 0,
+  "extend_result_on-a-closed-round": "ErrorThis action overrides an integrity check, so it requires a written reason of at least 10 characters. Repeat the action with a written reason explaining why this override is correct.OK",
+  "extend_toast_on-a-closed-round": null,
+  "modals_left_open_on-a-closed-round": 2,
+  "extend_refusals": [
+   {
+    "method": "POST",
+    "url": "/api/games/2/instructor/extend-deadline/",
+    "status": 400,
+    "at": "01:45:44",
+    "body": "{\"error\":\"This action overrides an integrity check, so it requires a written reason of at least 10 characters.\",\"code\":\"reason_required\",\"guidance\":\"Repeat the action with a written reason explaining why this override is correct.\",\"request_id\":\"srv-a77d6d68-8af2-4357-a88c-f1599e16ba49\"}",
+    "request": "{\"hours\":24}"
+   }
+  ],
+  "extend_refusal_codes": [
+   "reason_required"
+  ],
+  "round_after_refused_extend": {
+   "round_id": 13,
+   "round_number": 1,
+   "status": "closed",
+   "processing_status": "PENDING",
+   "narrative_generated": false,
+   "narrative_error": "",
+   "opened_at": "2026-10-07T01:41:09.005410+00:00",
+   "deadline": "2026-09-28T18:00:00+00:00",
+   "closed_at": "2026-10-07T01:41:35.877184+00:00",
+   "close_reason": "manual",
+   "processed_at": null,
+   "phase_1_duration": null,
+   "phase_2_duration": null,
+   "seconds_remaining": -719151,
+   "is_overdue": true,
+   "teams_total": 2,
+   "teams_locked": 2,
+   "teams_pending": 0,
+   "next_action": "process"
+  },
+  "reopen_modal": "Reopen round 1 — CE 2026 Heat CThis unlocks every team's decisions and lets students edit again.Give the round a new deadline in the future — otherwise the old one is still in the past and the round would close again within a minute.CancelReopen round",
+  "reopen_toast": "CE 2026 Heat C: round 1 reopened. 2 submission(s) unlocked.",
+  "extend_modal_on-an-open-round": "Extend round deadline — CE 2026 Heat CExtend deadline by:hoursCancelOK",
+  "extend_modal_text_inputs_on-an-open-round": 0,
+  "extend_result_on-an-open-round": null,
+  "extend_toast_on-an-open-round": null,
+  "modals_left_open_on-an-open-round": 0,
+  "page_text_tail": "processing, then you advance. Processing and advancing are separate so you can check the results before the game moves on.\nChange deadline\nClose round now\nClose & process now\nRound Schedule\nRefresh\nSave Schedule\nROUND\tSTATUS\tDEADLINE\nRound 1\topen\t\nRound 2\tpending\t\nRound 3\tpending\t\nRound 4\tpending\t\nRound 5\tpending\t\nRound 6\tpending\t\nRound 7\tpending\t\nRound 8\tpending\t\nRound 9\tpending\t\nRound 10\tpending\t\nQuick Schedule\nRound 1 starts:\nHours per round:\nGap (hrs):\nGenerate & Save\nTEAM CONFIGURATION\nExpand\nAssign home markets to teams before Round 1. Click \"Expand\" to open the team configuration panel."
+ },
+ "summary": {
+  "passed": 11,
+  "failed": 6,
+  "observed": 0,
+  "screens": 5,
+  "screens_with_leaks": 0,
+  "console_errors": 8,
+  "api_calls": 56,
+  "api_refused": 2
+ }
+}

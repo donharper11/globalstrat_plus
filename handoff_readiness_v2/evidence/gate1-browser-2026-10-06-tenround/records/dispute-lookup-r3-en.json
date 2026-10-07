@@ -1,0 +1,894 @@
+{
+ "driver": "dispute-lookup-r3",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-07T02:28:58",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "walk_instructor = en"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the disputing team is on the Team Overview",
+   "outcome": "pass",
+   "detail": "Eclipse Gadgets"
+  },
+  {
+   "name": "the console offers the decision drill-down for that team",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the drill-down is set to the round under dispute",
+   "outcome": "pass",
+   "detail": "picked='Round 3'; modal says 'Team Decisions — Eclipse GadgetsRound: Round 3Round 3LockedLocked by teamlocked: 10/6/2026, 11:24:13 PMLocked by: Grace '"
+  },
+  {
+   "name": "the audit evidence is one click away inside the drill-down",
+   "outcome": "pass",
+   "detail": "1 collapse headers"
+  },
+  {
+   "name": "the drill-down carries this round's audit trail",
+   "outcome": "pass",
+   "detail": "39 events, 35 saves, 1 locks"
+  },
+  {
+   "name": "the payload hash of each accepted save is readable on the screen",
+   "outcome": "pass",
+   "detail": "[{\"action\": \"save\", \"request_id_on_screen\": false, \"sha256_on_screen\": true, \"endpoint_on_screen\": true}, {\"action\": \"save\", \"request_id_on_screen\": false, \"sha256_on_screen\": true, \"endpoint_on_screen\": true}, {\"action\": \"save\", \"request_id_on_screen\": false, \"sha256_on_screen\": true, \"endpoint_on_screen\": true}, {\"action\": \"lock\", \"request_id_on_screen\": false, \"sha256_on_screen\": false, \"endpoi"
+  },
+  {
+   "name": "every accepted save carries a request id the dispute procedure can correlate",
+   "outcome": "fail",
+   "detail": "0 of 35 saves carry one; record_decision_event reads X-Request-ID from the caller and the product client never sends it"
+  },
+  {
+   "name": "claim 1 \"we submitted before the deadline\" is decidable here",
+   "outcome": "pass",
+   "detail": "35 accepted saves carry an actor and a SERVER timestamp; the last is 2026-10-06T23:24:02.097968+00:00 against a deadline of 2026-10-07T23:03:57+00:00, so the claim is decided on this screen (in time). The request id is empty on 35 of them -- see the step on this record -- so the save can be identified by actor, time, endpoint, payload and hash, but NOT correlated with the server request log the runbook points at."
+  },
+  {
+   "name": "claim 2 \"that is not what we entered\" is decidable here",
+   "outcome": "pass",
+   "detail": "Each accepted save is a row with its own payload and hash, so the version in force at lock is identifiable and any earlier version is still beside it (26 distinct hashes)."
+  },
+  {
+   "name": "the Operator Log reads the rows back in the product",
+   "outcome": "pass",
+   "detail": "11 rows"
+  },
+  {
+   "name": "actor, action and request id are readable in the Operator Log",
+   "outcome": "pass",
+   "detail": "{\"actor_on_screen\": true, \"action_on_screen\": true, \"request_id_on_screen\": true}"
+  },
+  {
+   "name": "before -> after is stated in words, not as the stored record",
+   "outcome": "pass",
+   "detail": "braces or storage names on the screen: False"
+  },
+  {
+   "name": "claim 5 \"the operator changed something\" is answerable in the product (CRV2-08 re-test)",
+   "outcome": "pass",
+   "detail": "49 operator rows are read back inside the product with actor, server time, action, outcome, round, reason, before -> after and request id, refusals included. CRV2-08 recorded this claim UNANSWERABLE because nothing in the product read the rows; this screen is the repair and it holds."
+  },
+  {
+   "name": "claim \"Another team saw our decisions\" is operator-command work, not console work",
+   "outcome": "observed",
+   "detail": "python3 manage.py who_accessed --game <id> --team <id> --json"
+  },
+  {
+   "name": "claim \"The round was rerun after final\" is operator-command work, not console work",
+   "outcome": "observed",
+   "detail": "python3 manage.py replay_round --game-id <id> --round <n> --export-only"
+  },
+  {
+   "name": "claim \"Prove the calculation\" is operator-command work, not console work",
+   "outcome": "observed",
+   "detail": "python3 manage.py replay_round --game-id <id> --round <n> --restore against a disposable database"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:28:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:29:06"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "02:29:06"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "02:29:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "02:29:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "02:29:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "02:29:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "02:29:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "02:29:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "02:29:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "02:29:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "02:29:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "02:29:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/2/decisions/?round=10",
+   "status": 200,
+   "at": "02:29:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/2/decisions/?round=3",
+   "status": 200,
+   "at": "02:29:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/2/decisions/?round=3",
+   "status": 200,
+   "at": "02:29:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "02:29:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "02:29:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "02:29:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/?outcome=rejected",
+   "status": 200,
+   "at": "02:29:48"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "d00-team-overview",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "d01-decisions-drilldown",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/2/decisions/?round=10",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/2/decisions/?round=3",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "d02-audit-evidence-open",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "the payload column shows the stored record verbatim on purpose; leak-scan field names here are expected",
+   "leaks": [
+    {
+     "field_name": "team_product",
+     "context": "sions\":[{\"market\":3,\"retail_price\":550,\"team_product\":3,\"demand_estimate\":0,\"pro"
+    },
+    {
+     "field_name": "retail_price",
+     "context": "7\n\t{\"marketing_decisions\":[{\"market\":3,\"retail_price\":550,\"team_product\":3,\"dema"
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "d03-operator-log",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/2/decisions/?round=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "d04-operator-log-refusals-only",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/?outcome=rejected",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "d02-audit-evidence-open",
+   "leaks": [
+    {
+     "field_name": "team_product",
+     "context": "sions\":[{\"market\":3,\"retail_price\":550,\"team_product\":3,\"demand_estimate\":0,\"pro"
+    },
+    {
+     "field_name": "retail_price",
+     "context": "7\n\t{\"marketing_decisions\":[{\"market\":3,\"retail_price\":550,\"team_product\":3,\"dema"
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "en"
+  },
+  "round_deadline": "2026-10-07T23:03:57+00:00",
+  "drill_round_picked": "Round 3",
+  "drill_modal_head": "Team Decisions — Eclipse GadgetsRound: Round 3Round 3LockedLocked by teamlocked: 10/6/2026, 11:24:13 PMLocked by: Grace KimBudget AllocationR&D$0Marketing$300KStrategy$30.3MMarketing DecisionsProductMarketPriceVolumePromoRepsAura ProWestern Europe$550600,000$200K0Nova Eclipse R2North America$4203,000$100K0FinancingNew Debt$0Repayment$0New Equity$0Dividend/Share$0ESGEnvironmental$500KSocial$250KTalentR&D HC60Commercial HC30Operations HC40Submission audit evidence",
+  "audit_event_actions": [
+   "change_org_structure",
+   "change_tax_structure",
+   "lock",
+   "purchase_research_report",
+   "save"
+  ],
+  "evidence_columns_on_screen": [
+   {
+    "action": "save",
+    "request_id_on_screen": false,
+    "sha256_on_screen": true,
+    "endpoint_on_screen": true
+   },
+   {
+    "action": "save",
+    "request_id_on_screen": false,
+    "sha256_on_screen": true,
+    "endpoint_on_screen": true
+   },
+   {
+    "action": "save",
+    "request_id_on_screen": false,
+    "sha256_on_screen": true,
+    "endpoint_on_screen": true
+   },
+   {
+    "action": "lock",
+    "request_id_on_screen": false,
+    "sha256_on_screen": false,
+    "endpoint_on_screen": false
+   }
+  ],
+  "saves_carrying_a_request_id": {
+   "saves": 35,
+   "with_request_id": 0
+  },
+  "operator_actions_recorded": [
+   "activate_game",
+   "advance_round",
+   "advance_round_legacy",
+   "close_round",
+   "extend_deadline",
+   "inject_event",
+   "pause_game",
+   "process_round",
+   "resume_game",
+   "set_deadline",
+   "set_round_schedule",
+   "set_team_config"
+  ],
+  "operator_outcomes": {
+   "committed": 47,
+   "rejected": 2
+  },
+  "operator_log_columns_on_screen": {
+   "actor_on_screen": true,
+   "action_on_screen": true,
+   "request_id_on_screen": true
+  },
+  "rows_with_refusals_filter": 3,
+  "answers": {
+   "1_before_deadline": {
+    "claim": "We submitted before the deadline",
+    "path": "console -> Team Overview -> View Decisions -> audit evidence, against the round schedule the instructor set",
+    "evidence": {
+     "round_deadline": "2026-10-07T23:03:57+00:00",
+     "saves": [
+      {
+       "at": "2026-10-06T23:05:00.295565+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:05:01.877639+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:05:03.427986+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:05:10.741823+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:05:12.360448+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:05:38.542592+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:05:52.685777+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:03.004315+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:08.704060+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:13.965332+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:23.718245+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:28.571732+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:35.300282+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:06:43.860243+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:07:33.912843+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:08:31.043853+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:08:37.832210+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:03.422696+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:04.739753+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:18.819731+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:19.524876+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:36.383358+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:37.093404+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:53.968764+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:11:54.678076+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:12:11.565264+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:12:12.273095+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:12:29.365036+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:12:30.073059+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:17:18.161485+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:17:20.780248+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:17:22.950579+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:17:26.558244+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:24:01.387913+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      },
+      {
+       "at": "2026-10-06T23:24:02.097968+00:00",
+       "actor": "Grace Kim",
+       "request_id": ""
+      }
+     ],
+     "locked_at": "2026-10-06T23:24:13.065251+00:00",
+     "submission_origin": "student_locked"
+    },
+    "answerable": true,
+    "conclusion": "35 accepted saves carry an actor and a SERVER timestamp; the last is 2026-10-06T23:24:02.097968+00:00 against a deadline of 2026-10-07T23:03:57+00:00, so the claim is decided on this screen (in time). The request id is empty on 35 of them -- see the step on this record -- so the save can be identified by actor, time, endpoint, payload and hash, but NOT correlated with the server request log the runbook points at."
+   },
+   "2_payload_mismatch": {
+    "claim": "The recorded decision differs from what we entered",
+    "path": "the same panel: one row per accepted save, each with its own payload and SHA-256",
+    "evidence": {
+     "distinct_save_hashes": [
+      "01dcb76d45c57e3e01525cbb5b1de14d65ade678ff1347d1c88eb14bfc3169f6",
+      "0c1009d4a1ffec8db01d0b25e07a94a23a504fa03d00cca8f7f22e9ceb0b5249",
+      "25512f7376394a44225ea74ff5bbf55d28227aaa8f84004bcea9a3ae9a1d87e1",
+      "3edf8cb3703e6f1305ecccd65fa86a9c9ee8d1a3f8550a98055a8fec88ea6c57",
+      "445673d388b8d97532ef6b674717231ee785325826d27b282a8ceb535e5921c1",
+      "4787dd6c8cb0adf38d3ac1ae2abdb11469228c606095adfa3cead5c17e2cd24e",
+      "4c4053ed38948fb1d0d274d20d22283d6607fb77fbcd568884a9a1800b686785",
+      "4d4ff7406c33f3b0d9c8ac347679a0f596727c3135fa07863efff1ddb549bd82",
+      "5880b3329b8ba6b396c6e1381bbbe8623e2608a02b1f4be7e43cbc328aa5d9ad",
+      "6cad53deee83f0809a0b0b3a36b758e0ee420fa610d6dc1f2763ccd925830ad4",
+      "7a882408e85dabaab43e475411b1dd2c4db910987d2c205f5edf85c0ddfbb89d",
+      "7fbaa7eda8778898bd495f12437adba9f9287fd1447500a0069cc47102cea087",
+      "8092debee89b602cfd153d043f5645bff0eeb0b3e1ebd1012965fd31217c0c4a",
+      "87b27ba5893bf4ed5661d083f078cbbad55fdd688fd65f6fd4d3a3ff9aed742e",
+      "91c6b7fbdedfdeaa3a92afaf1abcafb779a6394f02ee8a0c11410de537dc4ca4",
+      "9334ac24d8fc6ef8017c5d2ebe93600c910ef7b4197f25b332452e1d85e3b68c",
+      "949b27f83de5951a4444a1c66884fa06e1bfee41f3aa12e4c04219b558a45408",
+      "b4f4a03b40c8a9ca0a6ac5f3383e4b62930d0847348443569f1e5f75ece8a4a9",
+      "b6551e7dfcbfda991e8eabd58fbf9e188e5727740fcf8c32d26e977eba66c1b0",
+      "d686811c05929af790a69d2e0f57c28deee0fb6b650d4ababcddf38993d09c86",
+      "d9684449edebfb85f9577f3b42e94340b3b913346ba781bbd0a2690e17c89153",
+      "e97ff78d81d61ed4f952d2a32d388c21b0bcfb9b6dc3d9620b18a213fb529c5a",
+      "ea48e7792e9d062fc901fb2eb9c2a86707f52db7a167357e945c3cffc611c5a4",
+      "ea76e23eaebc195b6e44f82d1ac912bebc59729fa9379f84ea19d4b5770742f7",
+      "f4002ea37822de56c419580c034befa239bc28c302fbf7979fd5a269b198dd4c",
+      "f964868a71fcdcdecbf89800b47efa3eaa97c169d3c1dc9bacf81ab5fb632ebc"
+     ],
+     "rows": 35,
+     "lock_events": 1,
+     "last_before_lock": {
+      "at": "2026-10-06T23:24:02.097968+00:00",
+      "sha256": "ea48e7792e9d062fc901fb2eb9c2a86707f52db7a167357e945c3cffc611c5a4"
+     }
+    },
+    "answerable": true,
+    "conclusion": "Each accepted save is a row with its own payload and hash, so the version in force at lock is identifiable and any earlier version is still beside it (26 distinct hashes)."
+   },
+   "5_operator_change": {
+    "claim": "The operator changed something",
+    "path": "console -> Game Control -> Operator Log (read-only), filterable by outcome",
+    "evidence": {
+     "rows_in_product": 49,
+     "actions": [
+      "activate_game",
+      "advance_round",
+      "advance_round_legacy",
+      "close_round",
+      "extend_deadline",
+      "inject_event",
+      "pause_game",
+      "process_round",
+      "resume_game",
+      "set_deadline",
+      "set_round_schedule",
+      "set_team_config"
+     ],
+     "committed": 47,
+     "rejected": 2,
+     "columns_on_screen": {
+      "actor_on_screen": true,
+      "action_on_screen": true,
+      "request_id_on_screen": true
+     }
+    },
+    "answerable": true,
+    "conclusion": "49 operator rows are read back inside the product with actor, server time, action, outcome, round, reason, before -> after and request id, refusals included. CRV2-08 recorded this claim UNANSWERABLE because nothing in the product read the rows; this screen is the repair and it holds."
+   },
+   "3_rival_access": {
+    "claim": "Another team saw our decisions",
+    "path": "python3 manage.py who_accessed --game <id> --team <id> --json",
+    "answerable": null,
+    "conclusion": "Answered by an operator command, not from a screen; on record under CRV2-08 and not re-run here."
+   },
+   "4_rerun_after_final": {
+    "claim": "The round was rerun after final",
+    "path": "python3 manage.py replay_round --game-id <id> --round <n> --export-only",
+    "answerable": null,
+    "conclusion": "Answered by an operator command, not from a screen; on record under CRV2-08 and not re-run here."
+   },
+   "6_prove_the_calculation": {
+    "claim": "Prove the calculation",
+    "path": "python3 manage.py replay_round --game-id <id> --round <n> --restore against a disposable database",
+    "answerable": null,
+    "conclusion": "Answered by an operator command, not from a screen; on record under CRV2-08 and not re-run here."
+   }
+  }
+ },
+ "summary": {
+  "passed": 14,
+  "failed": 1,
+  "observed": 3,
+  "screens": 5,
+  "screens_with_leaks": 1,
+  "console_errors": 6,
+  "api_calls": 30,
+  "api_refused": 0
+ }
+}

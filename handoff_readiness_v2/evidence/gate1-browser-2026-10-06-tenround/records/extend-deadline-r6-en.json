@@ -1,0 +1,541 @@
+{
+ "driver": "extend-deadline-r6",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-07T00:21:46",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "walk_instructor = en"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 6 is the open round",
+   "outcome": "pass",
+   "detail": "round_number=6 status=open"
+  },
+  {
+   "name": "the deadline round 6 opened with",
+   "outcome": "observed",
+   "detail": "deadline=2026-10-04T18:00:00+00:00, -54.37 hours from now -- already expired when the round opened"
+  },
+  {
+   "name": "the console offers Extend Deadline on the open round",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the extend modal asks for a number of hours",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Extend Deadline moved round 6 past now",
+   "outcome": "pass",
+   "detail": "before=2026-10-04T18:00:00+00:00 (-54.37h) after=2026-10-08T00:22:13.836047+00:00 (24.0h) toast=None modal=None"
+  },
+  {
+   "name": "the round is still open after the extension",
+   "outcome": "pass",
+   "detail": "status=open round_number=6"
+  },
+  {
+   "name": "extending did not unlock a submission",
+   "outcome": "pass",
+   "detail": "teams_locked=0/8"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:21:46"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:21:46"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:21:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:21:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:21:54"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:21:54"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "00:21:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "00:21:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "00:21:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "00:21:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "00:22:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "00:22:11"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/extend-deadline/",
+   "status": 200,
+   "at": "00:22:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "00:22:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "00:22:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "00:22:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "00:22:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "00:22:23"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "x6-00-before-extend",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "deadline 2026-10-04T18:00:00+00:00 (-54.37h ahead)",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x6-01-extend-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "x6-02-after-extend",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "deadline 2026-10-08T00:22:13.836047+00:00 (24.0h ahead)",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/extend-deadline/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "en"
+  },
+  "round_control_before": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 6,
+   "total_rounds": 10,
+   "server_time": "2026-10-07T00:22:11.577875+00:00",
+   "round": {
+    "round_id": 7,
+    "round_number": 6,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-10-07T00:21:19.187128+00:00",
+    "deadline": "2026-10-04T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": -195731,
+    "is_overdue": true,
+    "teams_total": 8,
+    "teams_locked": 0,
+    "teams_pending": 8,
+    "next_action": "close"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   },
+   "processing_failure": null
+  },
+  "deadline_before": {
+   "deadline": "2026-10-04T18:00:00+00:00",
+   "hours_ahead": -54.37,
+   "status": "open",
+   "round_number": 6
+  },
+  "extend_modal": "Extend round deadline — CE 2026 Heat AExtend deadline by:hoursCancelOK",
+  "extend_toast": null,
+  "extend_result_modal": null,
+  "deadline_after": {
+   "deadline": "2026-10-08T00:22:13.836047+00:00",
+   "hours_ahead": 24.0,
+   "status": "open"
+  }
+ },
+ "summary": {
+  "passed": 8,
+  "failed": 0,
+  "observed": 1,
+  "screens": 3,
+  "screens_with_leaks": 0,
+  "console_errors": 6,
+  "api_calls": 32,
+  "api_refused": 0
+ }
+}

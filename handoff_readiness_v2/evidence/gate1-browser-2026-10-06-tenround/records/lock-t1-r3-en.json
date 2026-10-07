@@ -1,0 +1,495 @@
+{
+ "driver": "lock-t1-r3",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-06T23:23:14",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2602 = en"
+  },
+  {
+   "name": "student s2602 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "every product-market row already carries a decision",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "a budget allocation is already in this round",
+   "outcome": "observed",
+   "detail": "{\"id\": 85, \"rd_budget\": \"0.00\", \"marketing_budget\": \"300000.00\", \"strategy_budget\": \"5250000.00\", \"warnings\": [\"R&D budget is set to zero. Review this before locking.\"]}"
+  },
+  {
+   "name": "the supply-chain sections are marked optional on the Summary (W-CE-13)",
+   "outcome": "pass",
+   "detail": "{\"sourcing\": true, \"logistics\": true, \"trade_finance\": true, \"inventory\": true, \"budget\": null, \"rd\": null, \"products\": null, \"marketing\": null, \"strategy\": null, \"financing\": null}"
+  },
+  {
+   "name": "lock offered after the required decisions",
+   "outcome": "fail",
+   "detail": "blockers={\"can_lock\": false, \"lock_blockers\": [\"Committed spend of $11,800,000.00 exceeds available funds of $9,993,849.20 — $8,993,849.20 of cash plus $1,000,000.00 of financing decided this round. Cut $1,806,150.80: your largest reducible commitment is the strategy budget at $5,250,000.00. Raising more deb"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:23:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:23:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:23:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:23:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:23:25"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:23:25"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "23:23:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:23:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/rounds/3/reasoning/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/reasoning/history/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/2/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/2/",
+   "status": 200,
+   "at": "23:23:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "23:23:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:23:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:23:31"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "x-t1-r3-95-summary",
+   "url": "/games/1/teams/1/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/rounds/3/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "server_language_after_sign_in": {
+   "user": "s2602",
+   "asked": "en",
+   "server": "en"
+  },
+  "rows_to_complete": [],
+  "summary": {
+   "can_lock": false,
+   "lock_blockers": [
+    "Committed spend of $11,800,000.00 exceeds available funds of $9,993,849.20 — $8,993,849.20 of cash plus $1,000,000.00 of financing decided this round. Cut $1,806,150.80: your largest reducible commitment is the strategy budget at $5,250,000.00. Raising more debt or equity has the same effect."
+   ]
+  },
+  "summary_spend_lines": [
+   "Budget $5.5M/$5.0M over budget",
+   "R&D, marketing and strategy spending totals $5.5M, which is $550K over the operating budget of $5.0M",
+   "Committed spend of $11,800,000.00 exceeds available funds of $9,993,849.20 — $8,993,849.20 of cash plus $1,000,000.00 of financing decided this round. Cut $1,806,150.80: your largest reducible commitment is the strategy budget at $5,250,000.00. Raising more debt or equity has the same effect.",
+   "Projected ending cash is $-1,806,150.80. Reduce spending or raise financing before locking.",
+   "Committed spend of $11,800,000.00 exceeds available funds of $9,993,849.20 — $8,993,849.20 of cash plus $1,000,000.00 of financing decided this round. Cut $1,806,150.80: your largest reducible commitment is the strategy budget at $5,250,000.00. Raising more debt or equity has the same effect."
+  ],
+  "summary_optional_lines": [
+   "Fix in Budget Allocation",
+   "Fix in R&D Investment",
+   "Fix in Financing",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional",
+   "Optional this round. Locking your decisions does not require it."
+  ],
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "error",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "configured",
+   "strategy": "configured",
+   "financing": "error"
+  },
+  "summary_optional_flags": {
+   "sourcing": true,
+   "logistics": true,
+   "trade_finance": true,
+   "inventory": true,
+   "budget": null,
+   "rd": null,
+   "products": null,
+   "marketing": null,
+   "strategy": null,
+   "financing": null
+  },
+  "lock_button_enabled": false
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 1,
+  "observed": 1,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 6,
+  "api_calls": 31,
+  "api_refused": 0
+ }
+}

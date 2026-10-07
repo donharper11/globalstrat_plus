@@ -1,0 +1,951 @@
+{
+ "driver": "follow-blocker-t3-r6",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-07T00:43:40",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the round as the team played it does not fit its funds",
+   "outcome": "observed",
+   "detail": "cash -13641438.39, committed 11300000; [\"承诺支出 $11,300,000.00 超过可用资金 $11,200,000.00——现金 $-13,641,438.39 加上本回合已决定的融资 $24,841,438.39。需要削减 $100,000.00：目前可削减的最大承诺是战略预算，金额 $6,750,000.00。增加债务或股权融资也可达到同样效果。\", \"营销支出 $300,000.00 超过营销预算 $200,000.00。请减少支出或增加预算。\"]"
+  },
+  {
+   "name": "following the Decision Summary's own instructions makes the lock available (W-CE3-02, decision 13)",
+   "outcome": "pass",
+   "detail": "after 1 attempt(s): can_lock=True; what is still refused: []"
+  },
+  {
+   "name": "the team presses the lock button and the round is submitted",
+   "outcome": "pass",
+   "detail": "button pressed=True, submission status=locked"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:43:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:43:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:43:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:43:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:43:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:43:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "00:44:00"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:44:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "00:44:15"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/rounds/6/reasoning/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/reasoning/history/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/5/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/5/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/5/",
+   "status": 200,
+   "at": "00:43:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "00:43:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:43:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:43:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:43:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:43:59"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/6/financing/",
+   "status": 400,
+   "at": "00:44:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:44:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:44:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:44:02"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/6/financing/",
+   "status": 200,
+   "at": "00:44:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:44:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:44:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:44:06"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/6/budget/",
+   "status": 200,
+   "at": "00:44:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:44:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:44:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:44:21"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/6/lock/",
+   "status": 200,
+   "at": "00:44:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "00:44:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "00:44:27"
+  }
+ ],
+ "refused": [
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/6/financing/",
+   "status": 400,
+   "at": "00:44:00",
+   "body": "{\"detail\":\"新增股权融资 $25,000,000.00 超过本回合资金缺口 $24,941,438.39。请减少股权融资；股权融资不能用于创造盈余现金或支付股利。\",\"funding_assessment\":{\"outlays\":{\"rd\":\"0\",\"platform_capex\":\"0\",\"marketing\":\"300000.00\",\"strategy\":\"6750000.00\",\"plant_capex\":\"0\",\"talent\":\"4000000.00\",\"research\":\"0\",\"org_structure\":\"0\",\"compliance\":\"250000.00\",\"tax_setup\":\"0\"},\"debt_repayment\":\"0\",\"eligible_uses\":\"11300000.00\",\"opening_cash\":\"-13641438.39\",\"new_debt\":\"0\",\"available_funding\":\"-13641438.39\",\"maximum_new_equity\":\"24941438.39\",\"requested_new_equity\":\"25000000.00\",\"within_limit\":false}}",
+   "request": "{\"financing\":{\"new_debt\":0,\"debt_repayment\":0,\"new_equity\":25000000,\"dividend_per_share\":0}}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v4-blocker-t3-r6-0-equity-round",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "a round $25M typed into the equity box",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/rounds/6/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/6/financing/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-0-equity-exact",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the exact shortfall typed into the equity box",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/6/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-0-budgets",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "not-captured",
+   "note": "the declared budgets set to the spending already made",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/6/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-locked",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/6/lock/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v4-blocker-t3-r6-0-equity-round",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-0-equity-exact",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-0-budgets",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-summary",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-blocker-t3-r6-locked",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Lumen Devices",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "as_played": {
+   "can_lock": false,
+   "blockers": [
+    "承诺支出 $11,300,000.00 超过可用资金 $11,200,000.00——现金 $-13,641,438.39 加上本回合已决定的融资 $24,841,438.39。需要削减 $100,000.00：目前可削减的最大承诺是战略预算，金额 $6,750,000.00。增加债务或股权融资也可达到同样效果。",
+    "营销支出 $300,000.00 超过营销预算 $200,000.00。请减少支出或增加预算。"
+   ],
+   "budget_summary": {
+    "rd_allocated": 0,
+    "research_allocated": 0,
+    "research_spent": 0,
+    "rd_spent": 0,
+    "marketing_allocated": 200000,
+    "marketing_spent": 300000,
+    "strategy_allocated": 6750000,
+    "strategy_spent": 6750000,
+    "talent_committed": 4000000,
+    "plant_committed": 0,
+    "total_available": 11200000,
+    "cash_on_hand": -13641438.39,
+    "financing_decided": 24841438.39,
+    "total_allocated": 6950000,
+    "platform_development_committed": 0,
+    "compliance_committed": 250000,
+    "committed_total": 11300000,
+    "unallocated": -100000
+   }
+  },
+  "attempts": [
+   {
+    "attempt": 0,
+    "available": 11200000.0,
+    "committed": 11300000.0,
+    "shortfall": 100000.0,
+    "blockers": [
+     "承诺支出 $11,300,000.00 超过可用资金 $11,200,000.00——现金 $-13,641,438.39 加上本回合已决定的融资 $24,841,438.39。需要削减 $100,000.00：目前可削减的最大承诺是战略预算，金额 $6,750,000.00。增加债务或股权融资也可达到同样效果。",
+     "营销支出 $300,000.00 超过营销预算 $200,000.00。请减少支出或增加预算。"
+    ],
+    "debt_reported_not_counted": false,
+    "equity_already_decided": 24841438.39,
+    "equity_total_needed": 24941438.39,
+    "round_figure_typed": 25000000,
+    "round_figure_box": "$ 24,841,438.39",
+    "round_figure_stored": "24841438.39",
+    "refusal_on_screen": [],
+    "exact_typed": 24941438.39,
+    "exact_stored": "24941438.39",
+    "after_equity": {
+     "can_lock": false,
+     "blockers": [
+      "营销支出 $300,000.00 超过营销预算 $200,000.00。请减少支出或增加预算。"
+     ],
+     "total_available": 11300000
+    },
+    "budgets_set_to": [
+     0.0,
+     300000.0,
+     6750000.0
+    ],
+    "after_budgets": {
+     "can_lock": true,
+     "blockers": []
+    }
+   }
+  ],
+  "summary_text": "GS\nGLOBALSTRAT\n消费电子模拟\nR6 / 10草稿开放\n预算 $7.0M/$5.0M 超出预算\n研发 $0/$0\n营销 $300K/$300K\n战略 $6.8M/$6.8M\nEN\nJB\nJonas Berg · Lumen Devices\n实时\n⏰\n第6回合截止日期：剩余0天 — 2/8 个团队已提交\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n⏰\n第6回合截止日期：剩余0天 — 2/8 个团队已提交\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\nLUMEN DEVICES\n南美\n回合 6\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n研发、营销与战略支出合计 $7.0M，比经营预算 $5.0M 高出 $2.0M\n决策总结与提交\n回合 6 · 审核并锁定您的决策\n进行中\n决策清单\n预算分配\n研发预算 已设为零。锁定前请确认。\n已完成\n研发投资\n本回合尚未安排研发投入。请打开“研发投入”页面添加。\n前往研发投资修正\n未开始\n产品组合\n此项已保存草稿。\n已完成\n营销组合\n此项已保存草稿。\n已完成\n战略组合\n您的团队已在 东亚 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 东亚 添加为目标市场。\n您的团队已在 西欧 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 西欧 添加为目标市场。\n您的团队已在 非洲 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 非洲 添加为目标市场。\n已完成\n融资\n此项已保存草稿。\n已完成\n采购\n本回合为可选项，锁定决策时无需完成。\n可选\n物流\n本回合为可选项，锁定决策时无需完成。\n可选\n贸易融资\n本回合为可选项，锁定决策时无需完成。\n可选\n库存\n本回合为可选项，锁定决策时无需完成。\n可选\n预算摘要\n研发\n$0 / $0\n营销\n$300K / $300K\n战略\n$6.8M / $6.8M\n研究\n$0 / $0\n合规投入\n$250K\n平台开发\n$0\n薪酬与人才\n$4.0M\n工厂建设\n$0\n本回合已承诺支出：$11.3M，可用资金共 $11.3M；尚未承诺 $0\n团队笔记\n0 / 2000\n锁定并提交第6回合决策",
+  "lock_modal": "确认提交确定锁定第6回合的决策？此操作无法撤销。所有决策页面将变为只读。取 消锁定决策"
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 0,
+  "observed": 1,
+  "screens": 5,
+  "screens_with_leaks": 5,
+  "console_errors": 9,
+  "api_calls": 56,
+  "api_refused": 1
+ }
+}

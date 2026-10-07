@@ -1,0 +1,710 @@
+{
+ "driver": "lock-t1-r2",
+ "language": "en",
+ "base": "http://127.0.0.1:42277",
+ "started": "2026-10-06T22:58:12",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2602 = en"
+  },
+  {
+   "name": "student s2602 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the rows the lock asks for were completed from the page",
+   "outcome": "pass",
+   "detail": "[[\"Nova Aurora R1\", \"Africa\", true]]"
+  },
+  {
+   "name": "a budget allocation is already in this round",
+   "outcome": "observed",
+   "detail": "{\"id\": 39, \"rd_budget\": \"0.00\", \"marketing_budget\": \"250000.00\", \"strategy_budget\": \"13250000.00\", \"warnings\": [\"R&D budget is set to zero. Review this before locking.\"]}"
+  },
+  {
+   "name": "the supply-chain sections are marked optional on the Summary (W-CE-13)",
+   "outcome": "pass",
+   "detail": "{\"sourcing\": true, \"logistics\": true, \"trade_finance\": true, \"inventory\": true, \"budget\": null, \"rd\": null, \"products\": null, \"marketing\": null, \"strategy\": null, \"financing\": null}"
+  },
+  {
+   "name": "lock offered after the required decisions",
+   "outcome": "fail",
+   "detail": "blockers={\"can_lock\": false, \"lock_blockers\": [\"Marketing spend of $300,000.00 exceeds the marketing budget of $250,000.00. Reduce spending or increase the budget.\"]}"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:22"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:22"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:41"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:58:41"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/rounds/2/reasoning/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/reasoning/history/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/1/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/1/",
+   "status": 200,
+   "at": "22:58:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "22:58:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "22:58:22"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/marketing/",
+   "status": 200,
+   "at": "22:58:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:33"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/marketing/",
+   "status": 200,
+   "at": "22:58:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:35"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/marketing/",
+   "status": 200,
+   "at": "22:58:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:58:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:58:47"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "x-t1-r2-marketing-completed",
+   "url": "/games/1/teams/1/decisions/marketing",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/rounds/2/reasoning/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/reasoning/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-t1-r2-95-summary",
+   "url": "/games/1/teams/1/decisions/summary",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "server_language_after_sign_in": {
+   "user": "s2602",
+   "asked": "en",
+   "server": "en"
+  },
+  "rows_to_complete": [
+   [
+    "Nova Aurora R1",
+    "Africa"
+   ]
+  ],
+  "rows_completed": [
+   [
+    "Nova Aurora R1",
+    "Africa",
+    true
+   ]
+  ],
+  "summary": {
+   "can_lock": false,
+   "lock_blockers": [
+    "Marketing spend of $300,000.00 exceeds the marketing budget of $250,000.00. Reduce spending or increase the budget."
+   ]
+  },
+  "summary_spend_lines": [
+   "Budget $13.6M/$5.0M over budget",
+   "R&D, marketing and strategy spending totals $13.6M, which is $8.6M over the operating budget of $5.0M",
+   "Marketing spend of $300,000.00 exceeds the marketing budget of $250,000.00. Reduce spending or increase the budget."
+  ],
+  "summary_optional_lines": [
+   "Fix in R&D Investment",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional",
+   "Optional this round. Locking your decisions does not require it.",
+   "Optional"
+  ],
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "configured",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "configured",
+   "strategy": "configured",
+   "financing": "configured"
+  },
+  "summary_optional_flags": {
+   "sourcing": true,
+   "logistics": true,
+   "trade_finance": true,
+   "inventory": true,
+   "budget": null,
+   "rd": null,
+   "products": null,
+   "marketing": null,
+   "strategy": null,
+   "financing": null
+  },
+  "lock_button_enabled": false
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 1,
+  "observed": 1,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 8,
+  "api_calls": 48,
+  "api_refused": 0
+ }
+}
