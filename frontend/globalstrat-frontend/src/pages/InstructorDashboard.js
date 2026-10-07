@@ -82,6 +82,7 @@ const InstructorDashboard = () => {
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [extendModalOpen, setExtendModalOpen] = useState(false);
   const [extendHours, setExtendHours] = useState(24);
+  const [extendReason, setExtendReason] = useState('');
   const [selectedEventTemplate, setSelectedEventTemplate] = useState(null);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
@@ -344,8 +345,10 @@ const InstructorDashboard = () => {
   const handleExtend = async () => {
     setActionLoading(true);
     try {
-      await extendDeadline(gameId, { hours: extendHours });
+      await extendDeadline(gameId, { hours: extendHours,
+                                     reason: extendReason.trim() });
       setExtendModalOpen(false);
+      setExtendReason('');
       loadData();
     } catch (err) {
       // A refused extend used to close nothing and say nothing: the modal sat
@@ -2255,9 +2258,26 @@ const InstructorDashboard = () => {
           and this modal named a game that is not the one being extended.
           Naming the wrong heat is worse than naming none, which is the
           hazard the requirement exists to prevent. */}
-      <Modal title={t('instructor.extend_deadline_title', { game: dashboard?.game_name || createGameName || t('instructor.game') })} open={extendModalOpen} onOk={handleExtend} onCancel={() => setExtendModalOpen(false)} confirmLoading={actionLoading}>
+      {/* THE REASON BOX. On competition day the deadline passes and the
+          scheduler closes the round within the minute, which is the ordinary
+          case; `InstructorExtendDeadlineView` reopens a closed round as a side
+          effect and so demands a written reason. This modal had an hours
+          spinner and nothing else, so the instructor was refused — *"requires a
+          written reason of at least 10 characters"* — with no way to give one,
+          and the refusal does not name *Reopen round*, which does the same job.
+          Driven and recorded by
+          `evidence/gate1-browser-2026-10-06-tenround/harness/probe_extend_closed_round.py`.
+          The box is optional: an open round needs no reason and the server
+          decides, so nothing new is demanded of the common case. */}
+      <Modal title={t('instructor.extend_deadline_title', { game: dashboard?.game_name || createGameName || t('instructor.game') })} open={extendModalOpen} onOk={handleExtend} onCancel={() => { setExtendModalOpen(false); setExtendReason(''); }} confirmLoading={actionLoading}>
         <Text>{t('instructor.extend_deadline_by')}:</Text>
         <InputNumber min={1} max={168} value={extendHours} onChange={setExtendHours} addonAfter={t('instructor.hours_unit')} style={{ width: '100%', marginTop: 8 }} />
+        <div style={{ marginTop: 12, marginBottom: 4 }}>
+          <Text type="secondary">{t('instructor.extend_deadline_reason_hint')}</Text>
+        </div>
+        <TextArea rows={2} value={extendReason}
+          onChange={(e) => setExtendReason(e.target.value)}
+          placeholder={t('instructor.extend_deadline_reason_placeholder')} />
       </Modal>
 
       {/* Inject Event Modal — now with dropdowns */}
