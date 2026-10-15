@@ -30,8 +30,14 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: install django and the http client
-        run: pip install 'Django==5.2.4' djangorestframework httpx PyJWT PyYAML
+      # Only what importing the settings and the core app needs: settings
+      # install corsheaders and name the PostgreSQL backend (psycopg2 must
+      # import, though no connection is made), and core imports qdrant_client
+      # at module level. Versions follow backend/requirements.txt.
+      - name: install django and the modules the core app imports
+        run: >-
+          pip install 'Django==5.2.4' djangorestframework httpx PyJWT PyYAML
+          'django-cors-headers==4.7.0' 'psycopg2-binary==2.9.10' 'qdrant-client==1.17.0'
 
       - name: no platform code may call a model provider
         working-directory: backend

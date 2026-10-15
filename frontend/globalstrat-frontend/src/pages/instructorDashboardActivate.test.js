@@ -118,14 +118,19 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
+// Each step waits on a rendered antd control; the default 1s findBy timeout
+// was too tight on a busy CI runner, so the helper allows what the
+// assertions below already allow.
+const WAIT = { timeout: 5000 };
+
 const activate = async () => {
   render(<MemoryRouter><InstructorDashboard /></MemoryRouter>);
-  fireEvent.click(await screen.findByRole('tab', { name: 'instructor.game_control' }));
-  fireEvent.click(await screen.findByRole('button', { name: 'instructor.activate_game' }));
-  const popover = await screen.findByRole('tooltip');
+  fireEvent.click(await screen.findByRole('tab', { name: 'instructor.game_control' }, WAIT));
+  fireEvent.click(await screen.findByRole('button', { name: 'instructor.activate_game' }, WAIT));
+  const popover = await screen.findByRole('tooltip', {}, WAIT);
   fireEvent.click(within(popover).getByRole('button', { name: 'OK' }));
-  await waitFor(() => expect(client.post).toHaveBeenCalledWith('/games/1/activate/'));
-  await screen.findByRole('button', { name: 'instructor.pause_game' });
+  await waitFor(() => expect(client.post).toHaveBeenCalledWith('/games/1/activate/'), WAIT);
+  await screen.findByRole('button', { name: 'instructor.pause_game' }, WAIT);
 };
 
 test('the round control card re-reads the round after the game is activated', async () => {
