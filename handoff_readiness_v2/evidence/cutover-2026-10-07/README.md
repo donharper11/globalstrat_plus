@@ -144,10 +144,29 @@ deployment. That is part of Gate 4 rather than separate from it.
 
 ## Revert
 
-    sudo cp $S/dropins-before/*.conf back into the two .service.d directories
+*Updated 2026-10-16.* The saved `dropins-before/` copies are gone (they were not
+on disk by 2026-10-16, most likely lost from a temporary directory at the
+2026-10-10 reboot), and the `globalstrat-plus-candidate-f0cf` worktree was
+removed in a cleanup of leftover worktrees. Both are recreatable; `f0cf7be47264`
+is on `origin/crv2-release-integration`. The revert is now:
+
+    W=/home/ubuntu/projects/globalstrat-plus-candidate-f0cf
+    git -C /home/ubuntu/projects/globalstrat+ worktree add --detach "$W" f0cf7be47264
+    for u in globalstrat-backend globalstrat-narratives globalstrat-deadline-scheduler; do
+      printf '[Service]\nWorkingDirectory=%s/backend\n' "$W" |
+        sudo tee /etc/systemd/system/$u.service.d/competition-candidate.conf >/dev/null
+    done
+    for u in globalstrat-backend globalstrat-narratives; do
+      printf '[Service]\nEnvironment=GIT_REVISION=f0cf7be47264f41c51400c41b113f0237328b0b5\n' |
+        sudo tee /etc/systemd/system/$u.service.d/release-candidate.conf >/dev/null
+    done
     sudo cp /etc/globalstrat-plus.env.bak-pre-f62f /etc/globalstrat-plus.env
     sudo systemctl daemon-reload
-    sudo systemctl restart globalstrat-backend globalstrat-narratives
+    sudo systemctl restart globalstrat-backend globalstrat-narratives globalstrat-deadline-scheduler
+
+As noted above, the env file is what takes effect; the drop-in only keeps the
+two in agreement. Verify with
+`/proc/<MainPID>/environ`, not `systemctl show`.
 
 That returns the deployment to `f0cf7be47264`, which is the state the
 2026-10-06 Gate 2 pass certified.
