@@ -34,6 +34,7 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   // Only use API sidebar labels when in English — in zh-CN mode, t() provides the translation
   const sidebarLabels = i18n.language === 'zh-CN' ? null : rawSidebarLabels;
   const [categoryStatus, setCategoryStatus] = useState({});
+  const [openKeys, setOpenKeys] = useState([]);
 
   const go = (path) => {
     navigate(path);
@@ -276,6 +277,17 @@ const Sidebar = ({ collapsed, onNavigate }) => {
     );
   }
 
+  // Accordion: only one menu group may be open at a time. Navigating to a
+  // page opens that page's group so the active item stays visible.
+  const activeGroup = menuItems.find(item => item.children?.some(child => child.key === selectedKey))?.key;
+  useEffect(() => {
+    setOpenKeys(!collapsed && activeGroup ? [activeGroup] : []);
+  }, [activeGroup, collapsed]);
+
+  const onOpenChange = (keys) => {
+    setOpenKeys(keys.filter(key => !openKeys.includes(key)).slice(-1));
+  };
+
   return (
     <Sider
       trigger={null}
@@ -321,7 +333,8 @@ const Sidebar = ({ collapsed, onNavigate }) => {
         theme="dark"
         mode="inline"
         selectedKeys={[selectedKey]}
-        defaultOpenKeys={collapsed ? [] : ['info-group', 'decisions-group', 'results-group', 'instructor-group']}
+        openKeys={openKeys}
+        onOpenChange={onOpenChange}
         items={menuItems}
         style={{ borderRight: 0 }}
       />
