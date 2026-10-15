@@ -1,0 +1,176 @@
+{
+ "driver": "lock-t2-r4",
+ "language": "en",
+ "base": "http://127.0.0.1:50011",
+ "started": "2026-10-06T21:52:18",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2607 = en"
+  },
+  {
+   "name": "student s2607 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 4 already locked for this team",
+   "outcome": "observed",
+   "detail": ""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "21:52:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "21:52:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "21:52:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "21:52:18"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/dashboard/scorecard/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/rounds/4/reasoning/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/reasoning/history/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/investor-relations/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/3/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/results/round/3/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/competitors/round/3/",
+   "status": 200,
+   "at": "21:52:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "21:52:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "21:52:28"
+  }
+ ],
+ "refused": [],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "team": "Titan Micro",
+  "server_language_after_sign_in": {
+   "user": "s2607",
+   "asked": "en",
+   "server": "en"
+  }
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 0,
+  "observed": 1,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 18,
+  "api_refused": 0
+ }
+}
