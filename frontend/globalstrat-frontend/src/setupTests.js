@@ -77,3 +77,15 @@ if (!window.ResizeObserver) {
     disconnect() {}
   };
 }
+
+// --- async timing on CI -----------------------------------------------------
+// Many tests wait for debounced saves, refetches and antd transitions with
+// findBy*/waitFor. Testing Library gives up after 1s by default, which a busy
+// CI runner exceeds intermittently (a different test failed on each run). The
+// default wait is 5s, and Jest's per-test limit is raised to leave room for a
+// test that waits more than once. A test that genuinely fails still fails;
+// it only takes longer to say so.
+const { configure } = require('@testing-library/react');
+
+configure({ asyncUtilTimeout: 5000 });
+jest.setTimeout(20000);
